@@ -1,6 +1,15 @@
 from fastapi import FastAPI
+from starlette.staticfiles import StaticFiles
+from starlette.templating import Jinja2Templates
+
+from app.routes.club import club_router
 
 app = FastAPI()
+
+templates = Jinja2Templates(directory='views/templates')
+app.mount('/static', StaticFiles(directory='views/static'), name='static')
+
+app.include_router(club_router, prefix='/club')
 
 
 @app.get("/")

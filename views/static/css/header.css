@@ -1,0 +1,41 @@
+.headermain {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.headercontainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.headernav{
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: end;
+    padding-top: 10px;
+    margin-left: 10px;
+}
+
+.sportnav {
+    padding: 0;
+    margin: 0;
+    background-color: lightblue;
+}
+
+.headerul {
+    text-align: center;
+    gap: 10%;
+}
+
+.headerli {
+    border: none;
+    cursor: pointer;
+    background-color: lightblue;
+    text-align: center;
+    : 10px;
+}
+
+
