@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 수정</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group input[type="file"] {
+            padding: 5px;
+        }
+        .form-group img {
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+        .form-group button {
+            margin-top: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>게시글 수정</h1>
+    <div class="form-group">
+        <label for="title">제목</label>
+        <input type="text" id="title" required>
+    </div>
+    <div class="form-group">
+        <label for="content">상세 내용</label>
+        <textarea id="content" rows="10" required></textarea>
+    </div>
+    <div class="form-group" id="image-preview-group">
+        <label>등록된 이미지</label>
+        <img id="image-preview" src="" alt="이미지 미리보기" style="display:none;">
+        <button type="button" id="delete-image-btn" style="display:none;" onclick="deleteImage()">이미지 삭제</button>
+    </div>
+    <div class="form-group">
+        <label for="image">새 이미지 업로드 (선택)</label>
+        <input type="file" id="image">
+    </div>
+    <button type="button" onclick="submitEdit()">수정 완료</button>
+</div>
+
+<script>
+    let currentPostIndex = -1;
+
+    function loadPostForEdit() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const postTitle = urlParams.get('id');
+
+        let posts = JSON.parse(localStorage.getItem('posts')) || [];
+        currentPostIndex = posts.findIndex(post => post.title === postTitle);
+
+        if (currentPostIndex !== -1) {
+            const post = posts[currentPostIndex];
+            document.getElementById('title').value = post.title.replace('[공지] ', '');  // "[공지]" 제거
+            document.getElementById('content').value = post.content;
+
+            // 기존 이미지가 있으면 미리보기 표시
+            if (post.image) {
+                const imgElement = document.getElementById('image-preview');
+                imgElement.src = post.image;
+                imgElement.style.display = 'block';
+
+                const deleteBtn = document.getElementById('delete-image-btn');
+                deleteBtn.style.display = 'block';
+            }
+        } else {
+            alert('게시글을 찾을 수 없습니다.');
+            window.location.href = 'index.html';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadPostForEdit);
+
+    function deleteImage() {
+        const imgElement = document.getElementById('image-preview');
+        imgElement.src = '';
+        imgElement.style.display = 'none';
+
+        const deleteBtn = document.getElementById('delete-image-btn');
+        deleteBtn.style.display = 'none';
+
+        let posts = JSON.parse(localStorage.getItem('posts')) || [];
+        posts[currentPostIndex].image = null;  // 이미지 삭제
+        localStorage.setItem('posts', JSON.stringify(posts));
+    }
+
+    function submitEdit() {
+        const titleInput = document.getElementById('title').value;
+        const contentInput = document.getElementById('content').value;
+        const imageInput = document.getElementById('image').files[0];
+
+        let posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+        if (currentPostIndex !== -1) {
+            posts[currentPostIndex].title = `[공지] ${titleInput}`;
+            posts[currentPostIndex].content = contentInput;
+
+            if (imageInput) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    posts[currentPostIndex].image = event.target.result;  // 새로운 이미지 저장
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    alert('수정이 완료되었습니다.');
+                    window.location.href = 'post_detail.html?id=' + encodeURIComponent(posts[currentPostIndex].title);
+                };
+                reader.readAsDataURL(imageInput);
+            } else {
+                // 새 이미지를 업로드하지 않는 경우
+                localStorage.setItem('posts', JSON.stringify(posts));
+                alert('수정이 완료되었습니다.');
+                window.location.href = 'post_detail.html?id=' + encodeURIComponent(posts[currentPostIndex].title);
+            }
+        } else {
+            alert('게시글을 찾을 수 없습니다.');
+            window.location.href = 'index.html';
+        }
+    }
+</script>
+</body>
+</html>
