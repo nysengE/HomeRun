@@ -10,13 +10,21 @@
     align-items: center;
 }
 
+.container.text-start.mt-4 {
+    width: 500px;
+    display: flex;
+    justify-content: center; /* 버튼들을 가운데 정렬 */
+    align-items: center;
+    gap: 0px; /* 버튼 사이에 간격 추가 */
+}
+
 .headernav{
-    width: 50%;
+    width: 100%;
     display: flex;
     justify-content: flex-end;
     align-items: end;
     padding-top: 10px;
-    margin-left: 10px;
+    /*margin-left: 10px;*/
 }
 
 .sportnav {
@@ -35,7 +43,53 @@
     cursor: pointer;
     background-color: lightblue;
     text-align: center;
-    : 10px;
+: 10px;
 }
 
+/*switch button*/
+.btn-group .btn-toggle {
+    border-radius: 30px; /* 버튼의 둥근 모서리를 설정 */
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: all 0.3s ease; /* 부드러운 전환 효과 */
+    text-decoration: none; /* 링크 밑줄 제거 */
+}
 
+.btn-group .btn-toggle:not(:first-child) {
+    margin-left: -1px; /* 버튼 간의 경계선을 없애기 위해 겹침 */
+}
+
+.btn-group .btn-toggle:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.btn-group .btn-toggle:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.btn-group .btn-toggle:hover {
+    background-color: #FFC107; /* 호버 시 배경색 변경 */
+    color: white; /* 호버 시 텍스트 색상 변경 */
+}
+
+.btn-group .btn-toggle.active {
+    background-color: #FFC107; /* 선택된 버튼의 배경색 */
+    color: white; /* 선택된 버튼의 텍스트 색상 */
+}
+
+.btn-group .btn-toggle:not(.active) {
+    background-color: #E0E0E0; /* 비활성화된 버튼의 배경색 */
+    color: gray; /* 비활성화된 버튼의 텍스트 색상 */
+}
+
+/*footer*/
+footer {
+    position: fixed;
+    left: 0px;
+    bottom: 0px;
+    height: 120px;
+    width: 100%;
+    padding-top: 20px;
+}

@@ -4,8 +4,21 @@
 동호회 페이지
 {% endblock %}
 
+{% block link %}
+<link rel="stylesheet" href="/static/css/club.css" />
+{% endblock %}
+
 {% block main %}
     <main>
-        <h2>동호회 메인</h2>
+        <h2>동호회 게시글</h2>
+        <div class="container ">
+            <div class="card" style="width: 18rem;">
+                <img src="/static/img/clubsample.png" class="card-img-top img-fluid" alt="...">
+                <div class="card-body">
+                    <hr>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
     </main>
 {% endblock %}

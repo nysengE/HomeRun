@@ -4,18 +4,23 @@
             <h1><span class="badge text-bg-secondary">HomeRun</span></h1>
         </div>
 
-        <div class="container text-start mt-4" >
-            <a href="/club" class="btn btn-primary d-inline-block">동호회</a>
-            <a href="/rental" class="btn btn-warning d-inline-block">공간대여</a>
+<!--        <div class="text-start mt-4" >-->
+<!--            <a href="/club" class="btn btn-primary d-inline-block">동호회</a>-->
+<!--            <a href="/rental" class="btn btn-warning d-inline-block">공간대여</a>-->
+<!--        </div>-->
+        <div class="container text-start mt-4 btn-group">
+            <a href="/club" class="btn btn-toggle btn-primary d-inline-block" id="clubBtn">동호회</a>
+            <a href="/rental" class="btn btn-toggle btn-warning d-inline-block" id="rentalBtn">공간대여</a>
         </div>
 
 
         <div class="d-flex headernav">
             <nav>
                 <ul class="nav nav-fill">
-                    <li class="nav-item"><a class="nav-link" href="/">공지사항</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/member/join">마이페이지</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/member/login">로그아웃</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">공지사항</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">로그인</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">마이페이지</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">로그아웃</a></li>
                 </ul>
             </nav>
         </div>
@@ -30,14 +35,3 @@
         <li class="list-group-item headerli" data-value="기타">🏓기타</li>
     </ul>
 </nav>
-
-<script>
-    // JavaScript to handle click events and display the value
-    document.querySelectorAll('.list-group-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const value = item.getAttribute('data-value');
-            console.log(value);
-        });
-    });
-
-</script>
