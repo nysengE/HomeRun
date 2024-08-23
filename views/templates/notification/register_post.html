@@ -34,9 +34,6 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        .form-group input[type="file"] {
-            padding: 5px;
-        }
         button {
             padding: 10px 20px;
             background-color: #007bff;
@@ -54,73 +51,17 @@
 <body>
 <div class="container">
     <h1>공지사항 등록</h1>
-    <div class="form-group">
-        <label for="title">제목</label>
-        <input type="text" id="title" required>
-    </div>
-    <div class="form-group">
-        <label for="content">상세 내용</label>
-        <textarea id="content" rows="10" required></textarea>
-    </div>
-    <div class="form-group">
-        <label for="image">이미지 업로드 (선택)</label>
-        <input type="file" id="image">
-    </div>
-    <button type="button" onclick="submitPost()">등록 완료</button>
+    <form method="post" action="/notification/register">
+        <div class="form-group">
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="contents">상세 내용</label>
+            <textarea id="contents" name="contents" rows="10" required></textarea>
+        </div>
+        <button type="submit">등록 완료</button>
+    </form>
 </div>
-
-<script>
-    function submitPost() {
-        const titleInput = document.getElementById('title').value;
-        const contentInput = document.getElementById('content').value;
-        const imageInput = document.getElementById('image').files[0];
-
-        if (titleInput && contentInput) {
-            if (imageInput) {
-                // 이미지가 있을 경우
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const imageData = event.target.result;
-
-                    const date = new Date().toISOString().split('T')[0];  // 현재 날짜를 YYYY-MM-DD 형식으로
-
-                    const post = {
-                        title: `[공지] ${titleInput}`,
-                        content: contentInput,
-                        image: imageData,  // 이미지 데이터 저장
-                        date: date
-                    };
-
-                    let posts = JSON.parse(localStorage.getItem('posts')) || [];
-                    posts.push(post);
-                    localStorage.setItem('posts', JSON.stringify(posts));
-
-                    alert('등록이 완료되었습니다.');
-                    window.location.href = 'index.html';
-                };
-                reader.readAsDataURL(imageInput);  // 이미지 읽기
-            } else {
-                // 이미지가 없을 경우
-                const date = new Date().toISOString().split('T')[0];  // 현재 날짜를 YYYY-MM-DD 형식으로
-
-                const post = {
-                    title: `[공지] ${titleInput}`,
-                    content: contentInput,
-                    image: null,  // 이미지 데이터가 없으므로 null
-                    date: date
-                };
-
-                let posts = JSON.parse(localStorage.getItem('posts')) || [];
-                posts.push(post);
-                localStorage.setItem('posts', JSON.stringify(posts));
-
-                alert('등록이 완료되었습니다.');
-                window.location.href = 'index.html';
-            }
-        } else {
-            alert('제목과 내용을 입력해주세요.');
-        }
-    }
-</script>
 </body>
 </html>

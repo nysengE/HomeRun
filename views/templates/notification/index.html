@@ -44,64 +44,43 @@
             font-size: 14px;
             color: #888;
         }
-        .buttons {
-            display: flex;
-            justify-content: space-between;
+        .pagination {
+            text-align: center;
             margin-top: 20px;
         }
-        .buttons .action-buttons {
-            display: flex;
-            gap: 10px;
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #333;
         }
-        .buttons button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+        .pagination a.active {
+            background-color: #007bff;
+            color: white;
         }
-        .next-page-btn {
-            text-align: center;
+        .pagination a:hover {
+            background-color: #ddd;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>공지사항</h1>
-    <ul class="post-list" id="post-list">
-        <!-- 게시글 항목들 동적으로 삽입 -->
+    <ul class="post-list">
+        {% for post in bdlist %}
+        <li class="post-item">
+            <a href="/notification/detail/{{ post.notino }}" class="post-title">{{ post.title }}</a>
+            <span class="post-date">{{ post.regdate.strftime('%Y-%m-%d') }}</span>
+        </li>
+        {% endfor %}
     </ul>
 
-    <div class="buttons">
-        <div class="next-page-btn">
-            <button onclick="loadNextPage()">다음 페이지</button>
-        </div>
-        <div class="action-buttons">
-            <button onclick="window.location.href='register_post.html'">등록</button>
-        </div>
+    <div class="pagination">
+        {% for page_num in range(stpgb, stpgb + 10) %}
+        <a href="/notification/{{ page_num }}" class="{% if page_num == cpg %}active{% endif %}">{{ page_num }}</a>
+        {% endfor %}
     </div>
 </div>
-
-<script>
-    function loadPosts() {
-        const postList = document.getElementById('post-list');
-        const posts = JSON.parse(localStorage.getItem('posts')) || [];
-
-        posts.forEach(post => {
-            const li = document.createElement('li');
-            li.classList.add('post-item');
-            li.innerHTML = `
-                    <a href="post_detail.html?id=${post.title}" class="post-title">${post.title}</a>
-                    <span class="post-date">${post.date}</span>
-                `;
-            postList.appendChild(li);
-        });
-    }
-
-    // 페이지 로드 시 게시글 로드
-    document.addEventListener('DOMContentLoaded', loadPosts);
-
-    function loadNextPage() {
-        // 다음 페이지 로딩 로직
-    }
-</script>
 </body>
 </html>
