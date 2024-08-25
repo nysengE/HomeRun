@@ -1,0 +1,40 @@
+/* 전체적인 페이지 스타일 */
+body {
+    font-family: Roboto, sans-serif;
+    background-color: #f3eeee;
+    margin: 0;
+    padding: 0;
+}
+
+footer {
+    position: relative;
+}
+
+
+
+.item p {
+    margin: 0;
+    font-size: 16px;
+    color: white;
+}
+
+/* Bootstrap Carousel 이미지 스타일 */
+.carousel-item img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+
+/* 가격 섹션 스타일 */
+.price {
+    margin-top: 20px;
+}
+
+
+.map-container {
+    width: 85%;
+    height: 300px;
+    position: relative; /* 위치를 상대적으로 지정하여 지도 스타일을 고정 */
+}
+
