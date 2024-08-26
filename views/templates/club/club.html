@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block link %}
-<link rel="stylesheet" href="/static/css/club.css" />
+<link rel="stylesheet" href="/static/css/club/club.css" />
 {% endblock %}
 
 {% block main %}
@@ -51,9 +51,9 @@
                     </div>
                 </div>
 
-                <!-- 버튼 -->
+                <!-- 글쓰기 버튼 -->
                 <div class="col-auto">
-                    <button class="btn btn-primary">Button</button>
+                    <button class="btn btn-primary" id="addbtn">글쓰기</button>
                 </div>
             </div>
         </div>
@@ -130,4 +130,8 @@
         <!-- 카드정렬 end -->
     </div>
 </main>
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/club/club.js"></script>
 {% endblock %}
