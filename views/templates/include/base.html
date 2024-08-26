@@ -5,14 +5,15 @@
     <title>{% block title %} {% endblock %}</title>
     <link rel="stylesheet" href="/static/css/bs5/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/header.css" >
+    <link rel="stylesheet" href="/static/css/footer.css" >
     {% block link %} {% endblock %}
     {% block style %} {% endblock %}
 </head>
 <body>
 <div id="wrap" class="container">
-    {% include 'include/header.html' %}
+{% include 'include/header.html' %}
     {% block main %} {% endblock %}
-    {% include 'include/footer.html' %}
+{% include 'include/footer.html' %}
 </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/static/js/bs5/bootstrap.bundle.min.js"></script>

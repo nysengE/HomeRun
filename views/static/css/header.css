@@ -10,6 +10,7 @@
     align-items: center;
 }
 
+
 .container.text-start.mt-4 {
     width: 500px;
     display: flex;
@@ -84,12 +85,3 @@
     color: gray; /* 비활성화된 버튼의 텍스트 색상 */
 }
 
-/*footer*/
-footer {
-    position: fixed;
-    left: 0px;
-    bottom: 0px;
-    height: 120px;
-    width: 100%;
-    padding-top: 20px;
-}

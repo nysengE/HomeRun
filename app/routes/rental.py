@@ -15,9 +15,9 @@ async def rental(req: Request):
 async def mj_college_detail(req: Request):
     return templates.TemplateResponse('rental/details/mj_college.html', {'request': req})
 
-@rental_router.get('/details/hufs', response_class=HTMLResponse)
+@rental_router.get('/details/Foreign_university', response_class=HTMLResponse)
 async def hufs_detail(req: Request):
-    return templates.TemplateResponse('rental/details/hufs.html', {'request': req})
+    return templates.TemplateResponse('rental/details/Foreign_university.html', {'request': req})
 
 @rental_router.get('/details/hansung_university', response_class=HTMLResponse)
 async def hansung_university_detail(req: Request):
