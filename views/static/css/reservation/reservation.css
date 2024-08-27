@@ -47,9 +47,25 @@
     padding: 5px;
 }
 
+.reservation-days span.past {
+    color: #ccc;  /* 과거 날짜는 옅은 색상으로 표시 */
+    cursor: not-allowed;  /* 클릭할 수 없도록 커서 변경 */
+}
+
 .reservation-days span.active {
     background-color: #007bff;
     color: white;
+}
+
+.reservation-days span.available {
+    color: #007bff;
+    cursor: pointer;
+}
+
+/* 추가된 스타일 */
+.reservation-days span.unavailable {
+    color: #ccc;
+    cursor: not-allowed;
 }
 
 .reservation-time-section {

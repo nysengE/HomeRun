@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const monthYear = document.getElementById('reservationMonthYear');
     const daysContainer = document.querySelector('.reservation-days');
     const timeCanvas = document.getElementById('reservationTimeCanvas');
-    const ctx = timeCanvas.getContext('2d');  // timeCanvas가 존재하는지 확인 후 사용
+    const ctx = timeCanvas.getContext('2d');
 
     const timeSlots = {
         "2024-08-27": [],
@@ -12,14 +12,36 @@ document.addEventListener('DOMContentLoaded', function() {
         "2024-08-31": ["09:00 - 10:00", "11:00 - 12:00", "13:00 - 14:00"]
     };
 
-    function generateCalendar() {
+    let currentMonthIndex = 0;  // 현재 달의 인덱스 (0: 현재 달, 1: 다음 달, 2: 다다음 달)
+    const currentDate = new Date();  // 현재 날짜
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();  // 현재 달 (0부터 시작)
+
+    function generateCalendar(year, month) {
         daysContainer.innerHTML = '';
-        for (let i = 27; i <= 31; i++) {
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        monthYear.textContent = `${year}년 ${month + 1}월`;
+
+        // 이전 달의 빈 칸 채우기
+        for (let i = 0; i < firstDay.getDay(); i++) {
+            const emptyDay = document.createElement('span');
+            daysContainer.appendChild(emptyDay);
+        }
+
+        for (let i = 1; i <= lastDay.getDate(); i++) {
             const dayElement = document.createElement('span');
             dayElement.textContent = i;
-            dayElement.addEventListener('click', function() {
-                selectDate(`2024-08-${i.toString().padStart(2, '0')}`);
-            });
+
+            const isPast = new Date(year, month, i) < currentDate;
+            dayElement.classList.add(isPast ? 'past' : 'available');
+
+            if (!isPast) {
+                dayElement.addEventListener('click', function() {
+                    selectDate(`${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`);
+                });
+            }
+
             daysContainer.appendChild(dayElement);
         }
     }
@@ -28,21 +50,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const allDays = document.querySelectorAll('.reservation-days span');
         allDays.forEach(day => day.classList.remove('active'));
 
-        const dayNumber = parseInt(date.split('-')[2]);
-        const selectedDay = document.querySelector(`.reservation-days span:nth-child(${dayNumber - 26})`);
+        const [year, month, day] = date.split('-').map(Number);
+        const selectedDay = document.querySelector(`.reservation-days span:nth-child(${day + new Date(year, month - 1, 1).getDay()})`);
         if (selectedDay) selectedDay.classList.add('active');
 
-        updateClock(date);
+        updateClock(date);  // 시계 업데이트
     }
 
     function updateClock(date) {
         ctx.clearRect(0, 0, timeCanvas.width, timeCanvas.height); // 이전 캔버스 지우기
+        drawClockFace(); // 시계의 원 바깥쪽에 시간 표시
         const times = timeSlots[date] || [];
-
-        // 시계 원 그리기
-        ctx.beginPath();
-        ctx.arc(100, 100, 80, 0, 2 * Math.PI);
-        ctx.stroke();
 
         if (times.length === 0) return; // 예약 가능한 시간이 없을 경우 종료
 
@@ -54,18 +72,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function parseTimeToAngle(time) {
         const [hours, minutes] = time.split(':').map(Number);
-        return ((hours % 12) + minutes / 60) * 30 - 90; // 각도를 도 단위로 변환하고 시계 방향으로 조정
+        return ((hours + minutes / 60) / 24) * 360; // 24시간 기준 각도를 360도로 변환
     }
 
     function drawTimeSegment(startAngle, endAngle) {
         ctx.beginPath();
         ctx.moveTo(100, 100);
-        ctx.arc(100, 100, 80, startAngle * Math.PI / 180, endAngle * Math.PI / 180);
+        ctx.arc(100, 100, 80, (startAngle - 90) * Math.PI / 180, (endAngle - 90) * Math.PI / 180); // 90도 회전 조정
         ctx.closePath();
         ctx.fillStyle = '#007bff';
         ctx.fill();
     }
 
-    generateCalendar();
-    selectDate('2024-08-27'); // 초기 선택 날짜
+    function drawClockFace() {
+        ctx.font = '14px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // 시계의 각 위치에 24시간 기준으로 시간 표시
+        ctx.fillText('24', 100, 20);   // 24시 위치 (위)
+        ctx.fillText('6', 180, 100);   // 6시 위치 (오른쪽)
+        ctx.fillText('12', 100, 180);  // 12시 위치 (아래)
+        ctx.fillText('18', 20, 100);   // 18시 위치 (왼쪽)
+    }
+
+    document.getElementById('prevMonth').addEventListener('click', function() {
+        if (currentMonthIndex > 0) {
+            currentMonthIndex--;
+            generateCalendar(currentYear, currentMonth + currentMonthIndex);
+        }
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', function() {
+        if (currentMonthIndex < 2) {
+            currentMonthIndex++;
+            generateCalendar(currentYear, currentMonth + currentMonthIndex);
+        }
+    });
+
+    // 초기 달력 생성
+    generateCalendar(currentYear, currentMonth);
+    drawClockFace(); // 초기 시계 표시
 });

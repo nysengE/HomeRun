@@ -9,8 +9,10 @@
     justify-content: space-between;
     align-items: center;
 }
-
-
+.logo {
+    width: 80%;
+    height: 60%;
+}
 .container.text-start.mt-4 {
     width: 500px;
     display: flex;
@@ -84,4 +86,5 @@
     background-color: #E0E0E0; /* 비활성화된 버튼의 배경색 */
     color: gray; /* 비활성화된 버튼의 텍스트 색상 */
 }
+
 

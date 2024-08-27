@@ -35,13 +35,14 @@ body {
     padding: 20px;
     border-radius: 8px;
     text-align: center;
-    width: 200px;
+    width: 300px;
 }
 
 
 .item p {
     margin: 0;
-    font-size: 16px;
+    font-size: 20px;
+    font-family: 'Montserrat', sans-serif;
     color: #383636;
 }
 
