@@ -25,7 +25,7 @@ async def add(req: Request):
 
 @club_router.post('/add', response_class=HTMLResponse)
 async def addok(req: Request, club: NewClub = Depends(get_club_data),
-                files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
+                files: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
         # print('hello')
         print(club)

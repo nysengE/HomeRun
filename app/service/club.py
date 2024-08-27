@@ -27,22 +27,22 @@ async def get_club_data(title: str = Form(...),
         raise HTTPException(status_code=400, detail=f"get_club_data 오류: {e}")
 
 async def process_upload(files):
-    attachs = []
+    # attachs = []
     today = datetime.today().strftime('%Y%m%d%H%M%S')
-    for file in files:
-        if file.filename != '' and file.size > 0:
-            nfname = f'{today}{file.filename}'
-            fname = os.path.join(UPLOAD_PATH, nfname)
-            content = await file.read()
-            with open(fname, 'wb') as f:
-                f.write(content)
-            attach = [nfname, file.size]
-            attachs.append(attach)
-    return attachs
+    # for file in files:
+    if files.filename != '' and files.size > 0:
+        nfname = f'{today}{files.filename}'
+        fname = os.path.join(UPLOAD_PATH, nfname)
+        content = await files.read()
+        with open(fname, 'wb') as f:
+            f.write(content)
+        attach = [nfname, files.size]
+        # attachs.append(attach)
+    return attach
 
 class ClubService:
     @staticmethod
-    def insert_club(club, attachs, db):
+    def insert_club(club, attach, db):
         try:
             # sportsno = club.sportsno
             # sigunguno = club.sigunguno
@@ -52,11 +52,11 @@ class ClubService:
             result = db.execute(stmt)
 
             inserted_clubno = result.inserted_primary_key[0]
-            for attach in attachs:
-                data = {'fname': attach[0], 'fsize': attach[1], 'clubno': inserted_clubno}
-                # print(data)
-                stmt = insert(ClubAttach).values(data)
-                result = db.execute(stmt)
+            # for attach in attachs:
+            data = {'fname': attach[0], 'fsize': attach[1], 'clubno': inserted_clubno}
+            # print(data)
+            stmt = insert(ClubAttach).values(data)
+            result = db.execute(stmt)
 
             db.commit()
 
