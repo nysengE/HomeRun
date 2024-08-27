@@ -1,0 +1,41 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+    예약
+{% endblock %}
+
+{% block link %}
+    <link rel="stylesheet" href="/static/css/reservation/reservation.css" />
+{% endblock %}
+
+{% block main %}
+    <main>
+        <div class="reservation-container">
+            <div class="reservation-calendar-section">
+                <div class="reservation-month-navigation">
+                    <button id="prevMonth">&lt;</button>
+                    <span id="reservationMonthYear">2024년 8월</span>
+                    <button id="nextMonth">&gt;</button>
+                </div>
+                <div class="reservation-calendar">
+                    <div class="reservation-weekdays">
+                        <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+                    </div>
+                    <div class="reservation-days">
+                        <!-- 날짜는 JavaScript로 동적으로 생성 -->
+                    </div>
+                </div>
+            </div>
+            <div class="reservation-time-section">
+                <div class="reservation-time-circle">
+                    <canvas id="reservationTimeCanvas" width="200" height="200"></canvas>
+                </div>
+                <div class="reservation-legend">
+                    <div><span class="reservation-legend-color available"></span>예약가능</div>
+                    <div><span class="reservation-legend-color unavailable"></span>예약불가</div>
+                </div>
+            </div>
+        </div>
+        <script src="/static/js/reservation.js"></script>
+    </main>
+{% endblock %}

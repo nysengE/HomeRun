@@ -10,6 +10,8 @@ templates = Jinja2Templates(directory='views/templates')
 async def club(req: Request):
     return templates.TemplateResponse('club/club.html', {'request': req})
 
-
+@club_router.get('/add', response_class=HTMLResponse)
+async def club(req: Request):
+    return templates.TemplateResponse('club/add.html', {'request': req})
 
 
