@@ -2,10 +2,12 @@ import os
 from datetime import datetime
 
 from fastapi import Form, HTTPException
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.model.club import Club, ClubAttach
+from app.model.regions import Regions
+from app.model.sports import Sports
 from app.schema.club import NewClub
 
 UPLOAD_PATH = 'C:/Java/nginx-1.26.2/nginx-1.26.2/html/homerun/img'
@@ -55,8 +57,8 @@ class ClubService:
             # for attach in attachs:
             data = {'fname': attach[0], 'fsize': attach[1], 'clubno': inserted_clubno}
             # print(data)
-            stmt = insert(ClubAttach).values(data)
-            result = db.execute(stmt)
+            stmt2 = insert(ClubAttach).values(data)
+            result = db.execute(stmt2)
 
             db.commit()
 
@@ -65,4 +67,32 @@ class ClubService:
 
         except SQLAlchemyError as ex:
             print(f'▶▶▶ insert_club 에서 오류 발생: {str(ex)}')
+            db.rollback()
+
+    @staticmethod
+    def select_club(db):
+    # select c.clubno, c.title, c.registdate, ca.fname, s.name, r.name from club c
+    # join clubattach ca on c.clubno = ca.clubno
+    # join sports s on c.sportsno = s.sportsno
+    # join regions r on c.sigunguno = r.sigunguno
+    # order by c.registdate desc;
+        try:
+            from sqlalchemy import func
+            stmt3 = select(Club.clubno,
+                          Club.title,
+                          func.strftime('%Y-%m-%d', Club.registdate).label('registdate'),
+                          ClubAttach.fname,
+                          Sports.name.label('sportname'),
+                          Regions.name.label('regionname')
+                    ).select_from(Club)\
+                    .join(ClubAttach, Club.clubno == ClubAttach.clubno)\
+                    .join(Sports, Club.sportsno == Sports.sportsno)\
+                    .join(Regions, Club.sigunguno == Regions.sigunguno)\
+                    .order_by(Club.registdate.desc())
+            result = db.execute(stmt3).fetchall()
+
+            return result
+
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ service select_club에서 오류 발생: {str(ex)}')
             db.rollback()

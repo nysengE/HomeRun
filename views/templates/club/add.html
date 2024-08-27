@@ -12,7 +12,7 @@
 <main style="min-width: 700px">
     <div class="mt-5">
         <h1 class="mb-4">동호회 글 등록 페이지</h1>
-        <form name="addfrm" enctype="multipart/form-data" method="post">
+        <form name="addfrm" enctype="multipart/form-data">
             <table class="table table-form">
                 <!-- 제목과 작성자를 한 행에 배치 -->
                 <tr>
@@ -89,7 +89,11 @@
 
                 <!-- 제출 버튼 -->
                 <tr>
-                    <td colspan="6" class="text-center">
+                    <td colspan="1" class="text-center">
+                        <button class="btn btn-primary" id="prebtn">목록</button>
+                    </td>
+                    <td colspan="4"></td>
+                    <td colspan="1" class="text-end">
                         <button type="submit" class="btn btn-primary" id="addbtn">등록하기</button>
                     </td>
                 </tr>

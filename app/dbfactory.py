@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.settings import config
 
-from app.model import club
+from app.model import club, sports, regions
 
 engine = create_engine(config.dbconn, echo=True)
 
@@ -18,6 +18,8 @@ def get_db():
 
 async def db_startup():
     club.Base.metadata.create_all(engine)
+    sports.Base.metadata.create_all(engine)
+    regions.Base.metadata.create_all(engine)
 
 async def db_shutdown():
     pass

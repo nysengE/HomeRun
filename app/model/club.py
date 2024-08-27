@@ -15,8 +15,8 @@ class Club(Base):
     people: Mapped[int] = mapped_column(default=0)
     registdate: Mapped[datetime] = mapped_column(default=datetime.now)
     modifydate: Mapped[datetime] = mapped_column(default=datetime.now)
-    sportsno: Mapped[int]
-    sigunguno: Mapped[int]
+    sportsno: Mapped[int] = mapped_column(ForeignKey('sports.sportsno'))
+    sigunguno: Mapped[int] = mapped_column(ForeignKey('regions.sigunguno'))
     userid: Mapped[str]
 
 class ClubAttach(Base):
