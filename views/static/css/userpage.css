@@ -1,32 +1,60 @@
-.sidebar {
-    height: 100vh; /* 전체 화면 높이 */
-    background-color: #f8f9fa; /* 배경색 없음 */
-    padding: 15px; /* 여백 */
-    border-right: 1px solid #dee2e6; /* 사이드바의 오른쪽 경계선 */
+/*.sidebar {*/
+/*    height: 100vh; !* 전체 화면 높이 *!*/
+/*    background-color: #f8f9fa; !* 배경색 없음 *!*/
+/*    padding: 15px; !* 여백 *!*/
+/*    border-right: 1px solid #dee2e6; !* 사이드바의 오른쪽 경계선 *!*/
+/*}*/
+/*.nav-link {*/
+/*    color: #0d6efd; !* 링크 색상 *!*/
+/*    font-weight: bold; !* 링크 두껍게 *!*/
+/*    margin: 5px;*/
+/*}*/
+/*.nav-link:hover {*/
+/*    color: #0056b3; !* 링크 호버 색상 *!*/
+/*}*/
+/*.dropdown-menu {*/
+/*    background-color: #e9ecef; !* 드롭다운 메뉴 배경색 *!*/
+/*}*/
+/*.dropdown-item {*/
+/*    color: #0d6efd; !* 드롭다운 항목 색상 *!*/
+/*}*/
+/*.dropdown-item:hover {*/
+/*    background-color: #d6e9f7; !* 드롭다운 항목 호버 색상 *!*/
+/*    color: #0056b3; !* 드롭다운 항목 호버 색상 *!*/
+/*}*/
+/*.dropdown-toggle {*/
+/*    background-color: #0d6efd; !* 드롭다운 버튼 배경색 *!*/
+/*    color: #fff; !* 드롭다운 버튼 텍스트 색상 *!*/
+/*}*/
+/*.dropdown-toggle:hover {*/
+/*    background-color: #0056b3; !* 드롭다운 버튼 호버 색상 *!*/
+/*    color: #fff; !* 드롭다운 버튼 텍스트 색상 *!*/
+/*}*/
+
+/* 사이드바 스타일 */
+/* 사이드바 스타일 */
+/* static/css/userpage.css */
+.sidebar-container {
+    width: 250px; /* 사이드바 너비 설정 */
+    background-color: #f8f9fa; /* 사이드바 배경색 */
+    position: fixed; /* 사이드바를 고정 위치에 배치 */
+    /*height: 100vh; !* 사이드바 높이를 화면 전체로 설정 *!*/
 }
-.nav-link {
-    color: #0d6efd; /* 링크 색상 */
-    font-weight: bold; /* 링크 두껍게 */
-    margin: 5px;
+
+.content-container {
+    margin-left: 250px; /* 사이드바 너비만큼 여백 추가 */
+    padding: 20px; /* 콘텐츠 영역의 안쪽 여백 */
+    text-align: center;
 }
-.nav-link:hover {
-    color: #0056b3; /* 링크 호버 색상 */
+
+/* 사이드바의 링크 활성화 스타일 */
+.nav-link.active {
+    color: #0d6efd;
+    background-color: #e9ecef;
+    border-radius: 5px;
 }
-.dropdown-menu {
-    background-color: #e9ecef; /* 드롭다운 메뉴 배경색 */
-}
-.dropdown-item {
-    color: #0d6efd; /* 드롭다운 항목 색상 */
-}
-.dropdown-item:hover {
-    background-color: #d6e9f7; /* 드롭다운 항목 호버 색상 */
-    color: #0056b3; /* 드롭다운 항목 호버 색상 */
-}
-.dropdown-toggle {
-    background-color: #0d6efd; /* 드롭다운 버튼 배경색 */
-    color: #fff; /* 드롭다운 버튼 텍스트 색상 */
-}
-.dropdown-toggle:hover {
-    background-color: #0056b3; /* 드롭다운 버튼 호버 색상 */
-    color: #fff; /* 드롭다운 버튼 텍스트 색상 */
+
+
+h2{
+    color: red;
 }
