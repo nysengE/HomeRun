@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block link %}
-    <link rel="stylesheet" href="/static/css/club/add.css" />
+    <link rel="stylesheet" href="/static/css/rental/add.css" />
 {% endblock %}
 
 {% block main %}
@@ -26,7 +26,7 @@
                             <label for="userid" class="form-label">작성자</label>
                         </td>
                         <td class="input-cell">
-                            <p class="form-control" id="author">kiki</p>
+                            <p class="form-control" id="author">dragon</p>
                             <input type="hidden" name="userid" id="userid">
                         </td>
                     </tr>
@@ -46,18 +46,13 @@
                                 <option value=5>기타</option>
                             </select>
                         </td>
+                    </tr>
+                    <tr>
                         <td class="label-cell">
-                            <label for="region" class="form-label">지역</label>
+                            <label for="zipcode" class="form-label">우편번호</label>
                         </td>
-                        <td class="input-cell">
-                            <select class="form-select" name="sigunguno" id="region" required>
-                                <option value="" disabled selected>지역을 선택하세요</option>
-                                <option value=1>강동구</option>
-                                <option value=2>서대문구</option>
-                                <option value=3>영등포구</option>
-                                <option value=4>서초구</option>
-                                <option value=5>동대문구</option>
-                            </select>
+                        <td class="input-cell" colspan="3">
+                            <input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="우편번호를 입력하세요" required>
                         </td>
                         <td class="label-cell">
                             <label for="people" class="form-label">인원수</label>

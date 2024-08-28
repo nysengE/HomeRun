@@ -1,9 +1,12 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from starlette.requests import Request
 from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+from app.dbfactory import db_startup, db_shutdown
 from app.routes.club import club_router
 from app.routes.management import management_router
 from app.routes.mypage import mypage_router
@@ -13,7 +16,16 @@ from app.routes.rental import rental_router
 from app.routes.reservation import reservation_router
 from app.routes.user import user_router
 
-app = FastAPI()
+
+# Lifespan 관리 함수 정의
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await db_startup()  # 서버 시작 시 실행될 코드
+    yield
+    await db_shutdown()  # 서버 종료 시 실행될 코드
+
+# FastAPI 앱 인스턴스 생성 시 lifespan 함수 전달
+app = FastAPI(lifespan=lifespan)
 
 templates = Jinja2Templates(directory='views/templates')
 app.mount('/static', StaticFiles(directory='views/static'), name='static')
@@ -36,6 +48,10 @@ async def index(req: Request):
 @app.get("/hello/{name}")
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
+
+
+
+
 
 if __name__ == '__main__':
     import uvicorn
