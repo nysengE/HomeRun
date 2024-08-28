@@ -11,47 +11,38 @@ $(document).ready(function() {
     let clubBtn = $('#clubBtn');
     let rentalBtn = $('#rentalBtn');
 
-    // 버튼 너비 계산
-    let buttonWidth = clubBtn.outerWidth();
-
-    // 현재 페이지 경로 확인
-    let currentPath = window.location.pathname;
-
-    // 현재 경로가 '/club' 또는 '/club/'인 경우
-    if (currentPath === '/club' || currentPath === '/club/') {
-        sliding.css('left', '0');
-        clubBtn.addClass('active');
-    }
-    // 현재 경로가 '/rental' 또는 '/rental/'인 경우
-    else if (currentPath === '/rental' || currentPath === '/rental/') {
-        sliding.css('left', `${buttonWidth}px`);
-        rentalBtn.addClass('active');
+    function updateButtonWidth() {
+        return clubBtn.outerWidth(); // 항상 최신의 버튼 너비를 계산
     }
 
-    // 버튼 클릭 시 슬라이더 이동
+    function setActiveButton() {
+        let currentPath = window.location.pathname;
+        let buttonWidth = updateButtonWidth();
+
+        if (currentPath === '/club' || currentPath === '/club/') {
+            sliding.css('left', '0');
+            clubBtn.addClass('active');
+            rentalBtn.removeClass('active');
+        } else if (currentPath === '/rental' || currentPath === '/rental/') {
+            sliding.css('left', `${buttonWidth}px`);
+            rentalBtn.addClass('active');
+            clubBtn.removeClass('active');
+        }
+    }
+
+    setActiveButton();
+
     clubBtn.click(function() {
+        let buttonWidth = updateButtonWidth();
         sliding.animate({left: '0'}, 300);
         clubBtn.addClass('active');
         rentalBtn.removeClass('active');
     });
 
     rentalBtn.click(function() {
+        let buttonWidth = updateButtonWidth();
         sliding.animate({left: `${buttonWidth}px`}, 300);
         rentalBtn.addClass('active');
         clubBtn.removeClass('active');
-    });
-
-    // 슬라이더 드래그 가능 설정 (jQuery UI 필요)
-    sliding.draggable({
-        axis: 'x', // x축 방향으로만 드래그 가능
-        containment: '.btn-group', // 드래그 가능 영역 제한
-        stop: function(event, ui) {
-            let slidingPosition = ui.position.left;
-            if (slidingPosition < buttonWidth / 2) {
-                clubBtn.trigger('click');
-            } else {
-                rentalBtn.trigger('click');
-            }
-        }
     });
 });
