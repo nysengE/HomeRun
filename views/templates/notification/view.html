@@ -4,64 +4,83 @@
 세미프로젝트 - 게시글 보기
 {% endblock %}
 
-{% block main %}
-<main class="container mt-5 mb-5">
-    <!-- 게시글 제목 -->
-    <div class="border-bottom mb-4 pb-2">
-        <h2 class="fw-bold">{{ notification.title }}</h2>
-        <div class="text-muted small">
-            <span>작성일: {{ notification.modifydate.strftime('%Y-%m-%d %H:%M') if notification.modifydate else notification.registdate.strftime('%Y-%m-%d %H:%M') }}</span>
-        </div>
-    </div>
-
-    <!-- 게시글 내용 -->
-    <div class="mb-4">
-        <div class="content" style="line-height: 1.8; font-size: 16px;">
-            {{ notification.contents | safe }}
-        </div>
-    </div>
-
-    <!-- 첨부된 사진 -->
-    {% if notification.attachs %}
-    <div class="border-top pt-3 mb-4">
-        <div class="row">
-            {% for attach in notification.attachs %}
-            <div class="col-md-3 mb-2">
-                <img src="http://127.0.0.1/img/ntf/{{ attach.fname }}" alt="첨부 이미지" class="img-fluid rounded border">
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- 하단 버튼 섹션 -->
-    <div class="d-flex justify-content-between">
-        <!-- '목록으로' 버튼 -->
-        <a href="/notification/list/1" class="btn btn-light btn-sm text-dark fw-bold" style="font-size: 1.1em;">목록으로</a>
-
-        <!-- 관리자만 보이는 수정 및 삭제 버튼 -->
-        {% if request.session.get('userid') == 'manager' %}
-        <div class="d-flex gap-2">
-            <a href="/notification/edit/{{ notification.notino }}" class="btn btn-outline-warning btn-sm">수정</a>
-            <form method="post" action="/notification/delete/{{ notification.notino }}" onsubmit="return confirmDelete()" class="d-inline">
-                <button type="submit" class="btn btn-outline-danger btn-sm">삭제</button>
-            </form>
-        </div>
-        {% endif %}
-
-        <div class="d-flex gap-2">
-            <a href="/notification/edit/{{ notification.notino }}" class="btn btn-outline-warning btn-sm">수정</a>
-            <form method="post" action="/notification/delete/{{ notification.notino }}" onsubmit="return confirmDelete()" class="d-inline">
-                <button type="submit" class="btn btn-outline-danger btn-sm">삭제</button>
-            </form>
-        </div>
-
-    </div>
-</main>
-<script>
-    function confirmDelete() {
-        return confirm('게시글을 삭제하시겠습니까?');
+{% block style %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
     }
-</script>
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .form-group p {
+        font-size: 16px;
+        margin: 0;
+    }
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    .actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+    }
+</style>
 {% endblock %}
 
+{% block main %}
+<main>
+    <div class="container">
+        <h1>{{ notification.title }}</h1>
+        <div class="form-group">
+            <label>작성자</label>
+            <p>{{ notification.userid }}</p>
+        </div>
+        <div class="form-group">
+            <label>작성일</label>
+            <p>{{ notification.last_modified.strftime('%Y-%m-%d %H:%M') if notification.last_modified else notification.regdate.strftime('%Y-%m-%d %H:%M') }}</p>
+        </div>
+        <div class="form-group">
+            <label for="contents">상세 내용</label>
+            <p>{{ notification.contents }}</p>
+        </div>
+        <div class="actions">
+            <a href="/notification/edit/{{ notification.notino }}">
+                <button>수정</button>
+            </a>
+            <form method="post" action="/notification/delete/{{ notification.notino }}" style="display:inline;" onsubmit="return confirmDelete()">
+                <button type="submit">삭제</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function confirmDelete() {
+            return confirm('게시글을 삭제하시겠습니까?');
+        }
+    </script>
+</main>
+{% endblock %}

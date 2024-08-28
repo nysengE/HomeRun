@@ -1,33 +1,26 @@
 <header class="py-4 headermain">
-    <div class="container-fluid headercontainer">
+    <div class="container headercontainer">
         <div class="d-flex">
-            <a href="/">
-                <img src="/static/img/로고1.png" alt="logo1" class="logo">
-            </a>
+            <h1><span class="badge text-bg-secondary">HomeRun</span></h1>
         </div>
 
-        <div class="container-fluid text-start mt-4 btn-group">
-            <div class="sliding"></div> <!-- 슬라이딩 추가 -->
-            <a href="/club/1" class="btn btn-toggle btn-primary d-inline-block" id="clubBtn">동호회</a>
+        <!--        <div class="text-start mt-4" >-->
+        <!--            <a href="/club" class="btn btn-primary d-inline-block">동호회</a>-->
+        <!--            <a href="/rental" class="btn btn-warning d-inline-block">공간대여</a>-->
+        <!--        </div>-->
+        <div class="container text-start mt-4 btn-group">
+            <a href="/club" class="btn btn-toggle btn-primary d-inline-block" id="clubBtn">동호회</a>
             <a href="/rental" class="btn btn-toggle btn-warning d-inline-block" id="rentalBtn">공간대여</a>
         </div>
+
 
         <div class="d-flex headernav">
             <nav>
                 <ul class="nav nav-fill">
-                    <li class="nav-item"><a class="nav-link" href="/notificarion/list/1">공지사항</a></li>
-                    {% if 'logined_uid' in request.session %}
-                        <li class="nav-item"><a class="nav-link" href="/user/logout">로그아웃</a></li>
-                        {% if 'logined_uid' in request.session and request.session.logined_uid == 'manager' %}
-                            <li class="nav-item"><a class="nav-link" href="/management/club_list">게시글관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/usermanage/list">회원관리</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/management/statistics">통계</a></li>
-                        {% else %}
-                            <li class="nav-item"><a class="nav-link" href="/mypage/user/userinfo">마이페이지</a></li>
-                        {% endif %}
-                    {% else %}
-                        <li class="nav-item"><a class="nav-link" href="/user/login">로그인</a></li>
-                    {% endif %}
+                    <li class="nav-item"><a class="nav-link" href="/notification/list/1">공지사항</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">로그인</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">마이페이지</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">로그아웃</a></li>
                 </ul>
             </nav>
         </div>
@@ -35,15 +28,10 @@
 </header>
 <nav class="sportnav">
     <ul class="headerul list-group list-group-horizontal d-flex justify-content-center">
-        <li class="list-group-item headerli" data-value="축구">
-            <img src="/static/img/축구카툰.png" class="soccer" alt="축구카툰">축구</li>
-        <li class="list-group-item headerli" data-value="야구">
-            <img src="/static/img/야구카툰.png" class="baseball" alt="야구카툰">야구</li>
-        <li class="list-group-item headerli" data-value="농구">
-            <img src="/static/img/농구카툰.png" class="basketball" alt="농구카툰" >농구</li>
-        <li class="list-group-item headerli" data-value="테니스">
-            <img src="/static/img/테니스카툰.png" class="tennis" alt="테니스">테니스</li>
-        <li class="list-group-item headerli" data-value="기타">
-            <img src="/static/img/탁구카툰.png" class="pingpong" alt="기타">기타</li>
+        <li class="list-group-item headerli" data-value="축구">⚽축구</li>
+        <li class="list-group-item headerli" data-value="야구">⚾야구</li>
+        <li class="list-group-item headerli" data-value="농구">🏀농구</li>
+        <li class="list-group-item headerli" data-value="테니스">🥎테니스</li>
+        <li class="list-group-item headerli" data-value="기타">🏓기타</li>
     </ul>
 </nav>

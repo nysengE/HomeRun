@@ -4,4 +4,3 @@ class NewNotification(BaseModel):
     userid: str
     title: str
     contents: str
-
