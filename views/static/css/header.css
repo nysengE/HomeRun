@@ -33,7 +33,7 @@
 .sportnav {
     padding: 0;
     margin: 0;
-    background-color: lightblue;
+    background-color: #faf8f5;
 }
 
 .headerul {
@@ -42,11 +42,14 @@
 }
 
 .headerli {
+    display: flex; /* 추가 */
+    flex-direction: column; /* 추가: 수직 정렬을 위해 설정 */
+    align-items: center; /* 추가: 가운데 정렬 */
     border: none;
     cursor: pointer;
-    background-color: lightblue;
+    background-color: #faf8f5;
     text-align: center;
-: 10px;
+
 }
 
 /*switch button*/
@@ -88,3 +91,12 @@
 }
 
 
+.basketball {
+    width: 120px;
+    height: auto;
+}
+
+.soccer{
+    width: 120px;
+    height: auto;
+}

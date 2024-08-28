@@ -14,134 +14,66 @@
             <select id="region">
                 <option>지역</option>
             </select>
-            <select id="price">
-                <option>가격</option>
-            </select>
+            <!-- 가격 범위 스크롤바 -->
+            <label for="priceRange">가격:</label>
+            <input type="range" id="priceRange" name="priceRange" min="0" max="1000000" step="10000" value="0" oninput="this.nextElementSibling.value = this.value">
+            <output>0</output>
+            <!-- 날짜 선택 -->
             <input type="date" id="date" placeholder="날짜">
-            <select id="people">
-                <option>인원</option>
-            </select>
+            <!-- 인원 범위 스크롤바 -->
+            <label for="peopleRange">인원:</label>
+            <input type="range" id="peopleRange" name="peopleRange" min="1" max="100" step="1" value="1" oninput="this.nextElementSibling.value = this.value">
+            <output>1</output>
         </section>
 
 
         <section id="items">
-            <div class="item">
-                <a href="/rental/details/mj_college">
+            <div class="item" id="mjCollege" data-region="서대문구">
+                <a href="#">
                     <div class="slider">
-                        <img src="/static/img/스포츠/농구/명지전문대학.jpg" alt="Item 1 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/명지전문대학2.jpg" alt="Item 1 Image 2" class="slide">
+                        <img class="slide" alt="Item 1 Image 1" >
+                        <img class="slide" alt="Item 1 Image 2" >
                     </div>
                     <p>명지전문대학</p>
                 </a>
             </div>
-            <div class="item">
-                <a href="/rental/details/foreign_university">
+            <div class="item" id="foreignUniversity" data-region="동대문구">
+                <a href="#">
                     <div class="slider">
-                        <img src="/static/img/스포츠/농구/한국외대.jpg" alt="Item 2 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/한국외대2.jpg" alt="Item 2 Image 2" class="slide">
+                        <img class="slide" alt="Item 2 Image 1" >
+                        <img class="slide" alt="Item 2 Image 2" >
                     </div>
                     <p>한국외대</p>
                 </a>
             </div>
-            <div class="item">
-                <a href="/rental/details/hansung_university">
+            <div class="item" id="hansungUniversity" data-region="성북구">
+                <a href="#">
                     <div class="slider">
-                        <img src="/static/img/스포츠/농구/한성대.jpg" alt="Item 3 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/한성대2.jpg" alt="Item 3 Image 2" class="slide">
+                        <img class="slide" alt="Item 3 Image 1" >
+                        <img class="slide" alt="Item 3 Image 2" >
                     </div>
                     <p>한성대</p>
                 </a>
             </div>
-            <div class="item">
-                <a href="/rental/details/urban_basketball">
+            <div class="item" id="urbanBasketball" data-region="동대문구">
+                <a href="#">
                     <div class="slider">
-                        <img src="/static/img/스포츠/농구/어반바스켓볼.jpg" alt="Item 4 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/어반바스켓볼2.jpg" alt="Item 4 Image 2" class="slide">
+                        <img class="slide" alt="Item 4 Image 1" >
+                        <img class="slide" alt="Item 4 Image 2" >
                     </div>
                     <p>어반바스켓볼</p>
                 </a>
             </div>
         </section>
-        <section id="items">
-            <div class="item">
-                <a href="/rental/details/mj_college">
-                    <div class="slider">
-                        <img src="/static/img/스포츠/농구/명지전문대학.jpg" alt="Item 1 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/명지전문대학2.jpg" alt="Item 1 Image 2" class="slide">
-                    </div>
-                    <p>명지전문대학</p>
-                </a>
-            </div>
-            <div class="item">
-                <a href="/rental/details/foreign_university">
-                    <div class="slider">
-                        <img src="/static/img/스포츠/농구/한국외대.jpg" alt="Item 2 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/한국외대2.jpg" alt="Item 2 Image 2" class="slide">
-                    </div>
-                    <p>한국외대</p>
-                </a>
-            </div>
-            <div class="item">
-                <a href="/rental/details/hansung_university">
-                    <div class="slider">
-                        <img src="/static/img/스포츠/농구/한성대.jpg" alt="Item 3 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/한성대2.jpg" alt="Item 3 Image 2" class="slide">
-                    </div>
-                    <p>한성대</p>
-                </a>
-            </div>
-            <div class="item">
-                <a href="/rental/details/urban_basketball">
-                    <div class="slider">
-                        <img src="/static/img/스포츠/농구/어반바스켓볼.jpg" alt="Item 4 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/어반바스켓볼2.jpg" alt="Item 4 Image 2" class="slide">
-                    </div>
-                    <p>어반바스켓볼</p>
-                </a>
-            </div>
-        </section>
-        <section id="items">
-            <div class="item">
-                <a href="/rental/details/mj_college">
-                    <div class="slider">
-                        <img src="/static/img/스포츠/농구/명지전문대학.jpg" alt="Item 1 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/명지전문대학2.jpg" alt="Item 1 Image 2" class="slide">
-                    </div>
-                    <p>명지전문대학</p>
-                </a>
-            </div>
-            <div class="item">
-                <a href="/rental/details/foreign_university">
-                    <div class="slider">
-                        <img src="/static/img/스포츠/농구/한국외대.jpg" alt="Item 2 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/한국외대2.jpg" alt="Item 2 Image 2" class="slide">
-                    </div>
-                    <p>한국외대</p>
-                </a>
-            </div>
-            <div class="item">
-                <a href="/rental/details/hansung_university">
-                    <div class="slider">
-                        <img src="/static/img/스포츠/농구/한성대.jpg" alt="Item 3 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/한성대2.jpg" alt="Item 3 Image 2" class="slide">
-                    </div>
-                    <p>한성대</p>
-                </a>
-            </div>
-            <div class="item">
-                <a href="/rental/details/urban_basketball">
-                    <div class="slider">
-                        <img src="/static/img/스포츠/농구/어반바스켓볼.jpg" alt="Item 4 Image 1" class="slide">
-                        <img src="/static/img/스포츠/농구/어반바스켓볼2.jpg" alt="Item 4 Image 2" class="slide">
-                    </div>
-                    <p>어반바스켓볼</p>
-                </a>
-            </div>
-        </section>
+
     </main>
 {% endblock %}
 
 
+
+
 {% block script %}
-    <script src="/static/js/rental.js"></script>
+    <script src="/static/js/rental/urls.js"></script>
+    <script src="/static/js/rental/images.js"></script>
+    <script src="/static/js/rental/rental.js"></script>
 {% endblock %}

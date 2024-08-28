@@ -53,9 +53,10 @@
 }
 
 .reservation-days span.active {
-    background-color: #007bff;
-    color: white;
+    background-color: rgba(0, 123, 255, 0.2); /* 파란색을 옅게 설정 */
+    color: black; /* 텍스트 색상을 검정으로 설정하여 가독성을 높임 */
 }
+
 
 .reservation-days span.available {
     color: #007bff;
