@@ -1,0 +1,53 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+동호회 등록 페이지
+{% endblock %}
+
+{% block style %}
+<style>
+    main {
+        padding: 100px;
+    }
+
+    img {
+        width: 500px;
+        height: 300px;
+    }
+</style>
+{% endblock %}
+
+{% block link %}
+<link rel="stylesheet" href="/static/css/club/view.css" />
+{% endblock %}
+
+{% block main %}
+<main>
+    <table class="table">
+        <tbody>
+        {{ club.title }}
+        <tr>
+            <td class="align-top imgtd" style="width: 120px;">
+                <img src='http://127.0.0.1/homerun/img/{{ club.fname }}' alt="이미지" class="table-img">
+            </td>
+            <td>
+                <div class="d-flex flex-column">
+                    <div class="title-text">
+                        <h4>제목 텍스트</h4>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><div class="content-text">
+                <p>여기에 내용 텍스트를 추가합니다. 내용은 여러 줄로 작성할 수 있으며, 필요에 따라 스타일을 조정할 수 있습니다.</p>
+            </div></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/club/view.js"></script>
+{% endblock %}

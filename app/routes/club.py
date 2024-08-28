@@ -46,5 +46,18 @@ async def addok(req: Request, club: NewClub = Depends(get_club_data),
         print(f'▷▷▷ addok 오류발생 {str(ex)}')
         raise HTTPException(status_code=500, detail=f"Server error: {str(ex)}")
 
+@club_router.get('/view/{clubno}', response_class=HTMLResponse)
+async def view(req: Request, clubno: int, db: Session = Depends(get_db)):
+    try:
+        club = ClubService.selectone_club(clubno, db)
+
+        return templates.TemplateResponse('club/view.html',
+                                          {'request': req, 'club': club})
+    except Exception as ex:
+        print(f'▷▷▷ view 오류발생 {str(ex)}')
+
+
+    return templates.TemplateResponse('club/view.html', {'request': req})
+
 
 

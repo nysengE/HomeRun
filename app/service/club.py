@@ -2,8 +2,9 @@ import os
 from datetime import datetime
 
 from fastapi import Form, HTTPException
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, func
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
 
 from app.model.club import Club, ClubAttach
 from app.model.regions import Regions
@@ -77,7 +78,6 @@ class ClubService:
     # join regions r on c.sigunguno = r.sigunguno
     # order by c.registdate desc;
         try:
-            from sqlalchemy import func
             stmt3 = select(Club.clubno,
                           Club.title,
                           func.strftime('%Y-%m-%d', Club.registdate).label('registdate'),
@@ -95,4 +95,32 @@ class ClubService:
 
         except SQLAlchemyError as ex:
             print(f'▶▶▶ service select_club에서 오류 발생: {str(ex)}')
+            db.rollback()
+
+
+    @staticmethod
+    def selectone_club(clubno, db):
+        try:
+            stmt = select(Club.clubno,
+                          Club.title,
+                          Club.contents,
+                          Club.people,
+                          Club.registdate,
+                          Club.modifydate,
+                          func.strftime('%Y-%m-%d', Club.registdate).label('registdate'),
+                          Club.modifydate,
+                          Club.userid,
+                          ClubAttach.fname,
+                          Sports.name.label('sportname'),
+                          Regions.name.label('regionname')
+                          ).select_from(Club) \
+                .join(ClubAttach, Club.clubno == ClubAttach.clubno) \
+                .join(Sports, Club.sportsno == Sports.sportsno) \
+                .join(Regions, Club.sigunguno == Regions.sigunguno) \
+                .where(Club.clubno == clubno)
+
+            return db.execute(stmt).scalars().first()
+
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ selectone_club 오류 발생: {str(ex)}')
             db.rollback()

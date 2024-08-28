@@ -64,7 +64,8 @@
         <div class="row g-3 d-flex justify-content-start" style="width: 100%; margin: 0 auto; gap: 15px">
             {% for club in clublist %}
             <div class="col-md-3" style="width: 300px; height: 400px;">
-                <div class="card">
+                <div class="card clubcard">
+                    <input type="hidden" id="clubno" value="{{ club.clubno }}">
                     <img src="http://127.0.0.1/homerun/img/{{ club.fname }}" class="card-img-top img-fluid" alt="..." style="height: 250px;">
                     <div class="card-body" style="height:150px;">
                         <div class="inline-container text-center">

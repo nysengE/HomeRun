@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.model.base import Base
 
@@ -18,6 +18,7 @@ class Club(Base):
     sportsno: Mapped[int] = mapped_column(ForeignKey('sports.sportsno'))
     sigunguno: Mapped[int] = mapped_column(ForeignKey('regions.sigunguno'))
     userid: Mapped[str]
+    attachs = relationship('ClubAttach', back_populates='club')
 
 class ClubAttach(Base):
     __tablename__ = 'clubattach'
@@ -27,3 +28,4 @@ class ClubAttach(Base):
     fname: Mapped[str] = mapped_column(nullable=False)
     fsize: Mapped[int] = mapped_column(default=0)
     regdate: Mapped[datetime] = mapped_column(default=datetime.now)
+    club = relationship('Club', back_populates='attachs')
