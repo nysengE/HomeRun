@@ -5,12 +5,20 @@
 {% endblock %}
 
 {% block link %}
-<link rel="stylesheet" href="/static/css/club/club.css" />
+{#<link rel="stylesheet" href="/static/css/club/club.css" />#}
 {% endblock %}
 
 {% block main %}
 <main class="container mt-4">
     <h2>동호회 게시글</h2>
+    <!-- Debugging output -->
+    <p>Sports count: {{ sports | length }}</p>
+    <p>Regions count: {{ regions | length }}</p>
+    <p>Clublist count: {{ clublist | length }}</p>
+    {% for sp in sports %}
+        <p>{{ sp.sportsno }}</p>
+    {% endfor %}
+
     <!-- 검색 & 버튼 start -->
     <div>
         <div class="container mt-4 py-3">
@@ -19,12 +27,16 @@
                 <div class="col-auto">
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown 1
+                            운동명
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item" href="#">Action 1</a></li>
-                            <li><a class="dropdown-item" href="#">Action 2</a></li>
-                            <li><a class="dropdown-item" href="#">Action 3</a></li>
+                            {% if sports %}
+                                {% for sp in sports %}
+                                    <li><a class="dropdown-item" href="#">{{ sp.name }}</a></li>
+                                {% endfor %}
+                            {% else %}
+                                <li><a class="dropdown-item" href="#">No sports available</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
@@ -33,12 +45,12 @@
                 <div class="col-auto">
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown 2
+                            지역명
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                            <li><a class="dropdown-item" href="#">Action A</a></li>
-                            <li><a class="dropdown-item" href="#">Action B</a></li>
-                            <li><a class="dropdown-item" href="#">Action C</a></li>
+                            {% for re in regions %}
+                                <li><a class="dropdown-item" href="#">{{ re.name }}</a></li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
@@ -63,20 +75,20 @@
     <div>
         <div class="row g-3 d-flex justify-content-start" style="width: 100%; margin: 0 auto; gap: 15px">
             {% for club in clublist %}
-            <div class="col-md-3" style="width: 300px; height: 400px;">
-                <div class="card clubcard">
-                    <input type="hidden" id="clubno" value="{{ club.clubno }}">
-                    <img src="http://127.0.0.1/homerun/img/{{ club.fname }}" class="card-img-top img-fluid" alt="..." style="height: 250px;">
-                    <div class="card-body" style="height:150px;">
-                        <div class="inline-container text-center">
-                            <div class="card-text float-start"><h4><span class="badge text-bg-secondary bg-success">{{ club.sportname }}</span></h4></div>
-                            <div class="card-text float-end"><h4><span class="badge text-bg-secondary bg-warning">{{ club.regionname }}</span></h4></div>
+                <div class="col-md-3" style="width: 300px; height: 400px;">
+                                <div class="card clubcard">
+                                    <input type="hidden" id="clubno" value="{{ club.clubno }}">
+                                    <img src="http://127.0.0.1/homerun/img/{{ club.fname }}" class="card-img-top img-fluid" alt="..." style="height: 250px;">
+                                    <div class="card-body" style="height:150px;">
+                                        <div class="inline-container text-center">
+                                            <div class="card-text float-start"><h4><span class="badge text-bg-secondary bg-success">{{ club.sportname }}</span></h4></div>
+                                            <div class="card-text float-end"><h4><span class="badge text-bg-secondary bg-warning">{{ club.regionname }}</span></h4></div>
+                            </div>
+                            <br>
+                            <div class="card-title text-center"><h3>{{ club.title }}<span class="badge text-bg-secondary"></span></h3></div>
                         </div>
-                        <br>
-                        <div class="card-title text-center"><h3>{{ club.title }}<span class="badge text-bg-secondary"></span></h3></div>
                     </div>
                 </div>
-            </div>
             {% endfor %}
         </div>
         <!-- 카드정렬 end -->

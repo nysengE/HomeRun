@@ -19,9 +19,12 @@ templates = Jinja2Templates(directory='views/templates')
 async def club(req: Request, db: Session = Depends(get_db)):
     try:
         clublist = ClubService.select_club(db)
+        sports = ClubService.select_sports(db)
+        regions = ClubService.select_regions(db)
 
         return templates.TemplateResponse('club/club.html',
-                                          {'request': req, 'clublist': clublist})
+                                          {'request': req, 'clublist': clublist,
+                                           'sports': sports, 'regions': regions})
     except Exception as ex:
         print(f'▷▷▷ /club router 오류 발생 : {str(ex)}')
 

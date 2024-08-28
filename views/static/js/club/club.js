@@ -1,8 +1,20 @@
 const addbtn = document.querySelector('#addbtn');
 
-console.log('hello')
+// // dropdown 데이터 넣기
+// const sports = document.querySelector('.sports');
+// const regions = document.querySelector('.regions');
+//
+// console.log(sports);
+// const li = document.createElement('li');
+// li.textContent = '축구';
+// li.classList.add('dropdown-item');
+// li.dataset.value = 1;
+//
+// sports.append(li);
 
-// clubno
+
+
+// clubno card 클릭시 상세보기 view
 const clubcard = document.querySelectorAll('.clubcard');
 clubcard.forEach((card) => {
     card.addEventListener('click', () => {

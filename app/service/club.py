@@ -124,3 +124,26 @@ class ClubService:
         except SQLAlchemyError as ex:
             print(f'▶▶▶ selectone_club 오류 발생: {str(ex)}')
             db.rollback()
+
+    @staticmethod
+    def select_sports(db):
+        try:
+            stmt = select(Sports)
+
+            return db.execute(stmt).fetchall()
+
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ select_sports 오류 발생: {str(ex)}')
+            db.rollback()
+
+    @staticmethod
+    def select_regions(db):
+        try:
+            stmt = select(Regions)
+
+            return db.execute(stmt).fetchall()
+
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ select_sports 오류 발생: {str(ex)}')
+            db.rollback()
+
