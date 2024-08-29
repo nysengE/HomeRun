@@ -14,6 +14,18 @@
         width: 500px;
         height: 300px;
     }
+
+     .form-container {
+         border: 1px solid #ddd;
+         border-radius: 8px;
+         padding: 20px;
+         background-color: #f9f9f9;
+     }
+
+    .form-control {
+        border: 1px solid #ced4da;
+    }
+
 </style>
 {% endblock %}
 
@@ -24,6 +36,9 @@
 {% block main %}
 <div class="d-flex justify-content-center">
     <main style="width: 80%">
+        <div class="botton-row d-flex justify-content-between mb-3">
+            <button type="button" class="btn btn-secondary" id="prebtn">이전</button>
+        </div>
         <table class="table border-top border-bottom">
             <tbody>
             {% for c in club %}
@@ -32,8 +47,14 @@
                     <img src='http://127.0.0.1/homerun/img/{{ c.fname }}' alt="이미지" class="table-img" style="width: 100%;">
                 </td>
                 <td style="width: 400px;">
-                    <div class="title-text text-start mb-5 d-flex align-items-center">
+                    <div class="title-text text-start mb-3 d-flex align-items-center">
                         <h2><b>{{ c.title }}</b></h2>
+                    </div>
+                    <div class="badge-container">
+                        <div class="badge-row d-flex justify-content-start">
+                            <h3><span class="badge text-bg-secondary bg-success d-flex justify-content-start mx-1">{{ c.sportname }}</span></h3>
+                            <h3><span class="badge text-bg-secondary bg-warning d-flex justify-content-start">{{ c.regionname }}</span></h3>
+                        </div>
                     </div>
                     <div class="title-text text-start">
                         <p>인원수 : {{ c.people }}</p>
@@ -46,13 +67,11 @@
                     </div>
                     <div class="title-text text-start">
                         <p>작성자: {{ c.userid }}</p>
-                        <input type="hidden" id="userid" value="dangdang">
                     </div>
-                    <div class="badge-container">
-                        <div class="badge-row d-flex justify-content-start">
-                            <h3><span class="badge text-bg-secondary bg-success d-flex justify-content-start mx-1">{{ c.sportname }}</span></h3>
-                            <h3><span class="badge text-bg-secondary bg-warning d-flex justify-content-start">{{ c.regionname }}</span></h3>
-                        </div>
+                    <div class="title-text text-end">
+                        <!--            로그인한 아이디가 작성자와 다를 경우 처리하기-->
+                        <button type="button" class="btn btn-primary" id="applybtn">신청하기</button>
+                        <input type="hidden" id="clubno" value="{{ clubno }}">
                     </div>
                 </td>
             </tr>
@@ -64,11 +83,24 @@
             {% endfor %}
             </tbody>
         </table>
-        <div class="botton-row d-flex justify-content-between">
-            <button type="button" class="btn btn-secondary" id="prebtn">목록으로</button>
-<!--            로그인한 아이디가 작성자와 다를 경우 처리하기-->
-            <button type="button" class="btn btn-primary" id="applybtn">신청하기</button>
-            <input type="hidden" id="clubno" value="{{ clubno }}">
+
+        <!-- 댓글창 -->
+        <div class="form-container">
+            <form name="replyfrm" id="replyfrm">
+                <div class="row mb-3 align-items-center">
+                    <div class="col-md-3">
+                        <label for="username" class="form-label">작성자</label>
+                        <input type="text" class="form-control" id="userid" name="userid" value="dangdang" style="border:none" readonly>
+                    </div>
+                    <div class="col-md-7">
+                        <label for="comment" class="form-label">댓글 내용</label>
+                        <textarea class="form-control" id="reply" name="reply" rows="1" required></textarea>
+                    </div>
+                    <div class="col-md-2 text-start">
+                        <button type="submit" class="btn btn-primary mt-4 replybtn">제출</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </main>
 </div>

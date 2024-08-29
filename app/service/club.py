@@ -5,7 +5,7 @@ from fastapi import Form, HTTPException
 from sqlalchemy import insert, select, func, update
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.model.club import Club, ClubAttach, Apply
+from app.model.club import Club, ClubAttach, Apply, Reply
 from app.model.regions import Regions
 from app.model.sports import Sports
 from app.schema.club.club import NewClub
@@ -176,5 +176,22 @@ class ClubService:
             return result
         except SQLAlchemyError as ex:
             print(f'▶▶▶ insert_apply 에서 오류 발생: {str(ex)}')
+            db.rollback()
+
+    @staticmethod
+    def insert_reply(db, reply):
+        try:
+             # rpno 부모 번호 임시 생성
+            stmt = select(func.coalesce(func.max(Reply.rno), 0) + 1)
+            next_rno = db.execute(stmt).scalar_one()
+
+            stmt = insert(Reply).values(userid=reply.userid,
+                                         reply=reply.reply, clubno=reply.clubno, rpno=next_rno)
+            result = db.execute(stmt)
+
+            db.commit()
+            return result
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ insert_reply에서 오류 발생 : {str(ex)}')
             db.rollback()
 

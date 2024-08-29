@@ -20,6 +20,7 @@ class Club(Base):
     sigunguno: Mapped[int] = mapped_column(ForeignKey('regions.sigunguno'))
     userid: Mapped[str]
     attachs = relationship('ClubAttach', back_populates='club')
+    replys = relationship('Reply', back_populates='club')
 
 class ClubAttach(Base):
     __tablename__ = 'clubattach'
@@ -40,4 +41,14 @@ class Apply(Base):
     userid: Mapped[str] = mapped_column(ForeignKey('users.userid'))
     clubno: Mapped[int] = mapped_column(ForeignKey('club.clubno'))
 
+class Reply(Base):
+    __tablename__ = 'reply'
+
+    rno: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
+    reply: Mapped[str] = mapped_column(index=True)
+    regdate: Mapped[datetime] = mapped_column(default=datetime.now)
+    userid: Mapped[str] = mapped_column(ForeignKey('users.userid'), index=True)
+    clubno: Mapped[int] = mapped_column(ForeignKey('club.clubno'))
+    rpno: Mapped[int] = mapped_column(ForeignKey('reply.rno'))
+    club = relationship('Club', back_populates='replys')
 

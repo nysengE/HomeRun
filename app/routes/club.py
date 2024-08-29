@@ -7,7 +7,7 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from app.dbfactory import get_db
-from app.schema.club.club import NewClub
+from app.schema.club.club import NewClub, NewReply
 from app.service.club import get_club_data, process_upload, ClubService
 
 club_router = APIRouter()
@@ -64,6 +64,14 @@ async def apply(req: Request, clubno: int, userid:str, db: Session = Depends(get
             return RedirectResponse('/club', 303)
     except Exception as ex:
         print(f'▷▷▷ apply 오류발생 {str(ex)}')
+
+@club_router.post('/reply', response_class=HTMLResponse)
+async def reply(req: Request, reply: NewReply, db: Session = Depends(get_db)):
+    try:
+        if ClubService.insert_reply(db, reply):
+            return RedirectResponse(f'/club/view/{reply.clubno}',303)
+    except Exception as ex:
+        print(f'▷▷▷ reply 오류 발생 : {str(ex)}')
 
 
 

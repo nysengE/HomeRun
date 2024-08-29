@@ -43,5 +43,37 @@ applybtn.addEventListener('click', async (e) => {
     //     console.error('Error:', error);
     // }
 
+});
 
-})
+// 댓글창
+let replyfrm = document.replyfrm;
+
+replyfrm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(replyfrm);
+
+    let jsondata = {};
+    formData.forEach((val, key) => {
+        jsondata[key] = val;
+    });
+
+    formData['userid'] = userid;
+
+    // formData.forEach((val, key) => {
+    //     console.log(key, val);
+    // })
+
+    fetch('/club/reply', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsondata),
+        redirect: 'follow'
+    }).then((res) => {
+        if (res.redirected) location.href = res.url;
+    });
+});
+
