@@ -4,12 +4,11 @@ from datetime import datetime
 from fastapi import Form, HTTPException
 from sqlalchemy import insert, select, func, update
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import joinedload
 
-from app.model.club import Club, ClubAttach
+from app.model.club import Club, ClubAttach, Apply
 from app.model.regions import Regions
 from app.model.sports import Sports
-from app.schema.club import NewClub
+from app.schema.club.club import NewClub
 
 UPLOAD_PATH = 'C:/Java/nginx-1.26.2/nginx-1.26.2/html/homerun/img'
 
@@ -28,6 +27,7 @@ async def get_club_data(title: str = Form(...),
                        userid=userid)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=f"get_club_data 오류: {e}")
+
 
 async def process_upload(files):
     # attachs = []
@@ -164,5 +164,17 @@ class ClubService:
 
         except SQLAlchemyError as ex:
             print(f'▶▶▶ select_sports 오류 발생: {str(ex)}')
+            db.rollback()
+
+
+    @staticmethod
+    def insert_apply(clubno, userid, db):
+        try:
+            stmt = insert(Apply).values(clubno=clubno, userid=userid)
+            result = db.execute(stmt)
+            db.commit()
+            return result
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ insert_apply 에서 오류 발생: {str(ex)}')
             db.rollback()
 

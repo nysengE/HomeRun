@@ -30,3 +30,14 @@ class ClubAttach(Base):
     fsize: Mapped[int] = mapped_column(default=0)
     regdate: Mapped[datetime] = mapped_column(default=datetime.now)
     club = relationship('Club', back_populates='attachs')
+
+class Apply(Base):
+    __tablename__ = 'apply'
+
+    ano: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
+    regdate: Mapped[datetime] = mapped_column(default=datetime.now, nullable=True)
+    status: Mapped[str] = mapped_column(default='대기중', nullable=True)
+    userid: Mapped[str] = mapped_column(ForeignKey('users.userid'))
+    clubno: Mapped[int] = mapped_column(ForeignKey('club.clubno'))
+
+

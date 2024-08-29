@@ -44,6 +44,10 @@
                     <div class="title-text text-start">
                         <p>등록일: {{ c.registdate }}</p>
                     </div>
+                    <div class="title-text text-start">
+                        <p>작성자: {{ c.userid }}</p>
+                        <input type="hidden" id="userid" value="dangdang">
+                    </div>
                     <div class="badge-container">
                         <div class="badge-row d-flex justify-content-start">
                             <h3><span class="badge text-bg-secondary bg-success d-flex justify-content-start mx-1">{{ c.sportname }}</span></h3>
@@ -53,7 +57,7 @@
                 </td>
             </tr>
             <tr>
-                <td><div class="content-text p-3">
+                <td colspan="2"><div class="content-text p-3">
                     <p>{{ c.contents }}</p>
                 </div></td>
             </tr>
@@ -64,7 +68,7 @@
             <button type="button" class="btn btn-secondary" id="prebtn">목록으로</button>
 <!--            로그인한 아이디가 작성자와 다를 경우 처리하기-->
             <button type="button" class="btn btn-primary" id="applybtn">신청하기</button>
-            <input type="hidden" value="{{ clubno }}">
+            <input type="hidden" id="clubno" value="{{ clubno }}">
         </div>
     </main>
 </div>

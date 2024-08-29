@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, File, UploadFile
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
@@ -9,7 +7,7 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from app.dbfactory import get_db
-from app.schema.club import NewClub
+from app.schema.club.club import NewClub
 from app.service.club import get_club_data, process_upload, ClubService
 
 club_router = APIRouter()
@@ -39,7 +37,6 @@ async def addok(req: Request, club: NewClub = Depends(get_club_data),
                 files: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
         # print('hello')
-        print(club)
         attachs = await process_upload(files)
         # print(attachs)
         if ClubService.insert_club(club, attachs, db):
@@ -60,7 +57,14 @@ async def view(req: Request, clubno: int, db: Session = Depends(get_db)):
         print(f'▷▷▷ view 오류발생 {str(ex)}')
 
 
-    # return templates.TemplateResponse('club/view.html', {'request': req})
+@club_router.get('/apply/{clubno}/{userid}', response_class=HTMLResponse)
+async def apply(req: Request, clubno: int, userid:str, db: Session = Depends(get_db)):
+    try:
+        if ClubService.insert_apply(clubno, userid, db):
+            return RedirectResponse('/club', 303)
+    except Exception as ex:
+        print(f'▷▷▷ apply 오류발생 {str(ex)}')
+
 
 
 
