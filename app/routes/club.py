@@ -55,12 +55,12 @@ async def view(req: Request, clubno: int, db: Session = Depends(get_db)):
         club = ClubService.selectone_club(clubno, db)
 
         return templates.TemplateResponse('club/view.html',
-                                          {'request': req, 'club': club})
+                                          {'request': req, 'club': club, 'clubno': clubno})
     except Exception as ex:
         print(f'▷▷▷ view 오류발생 {str(ex)}')
 
 
-    return templates.TemplateResponse('club/view.html', {'request': req})
+    # return templates.TemplateResponse('club/view.html', {'request': req})
 
 
 

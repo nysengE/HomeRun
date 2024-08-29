@@ -7,7 +7,7 @@
 {% block style %}
 <style>
     main {
-        padding: 100px;
+        padding: 15px;
     }
 
     img {
@@ -22,30 +22,52 @@
 {% endblock %}
 
 {% block main %}
-<main>
-    <table class="table">
-        <tbody>
-        {{ club.title }}
-        <tr>
-            <td class="align-top imgtd" style="width: 120px;">
-                <img src='http://127.0.0.1/homerun/img/{{ club.fname }}' alt="이미지" class="table-img">
-            </td>
-            <td>
-                <div class="d-flex flex-column">
-                    <div class="title-text">
-                        <h4>제목 텍스트</h4>
+<div class="d-flex justify-content-center">
+    <main style="width: 80%">
+        <table class="table border-top border-bottom">
+            <tbody>
+            {% for c in club %}
+            <tr>
+                <td class="align-top imgtd" style="width: 360px;">
+                    <img src='http://127.0.0.1/homerun/img/{{ c.fname }}' alt="이미지" class="table-img" style="width: 100%;">
+                </td>
+                <td style="width: 400px;">
+                    <div class="title-text text-start mb-5 d-flex align-items-center">
+                        <h2><b>{{ c.title }}</b></h2>
                     </div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td><div class="content-text">
-                <p>여기에 내용 텍스트를 추가합니다. 내용은 여러 줄로 작성할 수 있으며, 필요에 따라 스타일을 조정할 수 있습니다.</p>
-            </div></td>
-        </tr>
-        </tbody>
-    </table>
-</main>
+                    <div class="title-text text-start">
+                        <p>인원수 : {{ c.people }}</p>
+                    </div>
+                    <div class="title-text text-start">
+                        <p>조회수 : {{ c.views }}</p>
+                    </div>
+                    <div class="title-text text-start">
+                        <p>등록일: {{ c.registdate }}</p>
+                    </div>
+                    <div class="badge-container">
+                        <div class="badge-row d-flex justify-content-start">
+                            <h3><span class="badge text-bg-secondary bg-success d-flex justify-content-start mx-1">{{ c.sportname }}</span></h3>
+                            <h3><span class="badge text-bg-secondary bg-warning d-flex justify-content-start">{{ c.regionname }}</span></h3>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><div class="content-text p-3">
+                    <p>{{ c.contents }}</p>
+                </div></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="botton-row d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" id="prebtn">목록으로</button>
+<!--            로그인한 아이디가 작성자와 다를 경우 처리하기-->
+            <button type="button" class="btn btn-primary" id="applybtn">신청하기</button>
+            <input type="hidden" value="{{ clubno }}">
+        </div>
+    </main>
+</div>
 {% endblock %}
 
 {% block script %}

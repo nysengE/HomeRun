@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 
 from fastapi import Form, HTTPException
-from sqlalchemy import insert, select, func
+from sqlalchemy import insert, select, func, update
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload
 
@@ -101,6 +101,11 @@ class ClubService:
     @staticmethod
     def selectone_club(clubno, db):
         try:
+            # 조회수
+            stmt = update(Club).where(Club.clubno == clubno) \
+                .values(views=Club.views + 1)
+            db.execute(stmt)
+
             stmt = select(Club.clubno,
                           Club.title,
                           Club.contents,
@@ -109,8 +114,9 @@ class ClubService:
                           Club.modifydate,
                           func.strftime('%Y-%m-%d', Club.registdate).label('registdate'),
                           Club.modifydate,
+                          Club.views,
                           Club.userid,
-                          ClubAttach.fname,
+                          ClubAttach.fname.label('fname'),
                           Sports.name.label('sportname'),
                           Regions.name.label('regionname')
                           ).select_from(Club) \
@@ -119,7 +125,20 @@ class ClubService:
                 .join(Regions, Club.sigunguno == Regions.sigunguno) \
                 .where(Club.clubno == clubno)
 
-            return db.execute(stmt).scalars().first()
+
+            # stmt = select(Club).options(joinedload(Club.attachs))\
+            #         .where(Club.clubno == clubno)
+
+            # stmt = (select(Club, ClubAttach, Sports, Regions)
+            #         .join(ClubAttach, Club.clubno == ClubAttach.clubno)
+            #         .join(Sports, Club.sportsno == Sports.sportsno)
+            #         .join(Regions, Club.sigunguno == Regions.sigunguno)
+            #         .where(Club.clubno == clubno))
+
+            result = db.execute(stmt).fetchall()
+
+            db.commit()
+            return result
 
         except SQLAlchemyError as ex:
             print(f'▶▶▶ selectone_club 오류 발생: {str(ex)}')

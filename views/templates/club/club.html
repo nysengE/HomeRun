@@ -11,60 +11,41 @@
 {% block main %}
 <main class="container mt-4">
     <h2>동호회 게시글</h2>
-    <!-- Debugging output -->
-    <p>Sports count: {{ sports | length }}</p>
-    <p>Regions count: {{ regions | length }}</p>
-    <p>Clublist count: {{ clublist | length }}</p>
-    {% for sp in sports %}
-        <p>{{ sp.sportsno }}</p>
-    {% endfor %}
 
     <!-- 검색 & 버튼 start -->
     <div>
-        <div class="container mt-4 py-3">
-             <div class="row align-items-center">
-                <!-- 첫 번째 드롭다운 -->
-                <div class="col-auto">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            운동명
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            {% if sports %}
-                                {% for sp in sports %}
-                                    <li><a class="dropdown-item" href="#">{{ sp.name }}</a></li>
-                                {% endfor %}
-                            {% else %}
-                                <li><a class="dropdown-item" href="#">No sports available</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
+        <div class="mt-4 py-3">
+             <div class="row align-items-center d-flex justify-content-center">
+                 <form class="d-flex align-items-center flex-wrap w-75">
+                     <div class="mb-3 me-3">
+                         <select class="form-select" id="select1" aria-label="Select Option 1">
+                             <option selected>운동종목</option>
+                             {% for sport in sports %}
+                             <option value="{{ sport[0].sportsno }}">{{ sport[0].name }}</option>
+                             {% endfor %}
+                         </select>
+                     </div>
 
-                <!-- 두 번째 드롭다운 -->
-                <div class="col-auto">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                            지역명
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                            {% for re in regions %}
-                                <li><a class="dropdown-item" href="#">{{ re.name }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
+                     <div class="mb-3 me-3">
+                         <select class="form-select" id="select2" aria-label="Select Option 2">
+                             <option selected>지역명</option>
+                             {% for region in regions %}
+                                <option value="{{ region[0].sigunguno }}">{{ region[0].name }}</option>
+                             {% endfor %}
+                         </select>
+                     </div>
 
-                <!-- 검색창 -->
-                <div class="col d-flex align-items-center">
-                    <div class="input-group me-2">
-                        <input type="text" class="form-control" placeholder="Search">
-                        <button class="btn btn-primary" type="button">Search</button>
-                    </div>
-                </div>
+                     <div class="mb-3 ml-3 flex-grow-1">
+                         <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                     </div>
+
+                     <div class="mb-3 mr-3">
+                     <button class="btn btn-primary" type="submit">Search</button>
+                     </div>
+                 </form>
 
                 <!-- 글쓰기 버튼 -->
-                <div class="col-auto">
+                <div class="col-auto align-items-center mb-3 ml-5">
                     <button class="btn btn-primary" id="addbtn">글쓰기</button>
                 </div>
             </div>
@@ -76,17 +57,18 @@
         <div class="row g-3 d-flex justify-content-start" style="width: 100%; margin: 0 auto; gap: 15px">
             {% for club in clublist %}
                 <div class="col-md-3" style="width: 300px; height: 400px;">
-                                <div class="card clubcard">
-                                    <input type="hidden" id="clubno" value="{{ club.clubno }}">
-                                    <img src="http://127.0.0.1/homerun/img/{{ club.fname }}" class="card-img-top img-fluid" alt="..." style="height: 250px;">
-                                    <div class="card-body" style="height:150px;">
-                                        <div class="inline-container text-center">
-                                            <div class="card-text float-start"><h4><span class="badge text-bg-secondary bg-success">{{ club.sportname }}</span></h4></div>
-                                            <div class="card-text float-end"><h4><span class="badge text-bg-secondary bg-warning">{{ club.regionname }}</span></h4></div>
+                    <div class="card clubcard">
+                        <input type="hidden" id="clubno" value="{{ club.clubno }}">
+                        <img src="http://127.0.0.1/homerun/img/{{ club.fname }}" class="card-img-top img-fluid" alt="..." style="height: 250px;">
+                        <div class="card-body" style="height:150px;">
+                            <div class="inline-container text-center">
+                                <div class="card-text float-start"><h4><span class="badge text-bg-secondary bg-success">{{ club.sportname }}</span></h4></div>
+                                <div class="card-text float-end"><h4><span class="badge text-bg-secondary bg-warning">{{ club.regionname }}</span></h4></div>
                             </div>
-                            <br>
-                            <div class="card-title text-center"><h3>{{ club.title }}<span class="badge text-bg-secondary"></span></h3></div>
-                        </div>
+                            <div class="inline-container text-center mt-5">
+                                <div class="card-title text-center"><h3>{{ club.title }}<span class="badge text-bg-secondary"></span></h3></div>
+                            </div>
+                    </div>
                     </div>
                 </div>
             {% endfor %}
