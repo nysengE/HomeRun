@@ -8,9 +8,9 @@ class RentalBase(BaseModel):
     people: int = Field(..., gt=0, description="대여 가능한 최대 인원수")
     price: int = Field(..., gt=0, description="대여 가격")
     zipcode: str = Field(..., max_length=10, description="우편번호")
-    businessno: int = Field(..., description="사업자 회원 번호")
     sportsno: int = Field(..., description="운동 종목 번호")
     sigunguno: int = Field(..., description="지역 번호")
+    # businessno: int = Field(..., description="사업자 회원 번호")
 
 class RentalCreate(RentalBase):
     """데이터베이스에 새로운 공간 대여 정보를 추가하기 위한 스키마"""

@@ -7,9 +7,8 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from app.dbfactory import get_db
-from app.model.rental import Rental
 from app.schema.rental import RentalCreate
-from app.service.rental import create_rental
+from app.service.rental import RentalServices
 
 rental_router = APIRouter()
 templates = Jinja2Templates(directory='views/templates')
@@ -36,7 +35,7 @@ async def add_rental(request: Request, title: str = Form(...), contents: str = F
             price=price, zipcode=zipcode, businessno=businessno,
             sportsno=sportsno, sigunguno=sigunguno
         )
-        new_rental = create_rental(db, rental_data)
+        new_rental = RentalServices.create_rental(db, rental_data)
         return RedirectResponse(url="/add", status_code=303)
     except Exception as e:
         print(f"An error occurred: {e}")

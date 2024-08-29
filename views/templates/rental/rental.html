@@ -12,7 +12,10 @@
     <main>
         <section id="filters">
             <select id="region">
-                <option>지역</option>
+                <option value="모든 지역">모든 지역</option>
+                {% for region in regions %}
+                    <option value="{{ region.name }}">{{ region.name }}</option>
+                {% endfor %}
             </select>
             <!-- 가격 범위 스크롤바 -->
             <label for="priceRange">가격:</label>
