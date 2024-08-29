@@ -14,10 +14,11 @@ class Rental(Base):
     people: Mapped[int] = mapped_column(INTEGER, default=0)
     price: Mapped[int] = mapped_column(INTEGER, default=0)
     regisdate: Mapped[datetime] = mapped_column(DATE, default=datetime.now)
-    modifydate: Mapped[datetime] = mapped_column(DATE, onupdate=datetime.now)
+    modifydate: Mapped[datetime] = mapped_column(DATE, default=datetime.now, onupdate=datetime.now)
     zipcode: Mapped[str] = mapped_column(String(10))
     sportsno: Mapped[int] = mapped_column(INTEGER, ForeignKey('sports.sportsno'))
     sigunguno: Mapped[int] = mapped_column(INTEGER, ForeignKey('regions.sigunguno'))
+    attachs = relationship('RentalAttach', back_populates='rental')  # 하나의 gallery는 하나 이상의 attach 존재 (1:n)
     # businessno: Mapped[int] = mapped_column(INTEGER, ForeignKey('business.id'))
 
 
@@ -30,3 +31,4 @@ class RentalAttach(Base):
     fname: Mapped[str] = mapped_column(VARCHAR(500), nullable=False)
     fsize: Mapped[int] = mapped_column(INTEGER, default=0)
     regdate: Mapped[datetime] = mapped_column(DATE, default=datetime.now)
+    rental = relationship('Rental', back_populates='attachs')

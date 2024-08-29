@@ -9,12 +9,11 @@
 {% endblock %}
 
 {% block main %}
-    <main style="min-width: 700px">
+    <main>
         <div class="mt-5">
             <h1 class="mb-4">공간대여 글 등록 페이지</h1>
             <form name="addfrm" enctype="multipart/form-data" method="post">
                 <table class="table table-form">
-                    <!-- 제목과 작성자를 한 행에 배치 -->
                     <tr>
                         <td class="label-cell">
                             <label for="title" class="form-label">제목</label>
@@ -31,8 +30,41 @@
                         </td>
                     </tr>
 
-                    <!-- 운동종목, 지역, 인원수를 한 행에 배치 -->
+
                     <tr>
+                        <td class="label-cell">
+                            <label for="sigunguno" class="form-label">지역</label>
+                        </td>
+                        <td class="input-cell">
+                            <select class="form-select" name="sigunguno" id="sigunguno" required>
+                                <option value="" disabled selected>지역을 선택하세요</option>
+                                <option value="1">종로구</option>
+                                <option value="2">중구</option>
+                                <option value="3">용산구</option>
+                                <option value="4">성동구</option>
+                                <option value="5">광진구</option>
+                                <option value="6">동대문구</option>
+                                <option value="7">중랑구</option>
+                                <option value="8">성북구</option>
+                                <option value="9">강북구</option>
+                                <option value="10">도봉구</option>
+                                <option value="11">노원구</option>
+                                <option value="12">은평구</option>
+                                <option value="13">서대문구</option>
+                                <option value="14">마포구</option>
+                                <option value="15">양천구</option>
+                                <option value="16">강서구</option>
+                                <option value="17">구로구</option>
+                                <option value="18">금천구</option>
+                                <option value="19">영등포구</option>
+                                <option value="20">동작구</option>
+                                <option value="21">관악구</option>
+                                <option value="22">서초구</option>
+                                <option value="23">강남구</option>
+                                <option value="24">송파구</option>
+                                <option value="25">강동구</option>
+                            </select>
+                        </td>
                         <td class="label-cell">
                             <label for="sports" class="form-label">운동 종목</label>
                         </td>
@@ -46,22 +78,30 @@
                                 <option value=5>기타</option>
                             </select>
                         </td>
+                        <td class="label-cell">
+                            <label for="price" class="form-label">가격</label>
+                        </td>
+                        <td class="input-cell">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="price" id="price" placeholder="최소 1만" required>
+                                <span class="input-group-text">원</span>
+                            </div>
+                        </td>
+
                     </tr>
                     <tr>
                         <td class="label-cell">
                             <label for="zipcode" class="form-label">우편번호</label>
                         </td>
-                        <td class="input-cell" colspan="3">
-                            <input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="우편번호를 입력하세요" required>
+                        <td class="input-cell" colspan="2">
+                            <!-- 서울의 우편번호 범위는 보통 01000부터 08999까지-->
+                            <input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="서울시 우편번호를 입력하세요" pattern="^0[1-8]\d{3}$" title="서울시의 우편번호만 입력 가능합니다." required>
                         </td>
                         <td class="label-cell">
                             <label for="people" class="form-label">인원수</label>
                         </td>
                         <td class="input-cell">
-                            <input type="number" class="form-control" name="people" id="people" placeholder="인원수를 입력하세요" min="1" required>
-                        </td>
-                        <td class="label-cell">
-                            <label for="price" class="form-control" name="pricce" id="price" placeholder="가격을 입력하세요" required></label>
+                            <input type="number" class="form-control" name="people" id="people" placeholder="최대인원수를 입력하세요" min="1" max="40" required>
                         </td>
                     </tr>
 
@@ -81,12 +121,11 @@
                             <label class="form-label">첨부파일</label>
                         </td>
                         <td class="input-cell" colspan="5">
-                            <input type="file" class="form-control mb-2" name="files" id="file1">
+                            <input type="file" class="form-control mb-2" name="files" id="file1" required>
                             <input type="file" class="form-control" name="files" id="file2">
                         </td>
                     </tr>
 
-                    <!-- 제출 버튼 -->
                     <tr>
                         <td colspan="6" class="text-center">
                             <button type="submit" class="btn btn-primary" id="addbtn">등록하기</button>
@@ -100,5 +139,9 @@
 
 {% endblock %}
 
+
 {% block script %}
+    <script src="/static/js/rental/add.js"></script>
 {% endblock %}
+
+

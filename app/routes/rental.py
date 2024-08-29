@@ -1,61 +1,50 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, Form
+from fastapi import APIRouter, Depends, HTTPException, Request, Form, UploadFile, File
+from typing import List
 from sqlalchemy.orm import Session
-from app.dbfactory import SessionLocal
-from fastapi import APIRouter
-from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from app.dbfactory import get_db
-from app.schema.rental import RentalCreate
-from app.service.rental import RentalServices
+from app.model.regions import Region
+from app.schema.rental import NewRental
+from app.service.rental import RentalService, get_rental_data, process_upload
 
 rental_router = APIRouter()
 templates = Jinja2Templates(directory='views/templates')
 
 @rental_router.get('/', response_class=HTMLResponse)
-async def rental(req: Request):
-    return templates.TemplateResponse('rental/rental.html', {'request': req})
+async def rental(req: Request, db: Session = Depends(get_db)):
+    try:
+        rentals = RentalService.select_rentals(db)
+        regions = db.query(Region).all()  # 지역 정보 가져오기
+        return templates.TemplateResponse('rental/rental.html', {'request': req, 'rentals': rentals, 'regions': regions})
+    except Exception as ex:
+        print(f'▷▷▷ rental 오류 발생 : {str(ex)}')
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 # 렌탈 항목 추가 폼 페이지
-@rental_router.get("/add")
+@rental_router.get("/add", response_class=HTMLResponse)
 async def read_add(request: Request):
     return templates.TemplateResponse("rental/add.html", {"request": request})
 
 # 렌탈 항목 추가 처리
-@rental_router.post("/add")
-async def add_rental(request: Request, title: str = Form(...), contents: str = Form(...),
-                     people: int = Form(...), price: int = Form(...), zipcode: str = Form(...),
-                     businessno: int = Form(...), sportsno: int = Form(...), sigunguno: int = Form(...),
-                     db: Session = Depends(get_db)
-                     ):
+@rental_router.post("/add", response_class=HTMLResponse)
+async def add_rental(request: Request, rental: NewRental = Depends(get_rental_data),
+                     files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
     try:
-        rental_data = RentalCreate(
-            title=title, contents=contents, people=people,
-            price=price, zipcode=zipcode, businessno=businessno,
-            sportsno=sportsno, sigunguno=sigunguno
-        )
-        new_rental = RentalServices.create_rental(db, rental_data)
-        return RedirectResponse(url="/add", status_code=303)
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return {"error": str(e)}
+        attachs = await process_upload(files)
+        if RentalService.insert_rental(rental, attachs, db):
+            return RedirectResponse('/rental/', status_code=303)
+    except Exception as ex:
+        print(f'▷▷▷ add_rental 오류 발생 : {str(ex)}')
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
-
-# 상세 페이지 라우터 추가
-@rental_router.get('/details/mj_college', response_class=HTMLResponse)
-async def mj_college_detail(req: Request):
-    return templates.TemplateResponse('rental/details/mj_college.html', {'request': req})
-
-@rental_router.get('/details/foreign_university', response_class=HTMLResponse)
-async def hufs_detail(req: Request):
-    return templates.TemplateResponse('rental/details/foreign_university.html', {'request': req})
-
-@rental_router.get('/details/hansung_university', response_class=HTMLResponse)
-async def hansung_university_detail(req: Request):
-    return templates.TemplateResponse('rental/details/hansung_university.html', {'request': req})
-
-@rental_router.get('/details/urban_basketball', response_class=HTMLResponse)
-async def urban_basketball_detail(req: Request):
-    return templates.TemplateResponse('rental/details/urban_basketball.html', {'request': req})
-
+# 렌탈 항목 상세 보기
+@rental_router.get('/details/{spaceno}', response_class=HTMLResponse)
+async def detail_rental(req: Request, spaceno: int, db: Session = Depends(get_db)):
+    try:
+        rent = RentalService.select_one_rental(spaceno, db)
+        return templates.TemplateResponse('rental/details.html', {'request': req, 'rent': rent})
+    except Exception as ex:
+        print(f'▷▷▷ detail_rental 오류 발생 : {str(ex)}')
+        raise HTTPException(status_code=500, detail="Internal Server Error")

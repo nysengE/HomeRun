@@ -14,7 +14,7 @@
             <select id="region">
                 <option value="모든 지역">모든 지역</option>
                 {% for region in regions %}
-                    <option value="{{ region.name }}">{{ region.name }}</option>
+                    <option value="{{ region.sigunguno }}">{{ region.name }}</option>
                 {% endfor %}
             </select>
             <!-- 가격 범위 스크롤바 -->
@@ -31,42 +31,18 @@
 
 
         <section id="items">
-            <div class="item" id="mjCollege" data-region="서대문구">
-                <a href="#">
-                    <div class="slider">
-                        <img class="slide" alt="Item 1 Image 1" >
-                        <img class="slide" alt="Item 1 Image 2" >
-                    </div>
-                    <p>명지전문대학</p>
-                </a>
-            </div>
-            <div class="item" id="foreignUniversity" data-region="동대문구">
-                <a href="#">
-                    <div class="slider">
-                        <img class="slide" alt="Item 2 Image 1" >
-                        <img class="slide" alt="Item 2 Image 2" >
-                    </div>
-                    <p>한국외대</p>
-                </a>
-            </div>
-            <div class="item" id="hansungUniversity" data-region="성북구">
-                <a href="#">
-                    <div class="slider">
-                        <img class="slide" alt="Item 3 Image 1" >
-                        <img class="slide" alt="Item 3 Image 2" >
-                    </div>
-                    <p>한성대</p>
-                </a>
-            </div>
-            <div class="item" id="urbanBasketball" data-region="동대문구">
-                <a href="#">
-                    <div class="slider">
-                        <img class="slide" alt="Item 4 Image 1" >
-                        <img class="slide" alt="Item 4 Image 2" >
-                    </div>
-                    <p>어반바스켓볼</p>
-                </a>
-            </div>
+            {% for rent in rentals %}
+                <div class="item" data-region="{{ rent.sigunguno }}">
+                    <a href="/rental/details/{{ rent.spaceno }}">
+                        <div class="slider">
+                            {% for image in rent.attachs %}
+                                <img class="slide" src="/cdn/img/{{ image.fname }}" alt="Item Image">
+                            {% endfor %}
+                        </div>
+                        <p>{{ rent.title }}</p>
+                    </a>
+                </div>
+            {% endfor %}
         </section>
 
     </main>
@@ -76,7 +52,5 @@
 
 
 {% block script %}
-    <script src="/static/js/rental/urls.js"></script>
-    <script src="/static/js/rental/images.js"></script>
     <script src="/static/js/rental/rental.js"></script>
 {% endblock %}
