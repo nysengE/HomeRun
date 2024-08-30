@@ -4,6 +4,7 @@ from datetime import datetime
 from fastapi import Form, HTTPException
 from sqlalchemy import insert, select, func, update
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
 
 from app.model.club import Club, ClubAttach, Apply, Reply
 from app.model.regions import Regions
@@ -106,6 +107,12 @@ class ClubService:
                 .values(views=Club.views + 1)
             db.execute(stmt)
 
+# select c.clubno, c.title, c.registdate, ca.fname, s.name, r.name from club c
+# join clubattach ca on c.clubno = ca.clubno
+# join sports s on c.sportsno = s.sportsno
+# join regions r on c.sigunguno = r.sigunguno
+# order by c.registdate desc;
+
             stmt = select(Club.clubno,
                           Club.title,
                           Club.contents,
@@ -142,6 +149,21 @@ class ClubService:
 
         except SQLAlchemyError as ex:
             print(f'▶▶▶ selectone_club 오류 발생: {str(ex)}')
+            db.rollback()
+
+    @staticmethod
+    def select_reply(clubno, db):
+        try:
+            stmt = select(Reply).options(joinedload(Reply.club))\
+                    .where(Reply.clubno == clubno)\
+                    .order_by(Reply.rpno)
+
+            result = db.execute(stmt).fetchall()
+
+            return result
+
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ select_reply 오류 발생: {str(ex)}')
             db.rollback()
 
     @staticmethod
@@ -194,4 +216,19 @@ class ClubService:
         except SQLAlchemyError as ex:
             print(f'▶▶▶ insert_reply에서 오류 발생 : {str(ex)}')
             db.rollback()
+
+    @staticmethod
+    def insert_rreply(db, reply):
+        try:
+            stmt = insert(Reply).values(userid=reply.userid,
+                                        reply=reply.reply, clubno=reply.clubno, rpno=reply.rpno)
+            result = db.execute(stmt)
+
+            db.commit()
+            return result
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ insert_reply에서 오류 발생 : {str(ex)}')
+            db.rollback()
+
+
 

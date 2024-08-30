@@ -58,11 +58,9 @@ replyfrm?.addEventListener('submit', (e) => {
         jsondata[key] = val;
     });
 
-    formData['userid'] = userid;
-
     // formData.forEach((val, key) => {
     //     console.log(key, val);
-    // })
+    // });
 
     fetch('/club/reply', {
         method: 'POST',
@@ -76,4 +74,41 @@ replyfrm?.addEventListener('submit', (e) => {
         if (res.redirected) location.href = res.url;
     });
 });
+
+// '추가'버튼 누르면 hidden 댓글번호(rpno) value 값 넣기
+const addrreply = (rno) => {
+    let rpno = document.querySelector('#rpno');
+    rpno.value = rno;
+};
+
+// 대댓글창 등록
+const rreplyfrm = document.rreplyfrm;
+
+rreplyfrm.addEventListener('submit', (e, rpno) => {
+    e.preventDefault();
+
+    const formData = new FormData(rreplyfrm);
+
+    let jsondata = {};
+    formData.forEach((val, key) => {
+        jsondata[key] = val;
+    });
+
+    // formData.forEach((val, key) => {
+    //     console.log(key, val);
+    // });
+
+    fetch('/club/rreply', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsondata),
+        redirect: 'follow'
+    }).then((res) => {
+        if (res.redirected) location.href = res.url;
+    });
+});
+
 

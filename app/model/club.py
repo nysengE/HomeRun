@@ -46,7 +46,7 @@ class Reply(Base):
 
     rno: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
     reply: Mapped[str] = mapped_column(index=True)
-    regdate: Mapped[datetime] = mapped_column(default=datetime.now)
+    regdate: Mapped[datetime] = mapped_column(default=lambda: datetime.now().replace(microsecond=0))
     userid: Mapped[str] = mapped_column(ForeignKey('users.userid'), index=True)
     clubno: Mapped[int] = mapped_column(ForeignKey('club.clubno'))
     rpno: Mapped[int] = mapped_column(ForeignKey('reply.rno'))

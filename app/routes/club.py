@@ -50,9 +50,10 @@ async def addok(req: Request, club: NewClub = Depends(get_club_data),
 async def view(req: Request, clubno: int, db: Session = Depends(get_db)):
     try:
         club = ClubService.selectone_club(clubno, db)
+        reply = ClubService.select_reply(clubno, db)
 
         return templates.TemplateResponse('club/view.html',
-                                          {'request': req, 'club': club, 'clubno': clubno})
+                                          {'request': req, 'club': club, 'clubno': clubno, 'reply': reply})
     except Exception as ex:
         print(f'▷▷▷ view 오류발생 {str(ex)}')
 
@@ -69,6 +70,14 @@ async def apply(req: Request, clubno: int, userid:str, db: Session = Depends(get
 async def reply(req: Request, reply: NewReply, db: Session = Depends(get_db)):
     try:
         if ClubService.insert_reply(db, reply):
+            return RedirectResponse(f'/club/view/{reply.clubno}',303)
+    except Exception as ex:
+        print(f'▷▷▷ reply 오류 발생 : {str(ex)}')
+
+@club_router.post('/rreply', response_class=HTMLResponse)
+async def reply(req: Request, reply: NewReply, db: Session = Depends(get_db)):
+    try:
+        if ClubService.insert_rreply(db, reply):
             return RedirectResponse(f'/club/view/{reply.clubno}',303)
     except Exception as ex:
         print(f'▷▷▷ reply 오류 발생 : {str(ex)}')

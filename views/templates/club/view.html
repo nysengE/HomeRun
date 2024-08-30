@@ -84,24 +84,84 @@
             </tbody>
         </table>
 
-        <!-- 댓글창 -->
-        <div class="form-container">
+        <!-- 댓글 목록 -->
+        <div class="list-group">
+            {% for re in reply %}
+                {% if re[0].rno == re[0].rpno %}
+                <div style="background: mistyrose">
+                {% else %}
+                <div style="background: lightblue">
+                {% endif %}
+                    <div class="comment-container d-flex justify-content-between align-items-center">
+                        <div class="comment-content d-flex flex-grow-1 gap-3 py-3">
+                            <h5 class="w-20 px-2">{{ re[0].userid }}</h5>
+                            <p class="45 px-2">{{ re[0].reply }}</p>
+                        </div>
+                        <div class="d-flex justify-content-end w-15"><p class="px-2">{{ re[0].regdate }}</p></div>
+                    <!-- 대댓글 Modal 트리거 버튼 -->
+                        {% if re[0].rno == re[0].rpno %}
+                        <button type="submit" id="rreplyadd" class="btn btn-danger mx-3 w-20" data-bs-toggle="modal" data-bs-target="#replyModal" onclick="addrreply('{{ re[0].rno }}')">
+                            추가
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- 댓글등록창 -->
+        <div class="form-container my-4">
             <form name="replyfrm" id="replyfrm">
                 <div class="row mb-3 align-items-center">
                     <div class="col-md-3">
-                        <label for="username" class="form-label">작성자</label>
+                        <label for="userid" class="form-label">작성자</label>
                         <input type="text" class="form-control" id="userid" name="userid" value="dangdang" style="border:none" readonly>
                     </div>
                     <div class="col-md-7">
-                        <label for="comment" class="form-label">댓글 내용</label>
+                        <label for="reply" class="form-label">댓글 내용</label>
                         <textarea class="form-control" id="reply" name="reply" rows="1" required></textarea>
                     </div>
                     <div class="col-md-2 text-start">
-                        <button type="submit" class="btn btn-primary mt-4 replybtn">제출</button>
+                        <button type="submit" class="btn btn-primary mt-4 replybtn">등록</button>
                     </div>
+                    <!-- hidden -->
+                    <input type="hidden" name="clubno" value="{{ clubno }}">
                 </div>
             </form>
         </div>
+
+        <!-- 대댓글 모달창 -->
+        <!-- 모달 구조 -->
+        <div class="modal fade" id="replyModal" tabindex="-1" aria-labelledby="replyModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="replyModalLabel">댓글 작성</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="rreplyfrm" name="rreplyfrm">
+                            <div class="mb-3">
+                                <label for="ruserid" class="form-label">작성자</label>
+                                <input type="text" class="form-control" id="ruserid" name="userid" value="dangdang" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="rreply" class="form-label">댓글 내용</label>
+                                <textarea class="form-control" id="rreply" name="reply" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3 d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                                <button type="submit" class="btn btn-primary" form="rreplyfrm" id="newrrpbtn">등록</button>
+                            </div>
+                            <!-- hidden -->
+                            <input type="hidden" name="clubno" value="{{ clubno }}">
+                            <input type="hidden" name="rpno" id="rpno" value="">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 </div>
 {% endblock %}
