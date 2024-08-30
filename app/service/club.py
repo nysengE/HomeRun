@@ -71,14 +71,22 @@ class ClubService:
             print(f'▶▶▶ insert_club 에서 오류 발생: {str(ex)}')
             db.rollback()
 
+
+
     @staticmethod
-    def select_club(db):
+    def select_club(db, cpg):
     # select c.clubno, c.title, c.registdate, ca.fname, s.name, r.name from club c
     # join clubattach ca on c.clubno = ca.clubno
     # join sports s on c.sportsno = s.sportsno
     # join regions r on c.sigunguno = r.sigunguno
     # order by c.registdate desc;
         try:
+            # 페이지
+            stdno = (cpg - 1) * 8
+
+            # 총 게시글 수
+            cnt = db.execute(func.count(Club.clubno)).scalar()
+
             stmt3 = select(Club.clubno,
                           Club.title,
                           func.strftime('%Y-%m-%d', Club.registdate).label('registdate'),
@@ -88,11 +96,12 @@ class ClubService:
                     ).select_from(Club)\
                     .join(ClubAttach, Club.clubno == ClubAttach.clubno)\
                     .join(Sports, Club.sportsno == Sports.sportsno)\
-                    .join(Regions, Club.sigunguno == Regions.sigunguno)\
-                    .order_by(Club.registdate.desc())
+                    .join(Regions, Club.sigunguno == Regions.sigunguno) \
+                    .order_by(Club.registdate.desc()) \
+                    .offset(stdno).limit(8)
             result = db.execute(stmt3).fetchall()
 
-            return result
+            return result, cnt
 
         except SQLAlchemyError as ex:
             print(f'▶▶▶ service select_club에서 오류 발생: {str(ex)}')

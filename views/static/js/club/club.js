@@ -1,4 +1,3 @@
-const addbtn = document.querySelector('#addbtn');
 
 // // dropdown 데이터 넣기
 // const sports = document.querySelector('.sports');
@@ -11,6 +10,32 @@ const addbtn = document.querySelector('#addbtn');
 // li.dataset.value = 1;
 //
 // sports.append(li);
+
+// 검색하기
+let findbtn = document.querySelector('#findbtn');
+
+findbtn.addEventListener('click', (e) => {
+   e.preventDefault();
+
+    let sports = parseInt(document.querySelector('#sports').value);
+    let regions = parseInt(document.querySelector('#regions').value);
+    let title = (document.querySelector('#findtext').value) || '#';
+
+
+    // console.log(
+    //     `sports: ${sports},
+    //     regions: ${typeof (regions)},
+    //     findtext: ${findtext}`
+    // );
+
+    let params = `/${sports}/${regions}/${title}/1`;
+    let findurl = '/club'+params;
+
+    location.href = findurl;
+
+});
+
+
 
 
 
@@ -29,6 +54,9 @@ clubcard.forEach((card) => {
         // console.log('Club Number:', clubno);
     })
 })
+
+// 글 등록하기
+const addbtn = document.querySelector('#addbtn');
 
 addbtn.addEventListener('click', () => {
     window.location.href = '/club/add';

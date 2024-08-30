@@ -1,3 +1,5 @@
+from math import ceil
+
 from fastapi import APIRouter, File, UploadFile
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
@@ -13,16 +15,45 @@ from app.service.club import get_club_data, process_upload, ClubService
 club_router = APIRouter()
 templates = Jinja2Templates(directory='views/templates')
 
-@club_router.get('/', response_class=HTMLResponse)
-async def club(req: Request, db: Session = Depends(get_db)):
+@club_router.get('/{cpg}', response_class=HTMLResponse)
+async def club(req: Request, cpg: int, db: Session = Depends(get_db)):
     try:
-        clublist = ClubService.select_club(db)
+        # 페이지
+        stpgb = int((cpg - 1) / 5) * 5 + 1
+        clublist, cnt = ClubService.select_club(db, cpg)
         sports = ClubService.select_sports(db)
         regions = ClubService.select_regions(db)
 
+        # 총 페이지 수
+        allpage = ceil(cnt / 8)
+
         return templates.TemplateResponse('club/club.html',
                                           {'request': req, 'clublist': clublist,
-                                           'sports': sports, 'regions': regions})
+                                           'sports': sports, 'regions': regions,
+                                           'cpg': cpg, 'allpage': allpage, 'stpgb': stpgb})
+
+    except Exception as ex:
+        print(f'▷▷▷ /club router 오류 발생 : {str(ex)}')
+
+# 검색 club list
+@club_router.get('/{sports}/{regions}/{title}/{cpg}', response_class=HTMLResponse)
+async def findclub(req: Request, sports: int, regions: int, title: str, cpg: int, db: Session = Depends(get_db)):
+    try:
+        # 페이지
+        stpgb = int((cpg - 1) / 5) * 5 + 1
+
+        clublist, cnt = ClubService.find_select_club(db, cpg)
+        sports = ClubService.select_sports(db)
+        regions = ClubService.select_regions(db)
+
+        # 총 페이지 수
+        allpage = ceil(cnt / 8)
+
+        return templates.TemplateResponse('club/club.html',
+                                          {'request': req, 'clublist': clublist,
+                                           'sports': sports, 'regions': regions,
+                                           'cpg': cpg, 'allpage': allpage, 'stpgb': stpgb})
+
     except Exception as ex:
         print(f'▷▷▷ /club router 오류 발생 : {str(ex)}')
 
