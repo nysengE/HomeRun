@@ -31,11 +31,12 @@ document.getElementById('price').addEventListener('blur', function (e) {
         e.target.value = '10,000'; // 최소값 1만으로 설정
     }
 });
+
 document.querySelector('form[name="addfrm"]').addEventListener('submit', function (e) {
     const file1 = document.getElementById('file1');
-    const zipcode = document.getElementById('zipcode').value;
-    const priceInput = document.getElementById('price'); // priceInput 변수를 선언
-
+    const priceInput = document.getElementById('price');
+    const districtInput = document.getElementById('district'); // district 입력 필드 추가
+    const districtValue = districtInput.value.trim(); // 공백 제거 후 값 가져오기
 
     // 가격 필드에서 쉼표 제거
     priceInput.value = priceInput.value.replace(/,/g, '');
@@ -48,10 +49,12 @@ document.querySelector('form[name="addfrm"]').addEventListener('submit', functio
         return;
     }
 
-    // 서울시 우편번호 유효성 검사 (01000 - 08999)
-    if (!/^0[1-8]\d{3}$/.test(zipcode)) {
+    // 도로명 주소가 "서울" 또는 "서울특별시"로 시작하는지 확인
+    const seoulPattern = /^서울(특별시)?\s?.+/;
+    if (!seoulPattern.test(districtValue)) {
         e.preventDefault(); // 폼 제출 방지
-        alert('유효한 서울시 우편번호를 입력하세요.');
-        document.getElementById('zipcode').focus();
+        alert('도로명 주소는 "서울" 또는 "서울특별시"로 시작해야 합니다.');
+        districtInput.focus();
+        return;
     }
 });

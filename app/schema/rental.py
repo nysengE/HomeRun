@@ -5,9 +5,11 @@ class NewRental(BaseModel):
     contents: str
     people: int
     price: int
-    zipcode: str
+    district: str
     sportsno: int
     sigunguno: int
 
     class Config:
         from_attributes = True
+
+

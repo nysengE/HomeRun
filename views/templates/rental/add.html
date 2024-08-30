@@ -91,11 +91,10 @@
                     </tr>
                     <tr>
                         <td class="label-cell">
-                            <label for="zipcode" class="form-label">우편번호</label>
+                            <label for="district" class="form-label">도로명주소</label>
                         </td>
                         <td class="input-cell" colspan="2">
-                            <!-- 서울의 우편번호 범위는 보통 01000부터 08999까지-->
-                            <input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="서울시 우편번호를 입력하세요" pattern="^0[1-8]\d{3}$" title="서울시의 우편번호만 입력 가능합니다." required>
+                            <input type="text" class="form-control" name="district" id="district" placeholder="서울시 도로명주소를 입력하세요" pattern="^서울(특별시)?\s?.*" title="서울 또는 서울특별시로 시작하는 도로명주소만 입력 가능합니다." required>
                         </td>
                         <td class="label-cell">
                             <label for="people" class="form-label">인원수</label>

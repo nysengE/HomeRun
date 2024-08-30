@@ -15,7 +15,7 @@ class Rental(Base):
     price: Mapped[int] = mapped_column(INTEGER, default=0)
     regisdate: Mapped[datetime] = mapped_column(DATE, default=datetime.now)
     modifydate: Mapped[datetime] = mapped_column(DATE, default=datetime.now, onupdate=datetime.now)
-    zipcode: Mapped[str] = mapped_column(String(10))
+    district: Mapped[str] = mapped_column(VARCHAR(300))
     sportsno: Mapped[int] = mapped_column(INTEGER, ForeignKey('sports.sportsno'))
     sigunguno: Mapped[int] = mapped_column(INTEGER, ForeignKey('regions.sigunguno'))
     attachs = relationship('RentalAttach', back_populates='rental')  # 하나의 gallery는 하나 이상의 attach 존재 (1:n)

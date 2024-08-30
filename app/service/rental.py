@@ -13,14 +13,14 @@ UPLOAD_PATH = 'C:/java/nginx-1.26.2/html/cdn/img/'
 
 def get_rental_data(title: str = Form(...), contents: str = Form(...),
                     people: int = Form(...), price: int = Form(...),
-                    zipcode: str = Form(...), sportsno: int = Form(...),
+                    district: str = Form(...), sportsno: int = Form(...),
                     sigunguno: int = Form(...)):
     return NewRental(
         title=title,
         contents=contents,
         people=people,
         price=price,
-        zipcode=zipcode,
+        district=district,
         sportsno=sportsno,
         sigunguno=sigunguno
     )
@@ -49,7 +49,7 @@ class RentalService:
                 contents=rent.contents,
                 people=rent.people,
                 price=rent.price,
-                zipcode=rent.zipcode,
+                district=rent.district,
                 sportsno=rent.sportsno,
                 sigunguno=rent.sigunguno,
                 regisdate=datetime.now()
@@ -87,7 +87,7 @@ class RentalService:
             return []  # 예외 발생 시 빈 리스트 반환
 
     @staticmethod
-    def select_one_rental(spaceno,db: Session):
+    def select_one_rental(spaceno, db: Session):
         try:
             stmt = select(Rental).options(joinedload(Rental.attachs)) \
                 .where(Rental.spaceno == spaceno)
