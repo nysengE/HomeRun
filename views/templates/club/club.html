@@ -18,7 +18,7 @@
              <div class="row align-items-center d-flex justify-content-center">
                  <form class="d-flex align-items-center flex-wrap w-75">
                      <div class="mb-3 me-3">
-                         <select class="form-select" id="select1" aria-label="Select Option 1">
+                         <select class="form-select" id="sports" aria-label="Select Option 1">
                              <option selected>운동종목</option>
                              {% for sport in sports %}
                              <option value="{{ sport[0].sportsno }}">{{ sport[0].name }}</option>
@@ -27,7 +27,7 @@
                      </div>
 
                      <div class="mb-3 me-3">
-                         <select class="form-select" id="select2" aria-label="Select Option 2">
+                         <select class="form-select" id="regions" aria-label="Select Option 2">
                              <option selected>지역명</option>
                              {% for region in regions %}
                                 <option value="{{ region[0].sigunguno }}">{{ region[0].name }}</option>
@@ -40,7 +40,7 @@
                      </div>
 
                      <div class="mb-3 mr-3">
-                     <button class="btn btn-primary" type="submit">Search</button>
+                     <button class="btn btn-primary" type="submit">검색</button>
                      </div>
                  </form>
 
