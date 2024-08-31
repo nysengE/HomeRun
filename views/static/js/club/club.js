@@ -17,9 +17,10 @@ let findbtn = document.querySelector('#findbtn');
 findbtn.addEventListener('click', (e) => {
    e.preventDefault();
 
-    let sports = parseInt(document.querySelector('#sports').value);
-    let regions = parseInt(document.querySelector('#regions').value);
-    let title = (document.querySelector('#findtext').value) || '#';
+    let sports = parseInt(document.querySelector('#sports').value) ?? 99;
+    let regions = parseInt(document.querySelector('#regions').value)  ?? 99;
+    let people = parseInt(document.querySelector('#people').value);
+    let title = document.querySelector('#findtext').value.trim() || '#';
 
 
     // console.log(
@@ -28,7 +29,10 @@ findbtn.addEventListener('click', (e) => {
     //     findtext: ${findtext}`
     // );
 
-    let params = `/${sports}/${regions}/${title}/1`;
+    // let params = `/${sports || ''}/${regions || ''}/${encodeURIComponent(title || '')}/1`;
+    // let findurl = '/club' + params;
+
+    let params = `/${sports}/${regions}/${people}/${encodeURIComponent(title)}/1`;
     let findurl = '/club'+params;
 
     location.href = findurl;
@@ -58,6 +62,7 @@ clubcard.forEach((card) => {
 // 글 등록하기
 const addbtn = document.querySelector('#addbtn');
 
-addbtn.addEventListener('click', () => {
-    window.location.href = '/club/add';
+addbtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = '/club/club/add';
 })

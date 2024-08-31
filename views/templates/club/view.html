@@ -69,9 +69,13 @@
                         <p>작성자: {{ c.userid }}</p>
                     </div>
                     <div class="title-text text-end">
+                        {% if "dangdang" != c.userid%}
+                            {% if "dangdang" != applyuid %}
                         <!--            로그인한 아이디가 작성자와 다를 경우 처리하기-->
                         <button type="button" class="btn btn-primary" id="applybtn">신청하기</button>
                         <input type="hidden" id="clubno" value="{{ clubno }}">
+                            {% endif %}
+                        {% endif %}
                     </div>
                 </td>
             </tr>

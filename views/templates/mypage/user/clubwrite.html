@@ -1,7 +1,7 @@
 {% extends 'include/base.html' %}
 
 {% block title %}
-    회원페이지 - 작성한 글목록
+    회원페이지 - 신청한 동호회내역
 {% endblock %}
 
 {% block link %}
@@ -9,16 +9,95 @@
 {% endblock %}
 
 {% block main %}
-    <main>
-    {% include 'mypage/user/userside.html' %}
+    <main class="d-flex justify-content-between">
+        <div>
+            {% include 'mypage/user/userside.html' %}
+        </div>
+        <div class="content d-flex flex-column px-3">
+            <h2 class="py-3 mt-2">작성한 동호회 글 목록</h2>
+            {% if not clublist %}
+            <p class="text-center">작성 내역이 없습니다.</p>
+            {% else %}
+                <table class="table table-bordered mt-3">
+                    <thead>
+                    <tr>
+                        <th>운동명</th>
+                        <th>제목</th>
+                        <th>등록일</th>
+                        <th>신청자</th>
+                        <th>수정</th>
+                        <th>삭제</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for club in clublist %}
+                        <tr>
+                            <td>{{ club.sportname }}</td>
+                            <td>{{ club.title }}</td>
+                            <td>{{ club.registdate }}</td>
+                            <td>
+                                <button type="button" class="btn btn-info applyusers" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+                                    신청자
+                                    <input type="hidden" id="applyclubno" value="{{ club.clubno }}">
+                                </button></td>
+                            <td>
+                                <button type="button" class="btn btn-success modify" >수정
+                                    <input type="hidden" class="clubno" value="">
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger delete" >삭제
+                                    <input type="hidden" class="clubno" value="">
+                                </button>
+                            </td>
 
-    <div class="content">
-        <h2>동호회 작성 글 목록</h2>
-
-    </div>
+                        </tr>
+                    {% endfor %}
+                    <!-- 추가적인 글 항목들 -->
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
     </main>
+
+        <!-- 모달 -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">상세보기</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>제목:</strong> <span id="modal-title"></span></p>
+                        <p><strong>작성자:</strong> <span id="modal-author"></span></p>
+                        <p><strong>작성일:</strong> <span id="modal-date"></span></p>
+                        <p><strong>내용:</strong> <span id="modal-content"></span></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 {% endblock %}
 
 {% block script %}
-{#    <script src="/static/js/mypage/userside.js"></script>#}
+    <script src="/static/js/mypage/clubwrite.js"></script>
+        <script>
+            // 모달 데이터 설정
+            document.querySelectorAll('.applyusers').forEach(button => {
+                button.addEventListener('click', function () {
+                    const modalTitle = document.getElementById('modal-title');
+                    const modalAuthor = document.getElementById('modal-author');
+                    const modalDate = document.getElementById('modal-date');
+                    const modalContent = document.getElementById('modal-content');
+
+                    modalTitle.textContent = this.getAttribute('data-title');
+                    modalAuthor.textContent = this.getAttribute('data-author');
+                    modalDate.textContent = this.getAttribute('data-date');
+                    modalContent.textContent = this.getAttribute('data-content');
+                });
+            });
+        </script>
 {% endblock %}

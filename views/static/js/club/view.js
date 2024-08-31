@@ -2,7 +2,7 @@
 const prebtn = document.querySelector('#prebtn');
 
 prebtn.addEventListener('click', () => {
-    window.location.href='/club';
+    window.location.href='/club/1';
 });
 
 // 동호회 번호 (clubno) 가져오기

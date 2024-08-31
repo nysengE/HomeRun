@@ -37,7 +37,7 @@
 .sidebar {
     width: 250px; /* 사이드바 너비 설정 */
     background-color: #f8f9fa; /* 사이드바 배경색 */
-    position: fixed; /* 사이드바를 고정 위치에 배치 */
+    position: relative; /* 사이드바를 고정 위치에 배치 */
     /*height: 1000px; !* 사이드바 높이를 화면 전체로 설정 *!*/
 }
 
@@ -50,8 +50,8 @@
 }
 
 .content {
-    margin-left: 250px; /* 사이드바 너비만큼 여백 추가 */
-    padding: 20px; /* 콘텐츠 영역의 안쪽 여백 */
+    /*margin-left: 250px; !* 사이드바 너비만큼 여백 추가 *!*/
+    /*padding: 20px; !* 콘텐츠 영역의 안쪽 여백 *!*/
     text-align: center;
 }
 

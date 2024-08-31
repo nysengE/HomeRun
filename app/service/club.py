@@ -160,6 +160,61 @@ class ClubService:
             print(f'▶▶▶ selectone_club 오류 발생: {str(ex)}')
             db.rollback()
 
+    # 검색
+    @staticmethod
+    def find_select_club(db, cpg: int, sports=99, regions=99, people=9999, title='#'):
+        try:
+            # 페이지
+            stdno = (cpg - 1) * 8
+            # 총 게시글 수
+            cntquery = select(func.count(Club.clubno))
+
+            # params 조건
+            if title != '#':
+                cntquery = cntquery.where(Club.title.like(f'%{title}%'))
+            if sports != 99:
+                cntquery = cntquery.join(Sports, Sports.sportsno == Club.sportsno).where(Sports.sportsno == sports)
+            if regions != 99:
+                cntquery = cntquery.join(Regions, Club.sigunguno == Regions.sigunguno).where(Regions.sigunguno == regions)
+            if people != 9999:
+                cntquery = cntquery.where(Club.people < people)
+
+            cnt = db.execute(cntquery).scalar()
+
+            stmt = select(Club.clubno,
+                           Club.title,
+                           func.strftime('%Y-%m-%d', Club.registdate).label('registdate'),
+                           ClubAttach.fname,
+                           Sports.name.label('sportname'),
+                           Regions.name.label('regionname')
+                           ).select_from(Club) \
+                .join(ClubAttach, Club.clubno == ClubAttach.clubno) \
+                .join(Sports, Club.sportsno == Sports.sportsno) \
+                .join(Regions, Club.sigunguno == Regions.sigunguno)
+            #     .order_by(Club.registdate.desc()) \
+            #     .offset(stdno).limit(8)
+            # result = db.execute(stmt).fetchall()
+
+            # 필터 추가
+            if title != '#':
+                stmt = stmt.where(Club.title.like(f'%{title}%'))
+            if sports != 99:
+                stmt = stmt.where(Sports.sportsno == sports)
+            if regions != 99:
+                stmt = stmt.where(Regions.sigunguno == regions)
+            if people != 9999:
+                stmt = stmt.where(Club.people < people)
+
+            stmt = stmt.order_by(Club.registdate.desc()).offset(stdno).limit(8)
+
+            result = db.execute(stmt).fetchall()
+
+            return result, cnt
+
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ service select_club에서 오류 발생: {str(ex)}')
+            db.rollback()
+
     @staticmethod
     def select_reply(clubno, db):
         try:
@@ -239,5 +294,16 @@ class ClubService:
             print(f'▶▶▶ insert_reply에서 오류 발생 : {str(ex)}')
             db.rollback()
 
+    @staticmethod
+    def select_apply_userid(clubno, db):
+        try:
+            stmt = select(Apply.userid).where(Apply.clubno == clubno)
+
+            result = db.execute(stmt).scalar()
+            return result
+
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ select_apply_userid에서 오류 발생 : {str(ex)}')
+            db.rollback()
 
 

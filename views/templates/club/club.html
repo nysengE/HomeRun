@@ -17,21 +17,31 @@
         <div class="mt-4 py-3">
              <div class="row align-items-center d-flex justify-content-center">
                  <form class="d-flex align-items-center flex-wrap w-75">
-                     <div class="mb-3 me-3">
+                     <div class="mb-2 me-2">
                          <select class="form-select" id="sports" aria-label="Select Option 1">
-                             <option value=0 selected>운동종목</option>
+                             <option value="99" selected>운동종목</option>
                              {% for sport in sports %}
                              <option value="{{ sport[0].sportsno }}">{{ sport[0].name }}</option>
                              {% endfor %}
                          </select>
                      </div>
 
-                     <div class="mb-3 me-3">
+                     <div class="mb-2 me-2">
                          <select class="form-select" id="regions" aria-label="Select Option 2">
-                             <option value=0 selected>지역명</option>
+                             <option value="99" selected>지역명</option>
                              {% for region in regions %}
                                 <option value="{{ region[0].sigunguno }}">{{ region[0].name }}</option>
                              {% endfor %}
+                         </select>
+                     </div>
+
+                     <div class="mb-2 me-2">
+                         <select class="form-select" id="people" aria-label="Select Option 2">
+                             <option value="9999" selected>인원수</option>
+                                 <option value="10">10명 이하</option>
+                                 <option value="20">20명 이하</option>
+                                 <option value="30">30명 이하</option>
+                                 <option value="9999">전체</option>
                          </select>
                      </div>
 
@@ -53,6 +63,9 @@
     </div>
     <!-- 검색 & 버튼 end -->
     <!-- 카드정렬 start-->
+    {% if not clublist %}
+        <p class="text-center">검색한 결과값이 없습니다.</p>
+    {% else %}
     <div>
         <div class="row g-3 d-flex justify-content-start" style="width: 100%; margin: 0 auto; gap: 15px">
             {% for club in clublist %}
@@ -75,6 +88,7 @@
         </div>
         <!-- 카드정렬 end -->
     </div>
+    {% endif %}
 
     <!-- 페이지 -->
     <div class="mt-5 d-flex justify-content-center">
@@ -82,11 +96,9 @@
             <ul class="pagination">
                 {% if cpg > 1 %}
                 <li class="page-item">
-                {% else %}
-                <li class="page-item disabled">
-                {% endif %}
-                    <a class="page-link" href="/club/{{ cpg - 1 }}" tabindex="-1">이전</a>
+                    <a class="page-link" href="{{ baseurl }}{{ cpg - 1 }}" tabindex="-1">이전</a>
                 </li>
+                {% endif %}
                 {% for idx in range(stpgb, stpgb + 5) %}
                     {% if idx <= allpage %}
                         {% if idx == cpg %}
@@ -94,13 +106,13 @@
                         {% else %}
                         <li class="page-item ">
                         {% endif %}
-                            <a class="page-link" href="/club/{{ idx }}">{{ idx }}</a>
+                            <a class="page-link" href="{{ baseurl }}{{ idx }}">{{ idx }}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
                 {% if cpg < allpage %}
                 <li class="page-item">
-                    <a class="page-link" href="/club/{{ cpg + 1 }}">다음</a>
+                    <a class="page-link" href="{{ baseurl }}{{ cpg + 1 }}">다음</a>
                 </li>
                 {% endif %}
             </ul>

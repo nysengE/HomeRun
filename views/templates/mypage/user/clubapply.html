@@ -9,12 +9,16 @@
 {% endblock %}
 
 {% block main %}
-    <main>
+    <main class="d-flex justify-content-between">
+    <div>
     {% include 'mypage/user/userside.html' %}
-
-    <div class="content">
-        <h2>신청한 동호회 목록</h2>
-        <table class="table table-bordered">
+    </div>
+    <div class="content d-flex flex-column">
+        <h2 class="py-3 mt-2">신청한 동호회 목록</h2>
+        {% if not applylist %}
+            <p class="text-center">신청 내역이 없습니다.</p>
+        {% else %}
+        <table class="table table-bordered mt-3">
             <thead>
             <tr>
                 <th>운동명</th>
@@ -26,64 +30,65 @@
             </thead>
             <tbody>
             <!-- 예시 데이터, 실제 데이터로 대체 -->
+            {% for apply in applylist %}
             <tr>
-                <td>축구</td>
-                <td>글 제목 1</td>
-                <td>작성자 1</td>
-                <td>2024-08-29</td>
-                <td><button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" data-title="글 제목 1" data-author="작성자 1" data-date="2024-08-29" data-content="이것은 글 내용 1입니다.">상세보기</button></td>
+                <td>{{ apply.sportsname }}</td>
+                <td>{{ apply.title }}</td>
+                <td>{{ apply.applyregdate }}</td>
+                <td>{{ apply.status }}</td>
+                <td>
+                    <button type="button" class="btn btn-info view" >상세보기
+                        <input type="hidden" class="clubno" value="{{ apply.clubno }}">
+                    </button>
+                </td>
+{#                <td><button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" data-title="글 제목 1" data-author="작성자 1" data-date="2024-08-29" data-content="이것은 글 내용 1입니다.">상세보기</button></td>#}
             </tr>
-            <tr>
-                <td>농구</td>
-                <td>글 제목 2</td>
-                <td>작성자 2</td>
-                <td>2024-08-28</td>
-                <td><button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" data-title="글 제목 2" data-author="작성자 2" data-date="2024-08-28" data-content="이것은 글 내용 2입니다.">상세보기</button></td>
-            </tr>
+            {% endfor %}
             <!-- 추가적인 글 항목들 -->
             </tbody>
         </table>
+        {% endif %}
     </div>
     </main>
 
-    <!-- 모달 -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">상세보기</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>제목:</strong> <span id="modal-title"></span></p>
-                    <p><strong>작성자:</strong> <span id="modal-author"></span></p>
-                    <p><strong>작성일:</strong> <span id="modal-date"></span></p>
-                    <p><strong>내용:</strong> <span id="modal-content"></span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                </div>
-            </div>
-        </div>
-    </div>
+{#    <!-- 모달 -->#}
+{#    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">#}
+{#        <div class="modal-dialog">#}
+{#            <div class="modal-content">#}
+{#                <div class="modal-header">#}
+{#                    <h5 class="modal-title" id="exampleModalLabel">상세보기</h5>#}
+{#                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#                </div>#}
+{#                <div class="modal-body">#}
+{#                    <p><strong>제목:</strong> <span id="modal-title"></span></p>#}
+{#                    <p><strong>작성자:</strong> <span id="modal-author"></span></p>#}
+{#                    <p><strong>작성일:</strong> <span id="modal-date"></span></p>#}
+{#                    <p><strong>내용:</strong> <span id="modal-content"></span></p>#}
+{#                </div>#}
+{#                <div class="modal-footer">#}
+{#                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
 {% endblock %}
 
 {% block script %}
-{#    <script src="/static/js/mypage/userside.js"></script>#}
-    <script>
-        // 모달 데이터 설정
-        document.querySelectorAll('.btn-info').forEach(button => {
-            button.addEventListener('click', function () {
-                const modalTitle = document.getElementById('modal-title');
-                const modalAuthor = document.getElementById('modal-author');
-                const modalDate = document.getElementById('modal-date');
-                const modalContent = document.getElementById('modal-content');
-
-                modalTitle.textContent = this.getAttribute('data-title');
-                modalAuthor.textContent = this.getAttribute('data-author');
-                modalDate.textContent = this.getAttribute('data-date');
-                modalContent.textContent = this.getAttribute('data-content');
-            });
-        });
-    </script>
+    <script src="/static/js/mypage/clubapply.js"></script>
+{#    <script>#}
+{#        // 모달 데이터 설정#}
+{#        document.querySelectorAll('.btn-info').forEach(button => {#}
+{#            button.addEventListener('click', function () {#}
+{#                const modalTitle = document.getElementById('modal-title');#}
+{#                const modalAuthor = document.getElementById('modal-author');#}
+{#                const modalDate = document.getElementById('modal-date');#}
+{#                const modalContent = document.getElementById('modal-content');#}
+{##}
+{#                modalTitle.textContent = this.getAttribute('data-title');#}
+{#                modalAuthor.textContent = this.getAttribute('data-author');#}
+{#                modalDate.textContent = this.getAttribute('data-date');#}
+{#                modalContent.textContent = this.getAttribute('data-content');#}
+{#            });#}
+{#        });#}
+{#    </script>#}
 {% endblock %}

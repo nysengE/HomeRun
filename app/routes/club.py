@@ -1,4 +1,5 @@
 from math import ceil
+from urllib.parse import quote
 
 from fastapi import APIRouter, File, UploadFile
 from fastapi.params import Depends
@@ -30,36 +31,53 @@ async def club(req: Request, cpg: int, db: Session = Depends(get_db)):
         return templates.TemplateResponse('club/club.html',
                                           {'request': req, 'clublist': clublist,
                                            'sports': sports, 'regions': regions,
-                                           'cpg': cpg, 'allpage': allpage, 'stpgb': stpgb})
+                                           'cpg': cpg, 'allpage': allpage, 'stpgb': stpgb,
+                                           'baseurl': '/club/'})
 
     except Exception as ex:
         print(f'▷▷▷ /club router 오류 발생 : {str(ex)}')
 
 # 검색 club list
-@club_router.get('/{sports}/{regions}/{title}/{cpg}', response_class=HTMLResponse)
-async def findclub(req: Request, sports: int, regions: int, title: str, cpg: int, db: Session = Depends(get_db)):
+@club_router.get('/{sport}/{region}/{people}/{title}/{cpg}', response_class=HTMLResponse)
+async def findclub(req: Request, cpg: int, sport: int = 99, region: int = 99, people: int = 9999,  title: str = '#', db: Session = Depends(get_db)):
     try:
+        # 페이지 없을 경우
+        if cpg < 1:
+            raise HTTPException(status_code=400, detail="Invalid page number")
+
         # 페이지
         stpgb = int((cpg - 1) / 5) * 5 + 1
 
-        clublist, cnt = ClubService.find_select_club(db, cpg)
+        clublist, cnt = ClubService.find_select_club(db, cpg, sport, region, people, title)
+
+        # 데이터가 없을 경우
+        if clublist is None:
+            clublist = []
+
         sports = ClubService.select_sports(db)
         regions = ClubService.select_regions(db)
 
         # 총 페이지 수
         allpage = ceil(cnt / 8)
 
+        # title을 URL 인코딩
+        encoded_title = quote(title)
+
+        # baseurl 설정
+        baseurl = f'/club/{sport}/{region}/{people}/{encoded_title}/'
+
         return templates.TemplateResponse('club/club.html',
                                           {'request': req, 'clublist': clublist,
                                            'sports': sports, 'regions': regions,
-                                           'cpg': cpg, 'allpage': allpage, 'stpgb': stpgb})
+                                           'cpg': cpg, 'allpage': allpage, 'stpgb': stpgb,
+                                           'baseurl': baseurl})
 
     except Exception as ex:
         print(f'▷▷▷ /club router 오류 발생 : {str(ex)}')
 
 
 
-@club_router.get('/add', response_class=HTMLResponse)
+@club_router.get('/club/add', response_class=HTMLResponse)
 async def add(req: Request):
     return templates.TemplateResponse('club/add.html', {'request': req})
 
@@ -71,7 +89,7 @@ async def addok(req: Request, club: NewClub = Depends(get_club_data),
         attachs = await process_upload(files)
         # print(attachs)
         if ClubService.insert_club(club, attachs, db):
-            return RedirectResponse('/club', 303)
+            return RedirectResponse('/club/1', 303)
 
     except Exception as ex:
         print(f'▷▷▷ addok 오류발생 {str(ex)}')
@@ -83,8 +101,13 @@ async def view(req: Request, clubno: int, db: Session = Depends(get_db)):
         club = ClubService.selectone_club(clubno, db)
         reply = ClubService.select_reply(clubno, db)
 
+        # 신청목록에서 신청한 아이디 가져오기
+        applyuid = ClubService.select_apply_userid(clubno, db)
+        print('applyuid: ',applyuid)
+
         return templates.TemplateResponse('club/view.html',
-                                          {'request': req, 'club': club, 'clubno': clubno, 'reply': reply})
+                                          {'request': req, 'club': club,
+                                           'clubno': clubno, 'reply': reply, 'applyuid': applyuid})
     except Exception as ex:
         print(f'▷▷▷ view 오류발생 {str(ex)}')
 
@@ -93,7 +116,7 @@ async def view(req: Request, clubno: int, db: Session = Depends(get_db)):
 async def apply(req: Request, clubno: int, userid:str, db: Session = Depends(get_db)):
     try:
         if ClubService.insert_apply(clubno, userid, db):
-            return RedirectResponse('/club', 303)
+            return RedirectResponse('/club/1', 303)
     except Exception as ex:
         print(f'▷▷▷ apply 오류발생 {str(ex)}')
 
