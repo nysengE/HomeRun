@@ -24,8 +24,13 @@ async def rental(req: Request, db: Session = Depends(get_db)):
 
 # 렌탈 항목 추가 폼 페이지
 @rental_router.get("/add", response_class=HTMLResponse)
-async def read_add(request: Request):
-    return templates.TemplateResponse("rental/add.html", {"request": request})
+async def read_add(request: Request, db: Session = Depends(get_db)):
+    try:
+        regions = db.query(Region).all()  # 지역 정보를 데이터베이스에서 가져옴
+        return templates.TemplateResponse("rental/add.html", {"request": request, "regions": regions})
+    except Exception as ex:
+        print(f'오류 발생: {str(ex)}')
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 # 렌탈 항목 추가 처리
 @rental_router.post("/add", response_class=HTMLResponse)

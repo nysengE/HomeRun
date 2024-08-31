@@ -22,34 +22,15 @@
                         <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
                     </div>
                     <div class="reservation-days">
-                        <!-- 날짜는 JavaScript로 동적으로 생성 -->
                     </div>
                 </div>
             </div>
-            <div class="reservation-time-section">
-                <div class="reservation-time-circle">
-                    <canvas id="reservationTimeCanvas" width="200" height="200"></canvas>
-                </div>
-                <div class="reservation-legend">
-                    <div><span class="reservation-legend-color available"></span>예약가능</div>
-                    <div><span class="reservation-legend-color unavailable"></span>예약불가</div>
-                </div>
-            </div>
         </div>
-
-        <section class="pay">
-        <div>
-            <div>
-                <div class="">
-                    <div><button>결제하기</button></div>
-                    <div><span></span></div>
-                </div>
-            </div>
-
-
-        </div>
-
-        </section>
-        <script src="/static/js/reservation.js"></script>
     </main>
 {% endblock %}
+
+{% block script %}
+        <script src="/static/js/rental/reservation.js"></script>
+{% endblock %}
+
+

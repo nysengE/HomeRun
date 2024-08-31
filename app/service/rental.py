@@ -13,14 +13,17 @@ UPLOAD_PATH = 'C:/java/nginx-1.26.2/html/cdn/img/'
 
 def get_rental_data(title: str = Form(...), contents: str = Form(...),
                     people: int = Form(...), price: int = Form(...),
-                    district: str = Form(...), sportsno: int = Form(...),
+                    address: str = Form(...), latitude: float = Form(...),
+                    longitude: float = Form(...), sportsno: int = Form(...),
                     sigunguno: int = Form(...)):
     return NewRental(
         title=title,
         contents=contents,
         people=people,
         price=price,
-        district=district,
+        address=address,
+        latitude=latitude,
+        longitude=longitude,
         sportsno=sportsno,
         sigunguno=sigunguno
     )
@@ -45,11 +48,13 @@ class RentalService:
     def insert_rental(rent, attachs, db: Session):
         try:
             stmt = insert(Rental).values(
-                title=rent.title,
+                title=rent.title,  # 점 표기법으로 수정
                 contents=rent.contents,
                 people=rent.people,
                 price=rent.price,
-                district=rent.district,
+                address=rent.address,
+                latitude=rent.latitude,
+                longitude=rent.longitude,
                 sportsno=rent.sportsno,
                 sigunguno=rent.sigunguno,
                 regisdate=datetime.now()
@@ -72,7 +77,8 @@ class RentalService:
         except SQLAlchemyError as ex:
             print(f'▶▶▶ insert_rental에서 오류 발생: {str(ex)}')
             db.rollback()
-            raise  # 예외를 다시 발생시켜 호출자에게 알림
+            raise
+
 
     @staticmethod
     def select_rentals(db: Session, limit=25):

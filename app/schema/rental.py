@@ -5,7 +5,9 @@ class NewRental(BaseModel):
     contents: str
     people: int
     price: int
-    district: str
+    address: str
+    latitude: float  # 추가된 필드
+    longitude: float  # 추가된 필드
     sportsno: int
     sigunguno: int
 

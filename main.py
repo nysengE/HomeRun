@@ -1,7 +1,7 @@
+import os
 from contextlib import asynccontextmanager
 
-import httpx
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Query, Form
 from sqlalchemy.orm import Session
 
 from starlette.requests import Request
@@ -19,7 +19,7 @@ from app.routes.payment import payment_router
 from app.routes.rental import rental_router
 from app.routes.reservation import reservation_router
 from app.routes.user import user_router
-
+from app.service.rental import RentalService, process_upload
 
 
 # Lifespan 관리 함수 정의
@@ -57,41 +57,39 @@ async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
 
-# 네이버 클라이언트 ID와 Secret
-NAVER_CLIENT_ID = "m9pur6frrc"
-NAVER_CLIENT_SECRET = "KHVJQZJZeuOLkn3tr3u0mamTjfNVgQZlelhc0tcf"
-
-@app.get("/geocode/{spaceno}")
-async def geocode(spaceno: int, db: Session = Depends(get_db)):
-    # 데이터베이스에서 해당 공간의 주소 가져오기
-    rental = db.query(Rental).filter(Rental.spaceno == spaceno).first()
-    if not rental:
-        raise HTTPException(status_code=404, detail="Rental not found")
-
-    # 네이버 지도 API 엔드포인트
-    url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode"
-
-    # 요청 헤더 설정
-    headers = {
-        "X-NCP-APIGW-API-KEY-ID": NAVER_CLIENT_ID,
-        "X-NCP-APIGW-API-KEY": NAVER_CLIENT_SECRET,
+@app.post("/rental/add")
+async def add_rental(
+        title: str = Form(...),
+        contents: str = Form(...),
+        people: int = Form(...),
+        price: int = Form(...),
+        address: str = Form(...),
+        latitude: float = Form(...),
+        longitude: float = Form(...),
+        sportsno: int = Form(...),
+        sigunguno: int = Form(...),
+        files: list = [],
+        db: Session = Depends(get_db)
+):
+    attachs = await process_upload(files)
+    rental_data = {
+        "title": title,
+        "contents": contents,
+        "people": people,
+        "price": price,
+        "address": address,
+        "latitude": latitude,
+        "longitude": longitude,
+        "sportsno": sportsno,
+        "sigunguno": sigunguno,
     }
 
-    # 요청 파라미터 설정
-    params = {
-        "query": rental.district,  # 등록된 도로명 주소 사용
-    }
+    try:
+        RentalService.insert_rental(rental_data, attachs, db)
+        return {"status": "success", "message": "Rental added successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    # 네이버 지도 API로 비동기 요청
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url, headers=headers, params=params)
-
-    # 응답 상태 확인
-    if response.status_code != 200:
-        raise HTTPException(status_code=response.status_code, detail="Geocoding failed")
-
-    # 응답 데이터를 JSON 형식으로 반환
-    return response.json()
 
 if __name__ == '__main__':
     import uvicorn

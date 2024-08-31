@@ -9,3 +9,4 @@ class Sport(Base):
 
     sportsno: Mapped[int] = mapped_column(INTEGER, primary_key=True, autoincrement=True, index=True)
     name: Mapped[str] = mapped_column(VARCHAR(200))
+    rentals = relationship("Rental", back_populates="sport")
