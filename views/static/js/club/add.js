@@ -18,22 +18,9 @@ addfrm.addEventListener('submit', async (e) => {
 
     const formData = new FormData(addfrm);
 
-    // // value값 int로 변경해서 formdata에 넣기
-    // const sports = parseInt(document.querySelector('#sports').value);
-    // const sigungu = parseInt(document.querySelector('#region').value);
-    // formData.delete('sportsno');
-    // formData.delete('sigunguno');
-    // formData.append('sportsno', sports);
-    // formData.append('sigunguno', sigungu);
-
-    // const fileInput = document.querySelector('#file');
-    // if (fileInput.files.length > 0) {
-    //     formData.append('files', fileInput.files[0]);  // 파일 추가
-    // }
-
-    formData.forEach((value, key) => {
-        console.log(`${key}: ${value}`, typeof(value));
-    });
+    // formData.forEach((value, key) => {
+    //     console.log(`${key}: ${value}`, typeof(value));
+    // });
 
     try {
         await fetch('/club/add', {

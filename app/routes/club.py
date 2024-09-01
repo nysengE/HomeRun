@@ -103,7 +103,7 @@ async def view(req: Request, clubno: int, db: Session = Depends(get_db)):
 
         # 신청목록에서 신청한 아이디 가져오기
         applyuid = ClubService.select_apply_userid(clubno, db)
-        print('applyuid: ',applyuid)
+        # print('applyuid: ',applyuid)
 
         return templates.TemplateResponse('club/view.html',
                                           {'request': req, 'club': club,

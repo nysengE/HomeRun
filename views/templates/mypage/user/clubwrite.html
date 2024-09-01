@@ -13,7 +13,7 @@
         <div>
             {% include 'mypage/user/userside.html' %}
         </div>
-        <div class="content d-flex flex-column px-3">
+        <div class="content d-flex flex-column px-3" style="width: 800px">
             <h2 class="py-3 mt-2">작성한 동호회 글 목록</h2>
             {% if not clublist %}
             <p class="text-center">작성 내역이 없습니다.</p>
@@ -36,19 +36,17 @@
                             <td>{{ club.title }}</td>
                             <td>{{ club.registdate }}</td>
                             <td>
-                                <button type="button" class="btn btn-info applyusers" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+                                <button type="button" class="btn btn-warning applyusers" data-bs-toggle="modal" data-bs-target="#exampleModal" >
                                     신청자
                                     <input type="hidden" id="applyclubno" value="{{ club.clubno }}">
                                 </button></td>
                             <td>
-                                <button type="button" class="btn btn-success modify" >수정
-                                    <input type="hidden" class="clubno" value="">
+                                <button type="button" class="btn btn-primary" onclick="modifyclub({{ club.clubno }})">
+                                    수정
                                 </button>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-danger delete" >삭제
-                                    <input type="hidden" class="clubno" value="">
-                                </button>
+                                <button type="button" class="btn btn-danger delete" onclick="deleteclub({{ club.clubno }})" >삭제</button>
                             </td>
 
                         </tr>
@@ -65,14 +63,34 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">상세보기</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">신청자 목록</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>제목:</strong> <span id="modal-title"></span></p>
-                        <p><strong>작성자:</strong> <span id="modal-author"></span></p>
-                        <p><strong>작성일:</strong> <span id="modal-date"></span></p>
-                        <p><strong>내용:</strong> <span id="modal-content"></span></p>
+                        <table class="table table-bordered mt-3" id="applyTable" style="display:none;">
+                            <thead>
+                            <tr>
+                                <th>신청자</th>
+                                <th>신청일</th>
+                                <th>상태</th>
+                                <th>승인</th>
+                            </tr>
+                            </thead>
+                            <tbody id="applyTableBody">
+                                <tr>
+                                    <td class="applyuserid">신청자</td>
+                                    <td class="applyregdate">신청일</td>
+                                    <td class="applystatus">상태</td>
+                                    <td>
+                                        <button type="button" class="btn btn-success applyusers" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+                                            승인
+                                            <input type="hidden" id="applyclubno" value="">
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-center" id="noApplicants" style="display:none;">신청자가 없습니다.</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>

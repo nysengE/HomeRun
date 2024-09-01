@@ -9,54 +9,56 @@
 {% endblock %}
 
 {% block main %}
-    <main>
-    {% include 'mypage/user/userside.html' %}
+    <main class="d-flex justify-content-between gap-0">
+        <div class="px-0 mx-0">
+            {% include 'mypage/user/userside.html' %}
+        </div>
 
-    <div class="content">
-        <h2>회원 정보</h2>
-        <form>
-            <table class="table table-borderless">
-                <tbody>
-                <!-- 이름 -->
-                <tr>
-                    <th scope="row">이름</th>
-                    <td>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="이름을 입력하세요">
-                    </td>
-                </tr>
+        <div class="content mx-0 d-flex flex-column px-3" style="width: 900px">
+            <h2 class="p-3">회원 정보</h2>
+            <form name="modifyuserfrm">
+                <table class="table table-borderless">
+                    <tbody>
+                    <!-- 이름 -->
+                    <tr>
+                        <th scope="row">이름</th>
+                        <td>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="이름을 입력하세요">
+                        </td>
+                    </tr>
 
-                <!-- 이메일 -->
-                <tr>
-                    <th scope="row">이메일</th>
-                    <td>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력하세요">
-                    </td>
-                </tr>
+                    <!-- 이메일 -->
+                    <tr>
+                        <th scope="row">이메일</th>
+                        <td>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력하세요">
+                        </td>
+                    </tr>
 
-                <!-- 전화번호 -->
-                <tr>
-                    <th scope="row">전화번호</th>
-                    <td>
-                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="전화번호를 입력하세요">
-                    </td>
-                </tr>
+                    <!-- 전화번호 -->
+                    <tr>
+                        <th scope="row">전화번호</th>
+                        <td>
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="전화번호를 입력하세요">
+                        </td>
+                    </tr>
 
-                <!-- 생년월일 -->
-                <tr>
-                    <th scope="row">생년월일</th>
-                    <td>
-                        <input type="date" class="form-control" id="birthdate" name="birthdate">
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    <!-- 생년월일 -->
+                    <tr>
+                        <th scope="row">생년월일</th>
+                        <td>
+                            <input type="date" class="form-control" id="birthdate" name="birthdate">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
 
-            <button type="submit" class="btn btn-primary">수정하기</button>
-        </form>
-    </div>
+                <button type="submit" class="btn btn-primary">수정하기</button>
+            </form>
+        </div>
     </main>
 {% endblock %}
 
 {% block script %}
-{#    <script src="/static/js/mypage/userside.js"></script>#}
+    <script src="/static/js/mypage/userinfo.js"></script>
 {% endblock %}
