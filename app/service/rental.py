@@ -16,6 +16,9 @@ def get_rental_data(title: str = Form(...), contents: str = Form(...),
                     address: str = Form(...), latitude: float = Form(...),
                     longitude: float = Form(...), sportsno: int = Form(...),
                     sigunguno: int = Form(...), available_dates: str = Form(...)):
+    # available_dates가 문자열로 들어온 경우 쉼표를 기준으로 리스트로 변환
+    available_dates_list = available_dates.split(',') if available_dates else []
+
     return NewRental(
         title=title,
         contents=contents,
@@ -26,7 +29,7 @@ def get_rental_data(title: str = Form(...), contents: str = Form(...),
         longitude=longitude,
         sportsno=sportsno,
         sigunguno=sigunguno,
-        available_dates=available_dates  # 추가된 부분
+        available_dates=available_dates_list  # 변경된 부분
     )
 
 async def process_upload(files):
@@ -65,15 +68,25 @@ class RentalService:
 
             # 사용 가능 날짜 처리
             if rent.available_dates:  # available_dates가 있는 경우에만 처리
-                dates = rent.available_dates.split(', ')
-                for date_str in dates:
+                for date_str in rent.available_dates:
                     try:
-                        avail_date = datetime.strptime(date_str, "%Y-%m-%d").date()
-                        new_avail = RentalAvail(availdate=avail_date, availstatus=1, spaceno=inserted_spaceno)
+                        # 각 날짜마다 starttime과 endtime을 추가로 등록
+                        avail_date, starttime, endtime = date_str.split(' ')  # 예: "2024-09-25 09:00 18:00"
+                        avail_date = datetime.strptime(avail_date, "%Y-%m-%d").date()
+                        starttime = datetime.strptime(starttime, "%H:%M").time()
+                        endtime = datetime.strptime(endtime, "%H:%M").time()
+                        new_avail = RentalAvail(
+                            availdate=avail_date,
+                            starttime=starttime,
+                            endtime=endtime,
+                            availstatus=1,
+                            spaceno=inserted_spaceno
+                        )
                         db.add(new_avail)
                     except ValueError as ve:
                         print(f'Invalid date format for {date_str}: {ve}')
 
+            # 첨부 파일 저장
             for attach in attachs:
                 data = {
                     'fname': attach[0],

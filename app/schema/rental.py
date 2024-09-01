@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel
 
 class NewRental(BaseModel):
@@ -10,7 +12,7 @@ class NewRental(BaseModel):
     longitude: float  # 추가된 필드
     sportsno: int
     sigunguno: int
-    available_dates: str  # 추가된 필드
+    available_dates: List[str]  # 문자열 리스트로 변경
 
     class Config:
         from_attributes = True

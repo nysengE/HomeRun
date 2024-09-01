@@ -1,7 +1,8 @@
 import os
 from contextlib import asynccontextmanager
+from typing import List
 
-from fastapi import FastAPI, HTTPException, Depends, Query, Form
+from fastapi import FastAPI, HTTPException, Depends, Query, Form, UploadFile, File
 from sqlalchemy.orm import Session
 
 from starlette.requests import Request
@@ -18,9 +19,13 @@ from app.routes.notification import notification_router
 from app.routes.payment import payment_router
 from app.routes.rental import rental_router
 from app.routes.reservation import reservation_router
+from app.routes.reservation_api import reservation_api_router
 from app.routes.user import user_router
 from app.service.rental import RentalService, process_upload
 
+import logging
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 # Lifespan 관리 함수 정의
 @asynccontextmanager
@@ -37,14 +42,14 @@ app.mount('/static', StaticFiles(directory='views/static'), name='static')
 # Static files 설정
 app.mount("/cdn/img", StaticFiles(directory="C:/java/nginx-1.26.2/html/cdn/img"), name="cdn")
 
-app.include_router(reservation_router, prefix="/api")
 app.include_router(club_router, prefix='/club')
 app.include_router(management_router, prefix='/management')
 app.include_router(mypage_router, prefix='/mypage')
 app.include_router(notification_router, prefix='/notification')
 app.include_router(payment_router, prefix='/payment')
 app.include_router(rental_router, prefix='/rental')
-app.include_router(reservation_router, prefix='/reservation')
+app.include_router(reservation_api_router, prefix="/api")
+app.include_router(reservation_router, prefix="/reservation")
 app.include_router(user_router, prefix='/user')
 
 
@@ -69,7 +74,8 @@ async def add_rental(
         longitude: float = Form(...),
         sportsno: int = Form(...),
         sigunguno: int = Form(...),
-        files: list = [],
+        available_dates: str = Form(...),  # 문자열로 들어오는 available_dates 추가
+        files: List[UploadFile] = File([]),  # 파일 업로드를 위한 설정
         db: Session = Depends(get_db)
 ):
     attachs = await process_upload(files)

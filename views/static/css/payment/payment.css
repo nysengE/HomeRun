@@ -99,3 +99,24 @@ body.payment-page {
     background-color: #007bff;
     color: white;
 }
+
+
+
+
+/* 추가 CSS */
+.payment-page .reservation-calendar .fc-day-disabled {
+    background-color: #f0f0f0; /* 선택 불가 날짜 배경 색상 */
+    color: #a0a0a0; /* 선택 불가 날짜 텍스트 색상 */
+    pointer-events: none; /* 선택 불가 */
+}
+
+.payment-page .time-slot.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.payment-page .time-slot.disabled {
+    background-color: #f0f0f0;
+    color: #a0a0a0;
+    pointer-events: none;
+}

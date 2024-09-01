@@ -1,10 +1,12 @@
+from datetime import datetime, time, date
+
 from pydantic import BaseModel
-from datetime import date
 
 class ReservationCreate(BaseModel):
     spaceno: int
-    resdate: str  # 날짜 문자열
-    restime: str
+    resdate: date  # 날짜 타입으로 변경
+    resstart: time  # 시작 시간
+    resend: time  # 종료 시간
     people: int
     price: int
 
@@ -12,5 +14,6 @@ class ReservationResponse(BaseModel):
     resno: int
     spaceno: int
     resdate: date
-    restime: str
+    resstart: time
+    resend: time
     resstatus: int

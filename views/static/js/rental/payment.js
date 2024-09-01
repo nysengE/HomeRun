@@ -1,47 +1,54 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var payButton = document.getElementById('payButton');
-    if (payButton) {
-        payButton.addEventListener('click', function() {
-            var IMP = window.IMP; // 생략 가능
-            IMP.init('imp77608186'); // 'iamport' 대신 발급받은 "가맹점 식별코드"를 사용
 
-            // 결제 요청 데이터
-            var paymentData = {
-                pg: 'html5_inicis', // 예: 'html5_inicis'는 KG이니시스, 'kakaopay'는 카카오페이
-                pay_method: 'card', // 결제 방식 (카드, 계좌이체, 가상계좌 등)
-                merchant_uid: 'merchant_' + new Date().getTime(), // 주문번호
-                name: payButton.dataset.itemName || '상품명', // 결제 이름
-                amount: parseInt(payButton.dataset.amount) || 0, // 결제 금액
-                buyer_email: 'user@example.com', // 구매자 이메일
-                buyer_name: '홍길동', // 구매자 이름
-                buyer_tel: '010-1234-5678', // 구매자 전화번호
-                buyer_addr: '서울특별시 강남구 삼성동', // 구매자 주소
-                buyer_postcode: '123-456', // 구매자 우편번호
-                m_redirect_url: 'http://localhost:8000/pay/complete' // 결제 완료 후 리다이렉트 될 주소
-            };
+    document.addEventListener('DOMContentLoaded', function() {
+        var paymentButton = document.getElementById('confirmPaymentButton');
+        paymentButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            // 사용자 입력 유효성 검사
+            var form = document.getElementById('customerInfoForm');
+            if (!form.checkValidity()) {
+                alert('예약자 정보를 정확히 입력해주세요.');
+                return;
+            }
 
-            IMP.request_pay(paymentData, function (rsp) {
+            var IMP = window.IMP;
+            IMP.init('imp77608186'); // 본인의 가맹점 식별코드로 변경해야 합니다.
+
+            IMP.request_pay({
+                pg: 'html5_inicis', // 결제 창에 표시할 PG사
+                pay_method: 'card', // 결제 방법
+                merchant_uid: 'merchant_' + new Date().getTime(), // 주문 번호
+                name: '{{ rent.title }}', // 주문명
+                amount: "{{ reservation.price }}", // 결제 금액
+                buyer_email: document.getElementById('email').value,
+                buyer_name: document.getElementById('name').value,
+                buyer_tel: document.getElementById('contact').value
+            }, function(rsp) {
                 if (rsp.success) {
-                    // 결제 성공 시 처리 로직
-                    fetch('/pay/complete', {
+                // 결제 성공 시 서버로 imp_uid 전송
+                 fetch('/pay/complete', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            imp_uid: rsp.imp_uid,
-                            merchant_uid: rsp.merchant_uid
-                        })
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            alert('결제가 완료되었습니다.');
-                        });
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ imp_uid: rsp.imp_uid })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === "결제가 완료되었습니다.") {
+                        alert('결제가 완료되었습니다.');
+                        window.location.href = '/confirmation'; // 결제 확인 페이지로 이동
                 } else {
-                    // 결제 실패 시 처리 로직
-                    alert('결제에 실패하였습니다. 에러 내용: ' + rsp.error_msg);
+                    alert('결제 검증에 실패했습니다.');
                 }
+            })
+            .catch(error => {
+                console.error('결제 처리 중 오류 발생:', error);
+                alert('결제 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
             });
-        });
-    }
+        } else {
+            // 결제 실패 시 로직
+            alert('결제에 실패하였습니다. 다시 시도해주세요.');
+        }
+    });
+});
 });

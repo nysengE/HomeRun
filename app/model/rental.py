@@ -1,5 +1,5 @@
-from datetime import datetime
-from sqlalchemy import ForeignKey, VARCHAR, INTEGER, DATE, String, Float
+from datetime import datetime, time
+from sqlalchemy import ForeignKey, VARCHAR, INTEGER, DATE, String, Float, TIME
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.model.base import Base
@@ -15,6 +15,7 @@ class Rental(Base):
     price: Mapped[int] = mapped_column(INTEGER, default=0)
     regisdate: Mapped[datetime] = mapped_column(DATE, default=datetime.now)
     modifydate: Mapped[datetime] = mapped_column(DATE, default=datetime.now, onupdate=datetime.now)
+
     address: Mapped[str] = mapped_column(VARCHAR(300))
     latitude: Mapped[float] = mapped_column(Float)  # 위도
     longitude: Mapped[float] = mapped_column(Float)  # 경도
@@ -46,6 +47,8 @@ class RentalAvail(Base):
 
     availno: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
     availdate: Mapped[datetime] = mapped_column(DATE)
+    starttime: Mapped[time] = mapped_column(TIME)  # 시작 시간
+    endtime: Mapped[time] = mapped_column(TIME)    # 종료 시간
     availstatus: Mapped[int] = mapped_column(INTEGER, default=1)
     spaceno: Mapped[int] = mapped_column(INTEGER, ForeignKey('rental.spaceno'))
     rental = relationship('Rental', back_populates='avail_dates')  # Rental과의 관계 설정
