@@ -20,9 +20,12 @@ class Rental(Base):
     longitude: Mapped[float] = mapped_column(Float)  # 경도
     sportsno: Mapped[int] = mapped_column(INTEGER, ForeignKey('sports.sportsno'))
     sigunguno: Mapped[int] = mapped_column(INTEGER, ForeignKey('regions.sigunguno'))
-    attachs = relationship('RentalAttach', back_populates='rental')  # 하나의 gallery는 하나 이상의 attach 존재 (1:n)
     # businessno: Mapped[int] = mapped_column(INTEGER, ForeignKey('business.id'))
-    sport =relationship("Sport", back_populates="rentals")
+    attachs = relationship('RentalAttach', back_populates='rental')  # 하나의 gallery는 하나 이상의 attach 존재 (1:n)
+    sports = relationship("Sports", back_populates="rental")
+    avail_dates = relationship('RentalAvail', back_populates='rental')  # RentalAvail과의 관계 설정
+    reservation = relationship('Reservation', back_populates='rental')  # Reservation과의 관계 설정
+
 
 
 
@@ -35,3 +38,19 @@ class RentalAttach(Base):
     fsize: Mapped[int] = mapped_column(INTEGER, default=0)
     regdate: Mapped[datetime] = mapped_column(DATE, default=datetime.now)
     rental = relationship('Rental', back_populates='attachs')
+
+
+
+class RentalAvail(Base):
+    __tablename__ = 'rentalavail'
+
+    availno: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
+    availdate: Mapped[datetime] = mapped_column(DATE)
+    availstatus: Mapped[int] = mapped_column(INTEGER, default=1)
+    spaceno: Mapped[int] = mapped_column(INTEGER, ForeignKey('rental.spaceno'))
+    rental = relationship('Rental', back_populates='avail_dates')  # Rental과의 관계 설정
+
+
+
+
+

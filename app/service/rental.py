@@ -6,7 +6,7 @@ from sqlalchemy import insert, select, distinct, func
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload, Session
 
-from app.model.rental import Rental, RentalAttach
+from app.model.rental import Rental, RentalAttach, RentalAvail
 from app.schema.rental import NewRental
 
 UPLOAD_PATH = 'C:/java/nginx-1.26.2/html/cdn/img/'
@@ -15,7 +15,7 @@ def get_rental_data(title: str = Form(...), contents: str = Form(...),
                     people: int = Form(...), price: int = Form(...),
                     address: str = Form(...), latitude: float = Form(...),
                     longitude: float = Form(...), sportsno: int = Form(...),
-                    sigunguno: int = Form(...)):
+                    sigunguno: int = Form(...), available_dates: str = Form(...)):
     return NewRental(
         title=title,
         contents=contents,
@@ -25,7 +25,8 @@ def get_rental_data(title: str = Form(...), contents: str = Form(...),
         latitude=latitude,
         longitude=longitude,
         sportsno=sportsno,
-        sigunguno=sigunguno
+        sigunguno=sigunguno,
+        available_dates=available_dates  # 추가된 부분
     )
 
 async def process_upload(files):
@@ -62,6 +63,17 @@ class RentalService:
             result = db.execute(stmt)
             inserted_spaceno = result.inserted_primary_key[0]
 
+            # 사용 가능 날짜 처리
+            if rent.available_dates:  # available_dates가 있는 경우에만 처리
+                dates = rent.available_dates.split(', ')
+                for date_str in dates:
+                    try:
+                        avail_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                        new_avail = RentalAvail(availdate=avail_date, availstatus=1, spaceno=inserted_spaceno)
+                        db.add(new_avail)
+                    except ValueError as ve:
+                        print(f'Invalid date format for {date_str}: {ve}')
+
             for attach in attachs:
                 data = {
                     'fname': attach[0],
@@ -79,7 +91,24 @@ class RentalService:
             db.rollback()
             raise
 
-
+    @staticmethod
+    def insert_avail_dates(spaceno: int, dates: list, db: Session):
+        """
+        사용 가능 날짜를 RentalAvail 테이블에 저장하는 메서드
+        """
+        try:
+            for date_str in dates:
+                try:
+                    avail_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                    new_avail = RentalAvail(availdate=avail_date, availstatus=1, spaceno=spaceno)
+                    db.add(new_avail)
+                except ValueError as ve:
+                    print(f'Invalid date format for {date_str}: {ve}')
+            db.commit()
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ insert_avail_dates에서 오류 발생: {str(ex)}')
+            db.rollback()
+            raise
     @staticmethod
     def select_rentals(db: Session, limit=25):
         try:

@@ -10,6 +10,7 @@ class NewRental(BaseModel):
     longitude: float  # 추가된 필드
     sportsno: int
     sigunguno: int
+    available_dates: str  # 추가된 필드
 
     class Config:
         from_attributes = True

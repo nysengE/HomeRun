@@ -6,23 +6,71 @@
 
 {% block link %}
     <link rel="stylesheet" href="/static/css/reservation/reservation.css" />
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css' rel='stylesheet' />
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css' rel='stylesheet' />
 {% endblock %}
 
 {% block main %}
-    <main>
-        <div class="reservation-container">
-            <div class="reservation-calendar-section">
-                <div class="reservation-month-navigation">
-                    <button id="prevMonth">&lt;</button>
-                    <span id="reservationMonthYear">2024년 8월</span>
-                    <button id="nextMonth">&gt;</button>
+    <main class="container py-4">
+        <div class="row">
+            <!-- 왼쪽 컬럼: 달력 -->
+            <div class="col-md-6 mb-4">
+                <div class="reservation-calendar-section p-4 bg-white rounded shadow-sm">
+                    <div class="reservation-header d-flex align-items-center mb-3 border-bottom pb-2">
+                        <h2 class="mb-0">
+                            <i class="fa-solid fa-calendar-alt me-2 text-warning"></i>
+                            일정을 선택하세요.
+                        </h2>
+                    </div>
+                    <div class="reservation-calendar" id='calendar'></div>
                 </div>
-                <div class="reservation-calendar">
-                    <div class="reservation-weekdays">
-                        <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+            </div>
+
+            <!-- 오른쪽 컬럼: 시간 슬롯 -->
+            <div class="col-md-6 mb-4">
+                <div class="time-slot-section p-4 bg-white rounded shadow-sm">
+                    <div class="time-slot-selection">
+                        <h3 class="fs-5">오전</h3>
+                        <div class="d-flex flex-wrap gap-2 mb-3" id="morningSlots">
+                            <!-- JavaScript로 오전 시간 슬롯을 동적으로 생성 -->
+                        </div>
+                        <h3 class="fs-5">오후</h3>
+                        <div class="d-flex flex-wrap gap-2" id="afternoonSlots">
+                            <!-- JavaScript로 오후 시간 슬롯을 동적으로 생성 -->
+                        </div>
                     </div>
-                    <div class="reservation-days">
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 섹션: 선택된 정보와 예약 버튼 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="reservation-info-section p-4 bg-white rounded shadow-sm mt-4">
+                    <div class="selected-info mb-3">
+                        <h4 class="fw-bold">선택한 날짜: <span id="selectedDateDisplay">선택되지 않음</span></h4>
+                        <h4 class="fw-bold">선택한 시간: <span id="selectedTimeDisplay">선택되지 않음</span></h4>
+
+                        <!-- 인원 선택 섹션 -->
+                        <h4 class="fw-bold">
+                            <i class="fa fa-user" aria-hidden="true"></i> 인원을 선택하세요:
+                            <div class="d-inline-flex align-items-center">
+                                <button id="decreasePeople" class="btn btn-outline-secondary btn-sm" type="button">-</button>
+                                <span id="selectedPeople" class="mx-2">1</span> <!-- 기본값 1명 -->
+                                <button id="increasePeople" class="btn btn-outline-secondary btn-sm" type="button">+</button>
+                            </div>
+                        </h4>
+                        <h4 class="fw-bold">가격: <span id="selectedPriceDisplay">{{ rent.price if rent.price else '가격 없음' }}</span></h4>
                     </div>
+
+                    <div class="confirmation-switch d-flex align-items-center mb-3">
+                        <label class="switch">
+                            <input type="checkbox" id="confirmSelection">
+                            <span class="slider round"></span>
+                        </label>
+                        <label for="confirmSelection" class="ms-2">예약을 확인하세요</label>
+                    </div>
+                    <button class="reservation-button btn btn-primary w-100 mt-4 py-2" id="makeReservation" disabled>예약하기</button>
                 </div>
             </div>
         </div>
@@ -30,7 +78,153 @@
 {% endblock %}
 
 {% block script %}
-        <script src="/static/js/rental/reservation.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var maxPeople = parseInt("{{ rent.people }}", 10);
+            var selectedPeople = 1;
+            var selectedDate = null;
+            var selectedTime = null;
+
+            var calendarEl = document.getElementById('calendar');
+            var spaceno = "{{ rent.spaceno }}";  // 이 부분은 서버 템플릿 엔진에서 치환됨
+
+            if (calendarEl) {
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    locale: 'ko',
+                    themeSystem: 'bootstrap',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    events: function(fetchInfo, successCallback, failureCallback) {
+                        fetch(`/api/rental/${spaceno}/avail_dates`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (Array.isArray(data)) {
+                                    var events = data.map(date => ({
+                                        title: '예약 가능',
+                                        start: date,
+                                        display: 'background'
+                                    }));
+                                    successCallback(events);
+                                } else {
+                                    console.error('Unexpected data format:', data);
+                                    failureCallback('Unexpected data format');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching available dates:', error);
+                                failureCallback(error);
+                            });
+                    },
+                    buttonText: {
+                        today: '오늘',
+                        month: '월',
+                        week: '주',
+                        day: '일'
+                    },
+                    dateClick: function(info) {
+                        console.log('Selected date:', info.dateStr);
+                        selectedDate = info.dateStr;
+                        updateSelectedInfo();
+                    }
+                });
+
+                calendar.render();
+            }
+
+            var morningSlots = ['09:00', '11:00'];
+            var afternoonSlots = ['13:00', '15:00', '17:00', '19:00', '21:00'];
+
+            function generateTimeSlots() {
+                var morningSlotsEl = document.getElementById('morningSlots');
+                var afternoonSlotsEl = document.getElementById('afternoonSlots');
+
+                morningSlots.forEach(function(time) {
+                    var button = document.createElement('button');
+                    button.className = 'btn btn-outline-secondary time-slot';
+                    button.textContent = time;
+                    button.addEventListener('click', function() {
+                        selectedTime = time;
+                        updateSelectedInfo();
+                    });
+                    morningSlotsEl.appendChild(button);
+                });
+
+                afternoonSlots.forEach(function(time) {
+                    var button = document.createElement('button');
+                    button.className = 'btn btn-outline-secondary time-slot';
+                    button.textContent = time;
+                    button.addEventListener('click', function() {
+                        selectedTime = time;
+                        updateSelectedInfo();
+                    });
+                    afternoonSlotsEl.appendChild(button);
+                });
+            }
+
+            generateTimeSlots();
+
+            function updateSelectedInfo() {
+                document.getElementById('selectedDateDisplay').innerText = selectedDate || '선택되지 않음';
+                document.getElementById('selectedTimeDisplay').innerText = selectedTime || '선택되지 않음';
+            }
+
+            document.getElementById('increasePeople').addEventListener('click', function() {
+                if (selectedPeople < maxPeople) {
+                    selectedPeople++;
+                    document.getElementById('selectedPeople').innerText = selectedPeople;
+                }
+            });
+
+            document.getElementById('decreasePeople').addEventListener('click', function() {
+                if (selectedPeople > 1) {
+                    selectedPeople--;
+                    document.getElementById('selectedPeople').innerText = selectedPeople;
+                }
+            });
+
+            document.getElementById('confirmSelection').addEventListener('change', function() {
+                document.getElementById('makeReservation').disabled = !this.checked;
+            });
+
+            document.getElementById('makeReservation').addEventListener('click', function() {
+                if (!selectedDate || !selectedTime) {
+                    alert('날짜와 시간을 선택해주세요.');
+                    return;
+                }
+
+                var reservationData = {
+                    spaceno: "{{ rent.spaceno }}",
+                    resdate: selectedDate,
+                    restime: selectedTime,
+                    people: selectedPeople,
+                    price: "{{ rent.price }}"
+                };
+
+                fetch('/api/reservation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(reservationData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = `/payment?resno=${data.resno}`;
+                        } else {
+                            alert('예약에 실패했습니다. 다시 시도해주세요.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('예약 처리 중 오류 발생:', error);
+                        alert('예약 처리 중 오류가 발생했습니다. 다시 시도해주세요.')
+                    });
+            });
+        });
+    </script>
 {% endblock %}
-
-

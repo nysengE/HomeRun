@@ -1,163 +1,154 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const monthYear = document.getElementById('reservationMonthYear');
-    const daysContainer = document.querySelector('.reservation-days');
-    // const timeCanvas = document.getElementById('reservationTimeCanvas');
-    // const ctx = timeCanvas.getContext('2d');
+    // 전역 변수 선언
+    var maxPeople = parseInt("{{ rent.people }}", 10);
+    var selectedPeople = 1;
+    var selectedDate = null;
+    var selectedTime = null;
 
-    // timeCanvas와 관련된 모든 코드를 주석 처리 또는 삭제
+    // 예약 페이지에서 사용 가능 날짜 불러오기 및 표시
+    var calendarEl = document.getElementById('calendar');
+    var spaceno = "{{ rent.spaceno }}";  // 이 부분은 서버 템플릿 엔진에서 치환되어야 함
 
-    let currentMonthIndex = 0;  // 현재 달의 인덱스 (0: 현재 달, 1: 다음 달, 2: 다다음 달)
-    const currentDate = new Date();  // 현재 날짜
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();  // 현재 달 (0부터 시작)
-
-    function generateCalendar(year, month) {
-        daysContainer.innerHTML = '';
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        monthYear.textContent = `${year}년 ${month + 1}월`;
-
-        // 이전 달의 빈 칸 채우기
-        for (let i = 0; i < firstDay.getDay(); i++) {
-            const emptyDay = document.createElement('span');
-            daysContainer.appendChild(emptyDay);
-        }
-
-        for (let i = 1; i <= lastDay.getDate(); i++) {
-            const dayElement = document.createElement('span');
-            dayElement.textContent = i;
-
-            const isPast = new Date(year, month, i) < currentDate;
-            dayElement.classList.add(isPast ? 'past' : 'available');
-
-            if (!isPast) {
-                dayElement.addEventListener('click', function() {
-                    selectDate(`${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`);
-                });
+    if (calendarEl) {
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'ko',
+            themeSystem: 'bootstrap',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: function(fetchInfo, successCallback, failureCallback) {
+                fetch(`/api/rental/${spaceno}/avail_dates`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (Array.isArray(data)) {
+                            var events = data.map(date => ({
+                                title: '예약 가능',
+                                start: date,
+                                display: 'background'
+                            }));
+                            successCallback(events);
+                        } else {
+                            console.error('Unexpected data format:', data);
+                            failureCallback('Unexpected data format');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching available dates:', error);
+                        failureCallback(error);
+                    });
+            },
+            buttonText: {
+                today: '오늘',
+                month: '월',
+                week: '주',
+                day: '일'
+            },
+            dateClick: function(info) {
+                // 날짜 선택 시 처리 로직
+                console.log('Selected date:', info.dateStr);
+                selectedDate = info.dateStr;
+                updateSelectedInfo();
             }
+        });
 
-            daysContainer.appendChild(dayElement);
-        }
+        calendar.render();
     }
 
-    function selectDate(date) {
-        const allDays = document.querySelectorAll('.reservation-days span');
-        allDays.forEach(day => day.classList.remove('active'));
+    // 시간 슬롯 생성 코드
+    var morningSlots = ['09:00', '11:00'];
+    var afternoonSlots = ['13:00', '15:00', '17:00', '19:00', '21:00'];
 
-        const [year, month, day] = date.split('-').map(Number);
-        const selectedDay = document.querySelector(`.reservation-days span:nth-child(${day + new Date(year, month - 1, 1).getDay()})`);
-        if (selectedDay) selectedDay.classList.add('active');
+    function generateTimeSlots() {
+        var morningSlotsEl = document.getElementById('morningSlots');
+        var afternoonSlotsEl = document.getElementById('afternoonSlots');
+
+        morningSlots.forEach(function(time) {
+            var button = document.createElement('button');
+            button.className = 'btn btn-outline-secondary time-slot';
+            button.textContent = time;
+            button.addEventListener('click', function() {
+                selectedTime = time;
+                updateSelectedInfo();
+            });
+            morningSlotsEl.appendChild(button);
+        });
+
+        afternoonSlots.forEach(function(time) {
+            var button = document.createElement('button');
+            button.className = 'btn btn-outline-secondary time-slot';
+            button.textContent = time;
+            button.addEventListener('click', function() {
+                selectedTime = time;
+                updateSelectedInfo();
+            });
+            afternoonSlotsEl.appendChild(button);
+        });
     }
 
-    document.getElementById('prevMonth').addEventListener('click', function() {
-        if (currentMonthIndex > 0) {
-            currentMonthIndex--;
-            generateCalendar(currentYear, currentMonth + currentMonthIndex);
+    generateTimeSlots();
+
+    // 선택된 날짜와 시간을 업데이트하는 함수
+    function updateSelectedInfo() {
+        document.getElementById('selectedDateDisplay').innerText = selectedDate || '선택되지 않음';
+        document.getElementById('selectedTimeDisplay').innerText = selectedTime || '선택되지 않음';
+    }
+
+    // 인원 수 증가/감소 버튼 이벤트
+    document.getElementById('increasePeople').addEventListener('click', function() {
+        if (selectedPeople < maxPeople) {
+            selectedPeople++;
+            document.getElementById('selectedPeople').innerText = selectedPeople;
         }
     });
 
-    document.getElementById('nextMonth').addEventListener('click', function() {
-        if (currentMonthIndex < 2) {
-            currentMonthIndex++;
-            generateCalendar(currentYear, currentMonth + currentMonthIndex);
+    document.getElementById('decreasePeople').addEventListener('click', function() {
+        if (selectedPeople > 1) {
+            selectedPeople--;
+            document.getElementById('selectedPeople').innerText = selectedPeople;
         }
     });
 
-    // 초기 달력 생성
-    generateCalendar(currentYear, currentMonth);
-});
+    // 토글 스위치 로직
+    document.getElementById('confirmSelection').addEventListener('change', function() {
+        document.getElementById('makeReservation').disabled = !this.checked;
+    });
 
-
-document.addEventListener('DOMContentLoaded', function() {
-    const monthYear = document.getElementById('reservationMonthYear');
-    const daysContainer = document.querySelector('.reservation-days');
-
-    const holidays = {
-        "2024-01-01": "New Year's Day",
-        "2024-03-01": "Independence Movement Day",
-        "2024-05-05": "Children's Day",
-        "2024-06-06": "Memorial Day",
-        "2024-08-15": "Liberation Day",
-        "2024-09-16": "Chuseok", // 추석 추가
-        "2024-09-17": "Chuseok", // 추석 추가
-        "2024-09-18": "Chuseok", // 추석 추가
-        "2024-10-03": "National Foundation Day",
-        "2024-10-09": "Hangeul Day",
-        "2024-12-25": "Christmas Day"
-    };
-
-    let currentMonthIndex = 0;  // 현재 달의 인덱스 (0: 현재 달, 1: 다음 달, 2: 다다음 달)
-    const currentDate = new Date();  // 현재 날짜
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();  // 현재 달 (0부터 시작)
-
-    function generateCalendar(year, month) {
-        daysContainer.innerHTML = '';
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        monthYear.textContent = `${year}년 ${month + 1}월`;
-
-        // 이전 달의 빈 칸 채우기
-        for (let i = 0; i < firstDay.getDay(); i++) {
-            const emptyDay = document.createElement('span');
-            daysContainer.appendChild(emptyDay);
+    // 예약하기 버튼 클릭 이벤트
+    document.getElementById('makeReservation').addEventListener('click', function() {
+        if (!selectedDate || !selectedTime) {
+            alert('날짜와 시간을 선택해주세요.');
+            return;
         }
 
-        for (let i = 1; i <= lastDay.getDate(); i++) {
-            const dayElement = document.createElement('span');
-            dayElement.textContent = i;
+        var reservationData = {
+            spaceno: "{{ rent.spaceno }}",
+            resdate: selectedDate,
+            restime: selectedTime,
+            people: selectedPeople,
+            price: "{{ rent.price }}"
+        };
 
-            const date = new Date(year, month, i);
-            const isPast = date < currentDate;
-
-            const dayString = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-            if (holidays[dayString]) {
-                dayElement.classList.add('holiday');
-                if (isPast) {
-                    dayElement.classList.add('past');
+        fetch('/api/reservation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reservationData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/payment?resno=' + data.resno;
+                } else {
+                    alert('예약에 실패했습니다. 다시 시도해주세요.');
                 }
-            } else if (date.getDay() === 0) {
-                dayElement.classList.add('sunday');
-                if (isPast) {
-                    dayElement.classList.add('past');
-                }
-            } else if (!isPast) {
-                dayElement.classList.add('available');
-                dayElement.addEventListener('click', function() {
-                    selectDate(dayString);
-                });
-            } else {
-                dayElement.classList.add('past');
-            }
-
-            daysContainer.appendChild(dayElement);
-        }
-    }
-
-    function selectDate(date) {
-        const allDays = document.querySelectorAll('.reservation-days span');
-        allDays.forEach(day => day.classList.remove('active'));
-
-        const [year, month, day] = date.split('-').map(Number);
-        const selectedDay = document.querySelector(`.reservation-days span:nth-child(${day + new Date(year, month - 1, 1).getDay()})`);
-        if (selectedDay) selectedDay.classList.add('active');
-    }
-
-    document.getElementById('prevMonth').addEventListener('click', function() {
-        if (currentMonthIndex > 0) {
-            currentMonthIndex--;
-            generateCalendar(currentYear, currentMonth + currentMonthIndex);
-        }
+            })
+            .catch(error => {
+                console.error('예약 처리 중 오류 발생:', error);
+                alert('예약 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+            });
     });
-
-    document.getElementById('nextMonth').addEventListener('click', function() {
-        if (currentMonthIndex < 2) {
-            currentMonthIndex++;
-            generateCalendar(currentYear, currentMonth + currentMonthIndex);
-        }
-    });
-
-    // 초기 달력 생성
-    generateCalendar(currentYear, currentMonth);
 });
-

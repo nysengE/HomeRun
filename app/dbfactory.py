@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from app.model import rental, sports, regions
+from app.model import rental, sports, regions, reservation, payment
 from app.model.regions import Region
-from app.model.sports import Sport
+from app.model.sports import Sports
 from app.setting import config
 
 engine = create_engine(config.dbconn, echo=True)
@@ -21,6 +21,8 @@ async def db_startup():
     rental.Base.metadata.create_all(engine)
     sports.Base.metadata.create_all(engine)
     regions.Base.metadata.create_all(engine)
+    reservation.Base.metadata.create_all(engine)
+    payment.Base.metadata.create_all(engine)
 
 
     # 세션 생성
@@ -43,7 +45,7 @@ async def db_startup():
             db.commit()
 
         # Sports 테이블 데이터 삽입
-        if db.query(Sport).count() == 0:  # 테이블에 데이터가 없는 경우에만 삽입
+        if db.query(Sports).count() == 0:  # 테이블에 데이터가 없는 경우에만 삽입
             sports_data = [
                 (1, '축구'),
                 (2, '야구'),
@@ -52,7 +54,7 @@ async def db_startup():
                 (5, '기타')
             ]
             for sportsno, name in sports_data:
-                sport = Sport(sportsno=sportsno, name=name)
+                sport = Sports(sportsno=sportsno, name=name)
                 db.add(sport)
             db.commit()
 

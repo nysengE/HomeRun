@@ -1,116 +1,204 @@
-/* 예약 페이지의 전용 스타일 - 구체적인 클래스 이름 사용 */
-.reservation-container {
-    display: flex;
-    justify-content: center; /* Center the calendar */
-    padding: 20px;
+/* 예약 페이지의 전용 스타일 */
+.reservation-calendar-section, .time-slot-section, .reservation-info-section {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.reservation-calendar-section {
-    width: 500px; /* Increased width to make the calendar 1.5 times bigger */
-    padding: 30px;
-    background-color: white; /* White background for contrast */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-}
-
-.reservation-month-navigation {
+.reservation-header {
+    text-align: left;
+    margin-bottom: 20px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    font-size: 36px; /* Adjust font size */
-    font-weight: bold; /* Bold font for emphasis */
-    color: #333; /* Darker color for text */
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
 }
 
-.reservation-month-navigation button {
-    background-color: transparent; /* Transparent background */
-    color: #333; /* Dark text color */
-    border: none; /* No border */
-    cursor: pointer; /* Pointer cursor on hover */
-    font-size: 24px; /* Font size for buttons */
+/* FullCalendar 기본 스타일 덮어쓰기 */
+.fc {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-.reservation-calendar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.fc-toolbar {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
 }
 
-.reservation-weekdays {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    font-weight: bold;
-    font-size: 24px; /* Slightly larger font size */
-    color: #666; /* Gray color for weekdays */
-    padding-bottom: 10px; /* Space below weekdays */
-    border-bottom: 1px solid #ddd; /* Divider line for clarity */
-}
-
-.reservation-days {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: start; /* Align items to the start to prevent gaps */
-    width: 100%;
-    padding-top: 10px; /* Space above days */
-}
-
-.reservation-days span {
-    display: flex; /* Use flex to center content */
-    justify-content: center;
-    align-items: center;
-    width: 14.28%; /* Adjust width for 7 days, prevents gaps */
-    height: 90px; /* Increased height for larger calendar */
-    margin-bottom: 15px; /* Increased space between rows */
+.fc-button {
+    background-color: #007bff !important;
+    color: white !important;
+    border: none !important;
+    padding: 5px 10px !important;
+    font-size: 14px !important;
+    border-radius: 5px !important;
     cursor: pointer;
-    border-radius: 50%; /* Circle shape for day elements */
-    font-size: 24px; /* Increased font size for days */
-    font-weight: bold; /* Bold font for days */
-    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
 }
 
-.reservation-days span.past {
-    color: #ccc;  /* Light gray for past dates */
-    cursor: not-allowed;  /* Not allowed cursor */
+.fc-button:hover {
+    background-color: #0056b3 !important;
 }
 
-.reservation-days span.active {
-    background-color: #d0e893; /* Blue background for active day */
-    color: white; /* White text for active day */
+.fc-daygrid-day {
+    background-color: white;
+    border: 1px solid #ddd;
+    cursor: pointer;
 }
 
-.reservation-days span.available {
-    color: #333; /* Dark text color for available days */
+.fc-daygrid-day:hover {
+    background-color: #f9f9f9;
 }
 
-.reservation-days span.available:hover {
-    background-color: #e6f0ff; /* Light blue on hover */
-    color: #007bff; /* Blue text on hover */
+.fc-day-today {
+    background-color: #e6f7ff !important;
+    border: 1px solid #007bff !important;
 }
 
-.reservation-days span.unavailable {
-    color: #ddd; /* Light gray for unavailable days */
-    cursor: not-allowed;
+.fc-event {
+    background-color: #ffcc00 !important;
+    border: none !important;
+    color: white !important;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    font-weight: bold;
 }
 
-.reservation-days span.holiday {
-    color: red; /* Red color for holidays */
+.fc-daygrid-day-number {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
 }
 
-.reservation-days span.holiday.past {
-    color: #ffc0c0; /* Light red for past holidays */
+.fc-daygrid-cell {
+    height: 80px; /* 셀 높이를 늘려서 더 넓게 보이도록 */
 }
 
-.reservation-days span.sunday {
-    color: red; /* Red color for Sundays */
+.fc-scrollgrid-section-header td {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
 }
 
-.reservation-days span.sunday.past {
-    color: #ffc0c0; /* Light red for past Sundays */
+.fc-scrollgrid {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* 스타일이 적용되지 않는 버튼을 위한 추가 스타일 */
-button {
-    outline: none;
+.time-slot-selection h3 {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.time-slot-selection .btn {
+    width: 60px;
+    height: 40px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.package-option {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.package-option label {
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.package-option p {
+    margin-top: 5px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+.quantity-controls button {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-color: #ffcc00;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 3px;
+}
+
+.total-price {
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+}
+
+.reservation-button {
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+}
+
+.reservation-button:hover {
+    background-color: #0056b3;
+}
+/* reservation.css 또는 당신의 커스텀 CSS 파일에 추가하세요 */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
 }

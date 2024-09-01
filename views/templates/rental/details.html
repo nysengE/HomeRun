@@ -41,9 +41,9 @@
 {#                    <img src="/static/img/맵마커.png" alt="마커">#}
                     <div class="price">
                         <h4>{{ rent.price }}원 / 패키지 ({{ rent.people }}명)</h4>
-                        <a href="/reservation" class="btn btn-primary" onclick="processPayment()">예약하기</a>
                     </div>
-                    <p>종목: {{ rent.sport.name }}</p>
+                    <p>종목: {{ rent.sports.name }}</p>
+                        <a href="/reservation/{{ rent.spaceno }}" class="btn btn-primary">예약하기</a>
                 </div>
             </div>
 

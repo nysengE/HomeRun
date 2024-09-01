@@ -44,6 +44,7 @@ document.getElementById('price').addEventListener('blur', function(e) {
 
 // 폼 제출 시 유효성 검사
 document.querySelector('form[name="addfrm"]').addEventListener('submit', function(e) {
+    const availableDates = document.getElementById('available_dates').value;
     const file1 = document.getElementById('file1');
     const priceInput = document.getElementById('price');
     const latitude = document.getElementById('latitude').value;
@@ -63,6 +64,13 @@ document.querySelector('form[name="addfrm"]').addEventListener('submit', functio
     // 지오코딩 확인
     if (!latitude || !longitude) {
         e.preventDefault();
-        alert('주소를 입력하여 지오코딩을 완료하세요.');
+        alert('주소확인을 눌러 정확한 주소인지 확인하세요.');
+    }
+
+    // 사용 가능 날짜 확인
+    if (!availableDates) {
+        e.preventDefault();
+        alert('사용 가능 날짜를 선택하세요.');
+        return;
     }
 });

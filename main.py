@@ -37,6 +37,7 @@ app.mount('/static', StaticFiles(directory='views/static'), name='static')
 # Static files 설정
 app.mount("/cdn/img", StaticFiles(directory="C:/java/nginx-1.26.2/html/cdn/img"), name="cdn")
 
+app.include_router(reservation_router, prefix="/api")
 app.include_router(club_router, prefix='/club')
 app.include_router(management_router, prefix='/management')
 app.include_router(mypage_router, prefix='/mypage')

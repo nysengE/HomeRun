@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Form, UploadFile, File
 from typing import List
+
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
@@ -38,8 +40,14 @@ async def add_rental(request: Request, rental: NewRental = Depends(get_rental_da
                      files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
     try:
         attachs = await process_upload(files)
+        if not hasattr(rental, 'available_dates'):
+            raise HTTPException(status_code=400, detail="Available dates are required.")
         if RentalService.insert_rental(rental, attachs, db):
             return RedirectResponse('/rental/', status_code=303)
+    except SQLAlchemyError as ex:
+        print(f'Database error occurred: {str(ex)}')
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Database Error")
     except Exception as ex:
         print(f'▷▷▷ add_rental 오류 발생 : {str(ex)}')
         raise HTTPException(status_code=500, detail="Internal Server Error")
