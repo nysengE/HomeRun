@@ -4,6 +4,7 @@ from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 from app.dbfactory import get_db
 from app.model.rental import Rental
+from datetime import datetime
 
 # HTML 템플릿 렌더링 라우터
 reservation_router = APIRouter()
@@ -37,12 +38,23 @@ async def confirm_reservation(
         # time 파라미터를 받아서 selectedTimes로 변환
         selected_times = time.split(',') if time else []
 
+        # 시/분 형식으로 변환
+        formatted_times = []
+        for t in selected_times:
+            try:
+                formatted_time = datetime.strptime(t.strip(), "%H:%M:%S").strftime("%H:%M")
+                formatted_times.append(formatted_time)
+            except ValueError as e:
+                print(f"Time conversion error: {e}, time: {t}")
+                raise HTTPException(status_code=400, detail="Invalid time format")
+
+
         # 예약 정보를 결제 페이지로 전달
         return templates.TemplateResponse('payment/payment.html', {
             'request': req,
             'rent': rental,
             'date': date,
-            'time': time,  # 서버에서 수신한 time 문자열 그대로 전달
+            'time': ', '.join(formatted_times),  # 시/분 형식의 시간 문자열
             'people': people,
             'selectedTimes': selected_times  # 선택한 시간을 리스트로 전달
         })

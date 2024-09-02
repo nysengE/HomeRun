@@ -44,18 +44,3 @@ class RentalAttach(Base):
 
 
 
-# class RentalAvail(Base):
-#     __tablename__ = 'rentalavail'
-#
-#     availno: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
-#     availdate: Mapped[datetime] = mapped_column(DATE)
-#     starttime: Mapped[time] = mapped_column(TIME)  # 시작 시간
-#     endtime: Mapped[time] = mapped_column(TIME)    # 종료 시간
-#     availstatus: Mapped[int] = mapped_column(INTEGER, default=1)
-#     spaceno: Mapped[int] = mapped_column(INTEGER, ForeignKey('rental.spaceno'))
-#     rental = relationship('Rental', back_populates='avail_dates')  # Rental과의 관계 설정
-#
-#
-#
-#
-#

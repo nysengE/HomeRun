@@ -21,7 +21,7 @@ from app.routes.rental import rental_router
 from app.routes.reservation import reservation_router
 from app.routes.user import user_router
 from app.service.rental import RentalService, process_upload
-
+from app.utils import format_time
 
 
 # Lifespan 관리 함수 정의
@@ -58,7 +58,7 @@ async def index(req: Request):
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
-
+templates.env.filters['format_time'] = format_time
 
 
 if __name__ == '__main__':

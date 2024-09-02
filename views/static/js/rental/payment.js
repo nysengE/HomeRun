@@ -15,14 +15,18 @@ document.addEventListener('DOMContentLoaded', function() {
         IMP.init('imp77608186'); // 본인의 가맹점 식별코드로 변경해야 합니다.
 
         // 결제 금액 가져오기
-        var amount = parseInt(document.getElementById('totalPrice').innerText.replace(',', '').replace('원', ''), 10);
+        var amount = parseInt(document.getElementById('totalPrice').innerText.replace(/[^0-9]/g, ''), 10);
+
+        // 예약 제목 가져오기
+        var rentTitle = document.querySelector('[data-rent-title]').dataset.rentTitle;
+
 
         // 결제 요청
         IMP.request_pay({
             pg: 'html5_inicis', // 결제 창에 표시할 PG사
             pay_method: 'card', // 결제 방법
             merchant_uid: 'merchant_' + new Date().getTime(), // 주문 번호
-            name: '{{ rent.title }}', // 주문명
+            name: rentTitle, // 주문명
             amount: amount, // 결제 금액
             buyer_email: document.getElementById('email').value,
             buyer_name: document.getElementById('name').value,
@@ -33,8 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 fetch('/pay/complete', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}' // 만약 CSRF 토큰이 필요하다면 추가
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ imp_uid: rsp.imp_uid })
                 })
@@ -42,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     .then(data => {
                         if (data.message === "결제가 완료되었습니다.") {
                             alert('결제가 완료되었습니다.');
-                            window.location.href = '/confirmation'; // 결제 확인 페이지로 이동
+                            window.location.href = '/rental'; // 결제 확인 페이지로 이동
                         } else {
                             alert('결제 검증에 실패했습니다.');
                         }

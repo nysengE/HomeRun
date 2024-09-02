@@ -171,7 +171,15 @@
 
             function updateSelectedInfo() {
                 document.getElementById('selectedDateDisplay').innerText = selectedDate || '선택되지 않음';
-                document.getElementById('selectedStartTimeDisplay').innerText = selectedTimes.join(' / ') || '선택되지 않음';
+
+                // 선택된 시간 포맷 수정 (HH:mm 형식으로 출력)
+                var formattedTimes = selectedTimes.map(function(time) {
+                    var [hours, minutes] = time.split(':');
+                    return `${hours}:${minutes}`; // 시/분 형식으로 출력
+                });
+
+                document.getElementById('selectedStartTimeDisplay').innerText = formattedTimes.join(' / ') || '선택되지 않음';
+
                 var totalPrice = pricePerSlot * selectedTimes.length;
                 document.getElementById('selectedPriceDisplay').innerText = totalPrice + '원';
 
