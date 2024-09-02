@@ -1,4 +1,9 @@
 const checkpwdfrm = document.checkpwdfrm;
+const modifyuserfrm = document.getElementById('modifyuser-container');
+const checkpwdContainer = document.getElementById('checkpwd-container');
+
+modifyuserfrm.style.display = 'none';
+checkpwdContainer.style.display = 'block';
 
 checkpwdfrm.addEventListener('submit', async(e) => {
     e.preventDefault();
@@ -24,9 +29,11 @@ checkpwdfrm.addEventListener('submit', async(e) => {
         if (result.success) {
             // 비밀번호가 맞으면 수정 작업 수행
             alert('비밀번호가 확인되었습니다.');
-            // 여기서 추가로 비밀번호 수정 요청 등을 처리할 수 있습니다.
+            // modifyuserfrm.style.display = 'block';
+            // checkpwdfrm.style.display = 'none';
+            modifyuserfrm.style.display = 'block';
+            checkpwdContainer.style.display = 'none';
         } else {
-            // 비밀번호가 일치하지 않으면 알림 표시
             alert('비밀번호가 일치하지 않습니다. 다시 시도해 주세요.');
         }
     } catch (error) {

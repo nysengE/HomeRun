@@ -37,13 +37,17 @@ async def userinfo(req: Request, db: Session = Depends(get_db)):
     except Exception as ex:
         print(f'▷▷▷ mypage userinfo 오류 발생 : {str(ex)}')
 
-@mypage_router.post('/checkpwd', response_class=HTMLResponse)
+@mypage_router.post('/checkpwd')
 async def checkpwd(req: Request, passwd: CheckUser,  db: Session = Depends(get_db)):
     try:
 
         userid = "dangdang"
 
         password = UserpageService.select_pwd(userid, db)
+
+        print('password: ', password)
+
+        print('passwd: ', passwd.passwd)
 
         if password is None:
             return JSONResponse(content={'success': False})
