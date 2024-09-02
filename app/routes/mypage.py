@@ -140,14 +140,13 @@ async def deletefile(request: Request, db: Session = Depends(get_db)):
         image_url = data.get('image_url')
         # print('image_url: ',image_url)
 
-        # # 서버에서 이미지 삭제 로직 (파일 시스템 또는 클라우드 저장소)
-        # # 예를 들어, 파일 시스템에서 삭제:
+        # 서버에서 이미지 삭제 로직
         path = urlparse(image_url).path
         # print('path: ', path)
 
         filename = Path(path).name
 
-        filepath = Path('homerun/img')/filename
+        filepath = Path('C:/Java/nginx-1.26.2/nginx-1.26.2/html/homerun/img')/filename
 
         print('filepath: ',filepath)
 

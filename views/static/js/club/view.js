@@ -7,6 +7,7 @@ prebtn.addEventListener('click', () => {
 
 // 동호회 번호 (clubno) 가져오기
 const clubno = parseInt(document.querySelector('#clubno').value);
+console.log('clubno: ', clubno);
 
 
 // 회원 아이디 (userid) 가져오기

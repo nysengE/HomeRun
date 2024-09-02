@@ -15,10 +15,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // 파일 선택 시 기존 이미지 제거
-    fileInput.addEventListener('change', () => {
+    fileInput.addEventListener('change', async () => {
         try {
             // 이미지 삭제 요청 보내기
-            const response = fetch('/mypage/clubwrite/deletefile', {
+            const response = await fetch('/mypage/clubwrite/deletefile', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
