@@ -12,7 +12,7 @@ from starlette.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
 
 from app.dbfactory import get_db
-from app.schema.mypage.userpage import RequestClubno, ModifyClub
+from app.schema.mypage.userpage import RequestClubno, ModifyClub, CheckUser
 from app.service.userpage import UserpageService, get_club_data, process_upload
 
 mypage_router = APIRouter()
@@ -20,8 +20,44 @@ templates = Jinja2Templates(directory='views/templates')
 
 
 @mypage_router.get('/userinfo', response_class=HTMLResponse)
-async def userinfo(req: Request):
-    return templates.TemplateResponse('mypage/user/userinfo.html', {'request': req})
+async def userinfo(req: Request, db: Session = Depends(get_db)):
+    try:
+        # userid = session['userid']
+        userid = 'dangdang'
+        userdata = UserpageService.select_users(userid, db)
+
+        if userdata is None:
+            userdata = []
+
+        passwd = userdata[0].passwd
+
+        return templates.TemplateResponse('mypage/user/userinfo.html',
+                                          {'request': req, 'userdata': userdata, 'passwd': passwd})
+
+    except Exception as ex:
+        print(f'▷▷▷ mypage userinfo 오류 발생 : {str(ex)}')
+
+@mypage_router.post('/checkpwd', response_class=HTMLResponse)
+async def checkpwd(req: Request, passwd: CheckUser,  db: Session = Depends(get_db)):
+    try:
+
+        userid = "dangdang"
+
+        password = UserpageService.select_pwd(userid, db)
+
+        if password is None:
+            return JSONResponse(content={'success': False})
+
+        # 비밀번호 확인
+        if passwd.passwd == password:
+            return JSONResponse(content={'success': True})
+        else:
+            return JSONResponse(content={'success': False})
+
+
+    except Exception as ex:
+        print(f'▷▷▷ mypage clubwriteapply 오류 발생 : {str(ex)}')
+
 
 @mypage_router.get('/clubwrite', response_class=HTMLResponse)
 async def clubwrite(req: Request, db: Session = Depends(get_db)):

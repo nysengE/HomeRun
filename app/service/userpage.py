@@ -8,6 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.model.club import Apply, Club, ClubAttach
 from app.model.regions import Regions
 from app.model.sports import Sports
+from app.model.users import Users
 from app.schema.mypage.userpage import ModifyClub
 
 UPLOAD_PATH = 'C:/Java/nginx-1.26.2/nginx-1.26.2/html/homerun/img'
@@ -213,3 +214,37 @@ class UserpageService:
             print(f'▶▶▶ selectone_club 오류 발생: {str(ex)}')
             db.rollback()
 
+    @staticmethod
+    def select_users(userid, db):
+        try:
+
+            stmt = select(Users.userno,
+                          Users.userid,
+                          Users.passwd,
+                          Users.name,
+                          Users.email,
+                          Users.phone,
+                          Users.birth
+                          ).where(Users.userid == userid)
+
+            result = db.execute(stmt).fetchall()
+
+
+            return result
+
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ select_users 오류 발생: {str(ex)}')
+            db.rollback()
+
+    def select_pwd(userid, db):
+        try:
+
+            stmt = select(Users.passwd).where(Users.userid == userid)
+
+            result = db.execute(stmt).scalar_one_or_none()
+
+            return result
+
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ select_pwd 오류 발생: {str(ex)}')
+            db.rollback()

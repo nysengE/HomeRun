@@ -4,31 +4,6 @@
 동호회 등록 페이지
 {% endblock %}
 
-{% block style %}
-<style>
-    main {
-        padding: 15px;
-    }
-
-    img {
-        width: 500px;
-        height: 300px;
-    }
-
-     .form-container {
-         border: 1px solid #ddd;
-         border-radius: 8px;
-         padding: 20px;
-         background-color: #f9f9f9;
-     }
-
-    .form-control {
-        border: 1px solid #ced4da;
-    }
-
-</style>
-{% endblock %}
-
 {% block link %}
 <link rel="stylesheet" href="/static/css/club/view.css" />
 {% endblock %}
@@ -72,8 +47,8 @@
                         {% if "dangdang" != c.userid%}
                             {% if "dangdang" != applyuid %}
                         <!--            로그인한 아이디가 작성자와 다를 경우 처리하기-->
+                        <input type="hidden" id="clubno" name="clubno" value="{{ clubno }}">
                         <button type="button" class="btn btn-primary" id="applybtn">신청하기</button>
-                        <input type="hidden" id="clubno" value="{{ clubno }}">
                             {% endif %}
                         {% endif %}
                     </div>
@@ -104,7 +79,7 @@
                         <div class="d-flex justify-content-end w-15"><p class="px-2">{{ re[0].regdate }}</p></div>
                     <!-- 대댓글 Modal 트리거 버튼 -->
                         {% if re[0].rno == re[0].rpno %}
-                        <button type="submit" id="rreplyadd" class="btn btn-danger mx-3 w-20" data-bs-toggle="modal" data-bs-target="#replyModal" onclick="addrreply('{{ re[0].rno }}')">
+                        <button type="button" id="rreplyadd" class="btn btn-danger mx-3 w-20" data-bs-toggle="modal" data-bs-target="#replyModal" onclick="addrreply('{{ re[0].rno }}')">
                             추가
                         </button>
                         {% endif %}
@@ -126,10 +101,10 @@
                         <textarea class="form-control" id="reply" name="reply" rows="1" required></textarea>
                     </div>
                     <div class="col-md-2 text-start">
+                        <!-- hidden -->
+                        <input type="hidden" name="clubno" id="hiddenclubno" value="{{ clubno }}">
                         <button type="submit" class="btn btn-primary mt-4 replybtn">등록</button>
                     </div>
-                    <!-- hidden -->
-                    <input type="hidden" name="clubno" value="{{ clubno }}">
                 </div>
             </form>
         </div>
@@ -165,7 +140,6 @@
                 </div>
             </div>
         </div>
-
     </main>
 </div>
 {% endblock %}

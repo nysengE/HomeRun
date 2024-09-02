@@ -13,48 +13,61 @@
         <div class="px-0 mx-0">
             {% include 'mypage/user/userside.html' %}
         </div>
-
-        <div class="content mx-0 d-flex flex-column px-3" style="width: 900px">
+        <div class="d-flex justify-content-center flex-column">
             <h2 class="p-3">회원 정보</h2>
-            <form name="modifyuserfrm">
-                <table class="table table-borderless">
-                    <tbody>
-                    <!-- 이름 -->
-                    <tr>
-                        <th scope="row">이름</th>
-                        <td>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="이름을 입력하세요">
-                        </td>
-                    </tr>
+            <!-- 비밀번호 확인 폼 -->
+            <div class="d-flex justify-content-center flex-column mx-5" style="width: 300px; height: 500px;">
+                <form name="checkpwdfrm" id="checkpwdfrm" >
+                    <div class="mb-3 text-center">
+                        <label for="password" class="form-label">비밀번호를 입력하세요.</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+                    </div>
+                    <input type="hidden" id="hiddenpwd" name="hiddenpwd" value="{{ passwd }}">
+                    <button type="submit" class="btn btn-primary">확인</button>
+                </form>
+            </div>
 
-                    <!-- 이메일 -->
-                    <tr>
-                        <th scope="row">이메일</th>
-                        <td>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력하세요">
-                        </td>
-                    </tr>
+            <div class="content mx-0 d-flex flex-column px-3" style="width: 900px">
+                <form name="modifyuserfrm" style="display: none;">
+                    <table class="table table-borderless">
+                        <tbody>
+                        <!-- 이름 -->
+                        <tr>
+                            <th scope="row">이름</th>
+                            <td>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="이름을 입력하세요">
+                            </td>
+                        </tr>
 
-                    <!-- 전화번호 -->
-                    <tr>
-                        <th scope="row">전화번호</th>
-                        <td>
-                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="전화번호를 입력하세요">
-                        </td>
-                    </tr>
+                        <!-- 이메일 -->
+                        <tr>
+                            <th scope="row">이메일</th>
+                            <td>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력하세요">
+                            </td>
+                        </tr>
 
-                    <!-- 생년월일 -->
-                    <tr>
-                        <th scope="row">생년월일</th>
-                        <td>
-                            <input type="date" class="form-control" id="birthdate" name="birthdate">
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        <!-- 전화번호 -->
+                        <tr>
+                            <th scope="row">전화번호</th>
+                            <td>
+                                <input type="tel" class="form-control" id="phone" name="phone" placeholder="전화번호를 입력하세요">
+                            </td>
+                        </tr>
 
-                <button type="submit" class="btn btn-primary">수정하기</button>
-            </form>
+                        <!-- 생년월일 -->
+                        <tr>
+                            <th scope="row">생년월일</th>
+                            <td>
+                                <input type="date" class="form-control" id="birthdate" name="birthdate">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <button type="submit" class="btn btn-primary">수정하기</button>
+                </form>
+            </div>
         </div>
     </main>
 {% endblock %}

@@ -18,3 +18,6 @@ class ModifyUser(BaseModel):
     phone: str
     birth: str
 
+class CheckUser(BaseModel):
+    passwd: str
+

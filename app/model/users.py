@@ -1,11 +1,12 @@
-from datetime import datetime
+from datetime import datetime, date
 
+from sqlalchemy import Date
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.model.base import Base
 
 
-class Regions(Base):
+class Users(Base):
     __tablename__ = 'users'
 
     userno: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
