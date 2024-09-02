@@ -6,13 +6,16 @@
 
 {% block link %}
     <link rel="stylesheet" href="/static/css/rental/add.css" />
+    <!-- jQuery UI Timepicker Addon CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css" />
 {% endblock %}
 
 {% block main %}
     <main>
         <div class="mt-5">
             <h1 class="mb-4">공간대여 글 등록 페이지</h1>
-            <form name="addfrm" enctype="multipart/form-data" method="post">
+            <!-- action에 라우터의 POST 엔드포인트 설정 -->
+            <form name="addfrm" enctype="multipart/form-data" method="post" action="/rental/add">
                 <table class="table table-form">
                     <tr>
                         <td class="label-cell">
@@ -29,8 +32,6 @@
                             <input type="hidden" name="userid" id="userid">
                         </td>
                     </tr>
-
-
                     <tr>
                         <td class="label-cell">
                             <label for="sigunguno" class="form-label">지역</label>
@@ -44,16 +45,16 @@
                             </select>
                         </td>
                         <td class="label-cell">
-                            <label for="sports" class="form-label">운동 종목</label>
+                            <label for="sportsno" class="form-label">운동 종목</label>
                         </td>
                         <td class="input-cell">
-                            <select class="form-select" name="sportsno" id="sports" required>
+                            <select class="form-select" name="sportsno" id="sportsno" required>
                                 <option value="" disabled selected>운동 종목을 선택하세요</option>
-                                <option value=1>축구</option>
-                                <option value=2>야구</option>
-                                <option value=3>농구</option>
-                                <option value=4>테니스</option>
-                                <option value=5>기타</option>
+                                <option value="1">축구</option>
+                                <option value="2">야구</option>
+                                <option value="3">농구</option>
+                                <option value="4">테니스</option>
+                                <option value="5">기타</option>
                             </select>
                         </td>
                         <td class="label-cell">
@@ -65,7 +66,6 @@
                                 <span class="input-group-text">원</span>
                             </div>
                         </td>
-
                     </tr>
                     <tr>
                         <td class="label-cell">
@@ -78,7 +78,6 @@
                             <input type="hidden" name="latitude" id="latitude">
                             <input type="hidden" name="longitude" id="longitude">
                         </td>
-
                         <td class="label-cell">
                             <label for="people" class="form-label">인원수</label>
                         </td>
@@ -89,49 +88,39 @@
                     <!-- (날짜 선택 UI) -->
                     <tr>
                         <td class="label-cell">
-                            <label for="available_dates" class="form-label">사용 가능 날짜</label>
+                            <label for="availdate" class="form-label">사용 가능 날짜</label>
                         </td>
-                        <td class="input-cell" colspan="5">
-                            <input type="text" class="form-control" name="available_dates" id="available_dates" placeholder="날짜를 선택하세요" readonly required>
+                        <td class="input-cell" colspan="3">
+                            <input type="text" class="form-control" name="availdate" id="availdate" placeholder="날짜를 선택하세요" readonly required>
                         </td>
                     </tr>
-                    <!-- 시간 선택 UI -->
+                    <!-- 시간 선택 UI 추가 -->
                     <tr>
                         <td class="label-cell">
-                            <label for="starttime" class="form-label">시작 시간</label>
+                            <label for="availtime" class="form-label">사용 가능 시간</label>
                         </td>
-                        <td class="input-cell">
-                            <input type="time" class="form-control" name="starttime" id="starttime" required>
-                        </td>
-                        <td class="label-cell">
-                            <label for="endtime" class="form-label">종료 시간</label>
-                        </td>
-                        <td class="input-cell">
-                            <input type="time" class="form-control" name="endtime" id="endtime" required>
+                        <td class="input-cell" colspan="3">
+                            <input type="text" class="form-control" name="availtime" id="availtime" placeholder="시간을 선택하세요" readonly required>
                         </td>
                     </tr>
-
-                    <!-- 내용 -->
                     <tr>
                         <td class="label-cell">
-                            <label for="content" class="form-label">내용</label>
+                            <label for="contents" class="form-label">내용</label>
                         </td>
                         <td class="input-cell" colspan="5">
-                            <textarea class="form-control" name="contents" id="content" rows="4" placeholder="내용을 입력하세요" required></textarea>
+                            <textarea class="form-control" name="contents" id="contents" rows="4" placeholder="내용을 입력하세요" required></textarea>
                         </td>
                     </tr>
-
                     <!-- 첨부파일 -->
                     <tr>
                         <td class="label-cell">
-                            <label class="form-label">첨부파일</label>
+                            <label for="file1" class="form-label">첨부파일</label>
                         </td>
                         <td class="input-cell" colspan="5">
                             <input type="file" class="form-control mb-2" name="files" id="file1" required>
                             <input type="file" class="form-control" name="files" id="file2">
                         </td>
                     </tr>
-
                     <tr>
                         <td colspan="6" class="text-center">
                             <button type="submit" class="btn btn-primary" id="addbtn">등록하기</button>
@@ -140,11 +129,8 @@
                 </table>
             </form>
         </div>
-
     </main>
-
 {% endblock %}
-
 
 {% block script %}
     <script src="/static/js/rental/add.js"></script>
@@ -152,33 +138,41 @@
     <!-- jQuery 및 jQuery UI 추가 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <!-- jQuery UI Timepicker Addon JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <script>
         $(document).ready(function () {
             var selectedDates = [];
 
-            $("#available_dates").datepicker({
+            $("#availdate").datepicker({
                 dateFormat: "yy-mm-dd",
                 minDate: new Date(),
                 maxDate: "+3M",
                 onSelect: function (dateText, inst) {
-                    // 날짜 추가 및 제거 로직
                     if (selectedDates.includes(dateText)) {
-                        // 이미 선택된 날짜를 클릭하면 제거
                         selectedDates = selectedDates.filter(date => date !== dateText);
                     } else {
-                        // 선택한 날짜 추가
                         selectedDates.push(dateText);
                     }
 
-                    // 선택된 날짜들을 쉼표로 구분하여 필드에 저장
-                    $('#available_dates').val(selectedDates.join(', '));
+                    $('#availdate').val(selectedDates.join(', '));
                 }
             });
-        });
 
+            // jQuery UI Timepicker 설정
+            $("#availtime").timepicker({
+                timeFormat: "HH:mm",
+                interval: 60,
+                minTime: "00:00",
+                maxTime: "23:59",
+                defaultTime: "00:00",
+                startTime: "00:00",
+                dynamic: false,
+                dropdown: true,
+                scrollbar: true
+            });
+        });
     </script>
 {% endblock %}
-
-

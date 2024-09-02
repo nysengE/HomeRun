@@ -9,5 +9,5 @@ class Region(Base):
 
     sigunguno: Mapped[int] = mapped_column(INTEGER, primary_key=True, autoincrement=True, index=True)
     name: Mapped[str] = mapped_column(VARCHAR(100))
-
+    rental = relationship("Rental", back_populates="sigungu")
 

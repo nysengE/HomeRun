@@ -1,3 +1,4 @@
+from datetime import date, time
 from typing import List
 
 from pydantic import BaseModel
@@ -12,7 +13,8 @@ class NewRental(BaseModel):
     longitude: float  # 추가된 필드
     sportsno: int
     sigunguno: int
-    available_dates: List[str]  # 문자열 리스트로 변경
+    availdate: date
+    availtime: time
 
     class Config:
         from_attributes = True

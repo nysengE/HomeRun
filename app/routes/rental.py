@@ -34,23 +34,54 @@ async def read_add(request: Request, db: Session = Depends(get_db)):
         print(f'오류 발생: {str(ex)}')
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-# 렌탈 항목 추가 처리
-@rental_router.post("/add", response_class=HTMLResponse)
-async def add_rental(request: Request, rental: NewRental = Depends(get_rental_data),
-                     files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
+
+@rental_router.post("/add", response_class=RedirectResponse)
+async def add_rental(
+        title: str = Form(...),
+        contents: str = Form(...),
+        people: int = Form(...),
+        price: str = Form(...),  # 문자열로 수신
+        address: str = Form(...),
+        latitude: float = Form(...),
+        longitude: float = Form(...),
+        sportsno: int = Form(...),
+        sigunguno: int = Form(...),
+        availdate: str = Form(...),
+        availtime: str = Form(...),
+        files: List[UploadFile] = File([]),
+        db: Session = Depends(get_db)
+):
+    # 쉼표 제거 및 정수로 변환
     try:
-        attachs = await process_upload(files)
-        if not hasattr(rental, 'available_dates'):
-            raise HTTPException(status_code=400, detail="Available dates are required.")
-        if RentalService.insert_rental(rental, attachs, db):
-            return RedirectResponse('/rental/', status_code=303)
+        price = int(price.replace(',', ''))
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid price format. Please provide a valid integer.")
+
+    # 나머지 코드 진행...
+    attachs = await process_upload(files)
+    rental_data = {
+        "title": title,
+        "contents": contents,
+        "people": people,
+        "price": price,
+        "address": address,
+        "latitude": latitude,
+        "longitude": longitude,
+        "sportsno": sportsno,
+        "sigunguno": sigunguno,
+        "availdate": availdate,
+        "availtime": availtime
+    }
+
+    try:
+        RentalService.insert_rental(rental_data, attachs, db)
+        return RedirectResponse('/rental/', status_code=303)
     except SQLAlchemyError as ex:
-        print(f'Database error occurred: {str(ex)}')
         db.rollback()
         raise HTTPException(status_code=500, detail="Database Error")
     except Exception as ex:
-        print(f'▷▷▷ add_rental 오류 발생 : {str(ex)}')
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
 
 # 렌탈 항목 상세 보기
 @rental_router.get('/details/{spaceno}', response_class=HTMLResponse)

@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from app.model import rental, sports, regions, reservation, payment
+from app.model import rental, sports, regions, payment
 from app.model.regions import Region
 from app.model.sports import Sports
 from app.setting import config
@@ -21,7 +21,6 @@ async def db_startup():
     rental.Base.metadata.create_all(engine)
     sports.Base.metadata.create_all(engine)
     regions.Base.metadata.create_all(engine)
-    reservation.Base.metadata.create_all(engine)
     payment.Base.metadata.create_all(engine)
 
 

@@ -7,31 +7,20 @@ from fastapi.responses import JSONResponse
 
 from app.dbfactory import get_db
 from app.model.rental import Rental
-from app.model.reservation import Reservation
 
 app = FastAPI()
 
 payment_router = APIRouter()
 templates = Jinja2Templates(directory='views/templates')
 
-@payment_router.get('/{resno}', response_class=HTMLResponse)
-async def payment(req: Request, resno: int, db: Session = Depends(get_db)):
-    try:
-        reservation = db.query(Reservation).filter(Reservation.resno == resno).first()
-        if not reservation:
-            raise HTTPException(status_code=404, detail="Reservation not found")
 
-        rental = db.query(Rental).filter(Rental.spaceno == reservation.spaceno).first()
-        if not rental:
-            raise HTTPException(status_code=404, detail="Rental not found")
 
-        return templates.TemplateResponse(
-            'payment/payment.html',
-            {'request': req, 'rent': rental, 'reservation': reservation}
-        )
-    except Exception as ex:
-        print(f'Error fetching payment data: {str(ex)}')
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+@payment_router.get('/', response_class=HTMLResponse)
+async def club(req: Request):
+    return templates.TemplateResponse('payment/payment.html', {'request': req})
+
+
+
 
 
 # 아임포트 API 설정
