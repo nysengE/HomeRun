@@ -89,3 +89,15 @@ async def add_rental(
         raise HTTPException(status_code=500, detail="Database Error")
     except Exception as ex:
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@rental_router.get('/details/{spaceno}', response_class=HTMLResponse)
+async def detail_rental(req: Request, spaceno: int, db: Session = Depends(get_db)):
+    try:
+        rent = RentalService.select_one_rental(spaceno, db)
+        if not rent:
+            raise HTTPException(status_code=404, detail="Rental not found")  # 스페이스 번호에 해당하는 항목이 없을 때
+        return templates.TemplateResponse('rental/details.html', {'request': req, 'rent': rent})
+    except Exception as ex:
+        print(f'▷▷▷ detail_rental 오류 발생 : {str(ex)}')
+        raise HTTPException(status_code=500, detail="Internal Server Error")
