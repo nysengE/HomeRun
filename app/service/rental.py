@@ -50,21 +50,21 @@ class RentalService:
     def insert_rental(rent, attachs, db: Session):
         try:
             stmt = insert(Rental).values(
-                title=rent.title,  # 점 표기법으로 수정
-                contents=rent.contents,
-                people=rent.people,
-                price=rent.price,
-                address=rent.address,
-                latitude=rent.latitude,
-                longitude=rent.longitude,
-                sportsno=rent.sportsno,
-                sigunguno=rent.sigunguno,
+                title=rent['title'],  # 점 표기법으로 수정
+                contents=rent['contents'],
+                people=rent['people'],
+                price=rent['price'],
+                address=rent['address'],
+                latitude=rent['latitude'],
+                longitude=rent['longitude'],
+                sportsno=rent['sportsno'],
+                sigunguno=rent['sigunguno'],
+                availdate=rent['availdate'],  # 추가된 필드
+                availtime=rent['availtime'],  # 추가된 필드
                 regisdate=datetime.now()
             )
             result = db.execute(stmt)
             inserted_spaceno = result.inserted_primary_key[0]
-
-
 
             # 첨부 파일 저장
             for attach in attachs:
@@ -83,6 +83,7 @@ class RentalService:
             print(f'▶▶▶ insert_rental에서 오류 발생: {str(ex)}')
             db.rollback()
             raise
+
 
 
     @staticmethod

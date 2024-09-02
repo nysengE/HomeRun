@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Form, UploadFile, File
 from typing import List
-
+from datetime import datetime, time
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from starlette.responses import HTMLResponse, RedirectResponse
@@ -57,6 +57,14 @@ async def add_rental(
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid price format. Please provide a valid integer.")
 
+    # 날짜와 시간 변환
+    try:
+
+        availdate = datetime.strptime(availdate, '%Y-%m-%d').date()  # 날짜 변환
+        availtime = datetime.strptime(availtime, '%H:%M').time()  # 시간 변환
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date or time format. Please use correct format.")
+
     # 나머지 코드 진행...
     attachs = await process_upload(files)
     rental_data = {
@@ -80,15 +88,4 @@ async def add_rental(
         db.rollback()
         raise HTTPException(status_code=500, detail="Database Error")
     except Exception as ex:
-        raise HTTPException(status_code=500, detail="Internal Server Error")
-
-
-# 렌탈 항목 상세 보기
-@rental_router.get('/details/{spaceno}', response_class=HTMLResponse)
-async def detail_rental(req: Request, spaceno: int, db: Session = Depends(get_db)):
-    try:
-        rent = RentalService.select_one_rental(spaceno, db)
-        return templates.TemplateResponse('rental/details.html', {'request': req, 'rent': rent})
-    except Exception as ex:
-        print(f'▷▷▷ detail_rental 오류 발생 : {str(ex)}')
         raise HTTPException(status_code=500, detail="Internal Server Error")
