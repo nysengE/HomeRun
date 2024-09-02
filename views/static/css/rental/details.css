@@ -87,3 +87,7 @@ p {
     padding: 20px;
     border-radius: 12px;
 }
+
+.section-spacing {
+    margin-bottom: 4rem; /* 하단 여백을 추가하여 다음 요소와의 간격을 벌립니다 */
+}

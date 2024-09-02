@@ -45,8 +45,7 @@
                 <div class="reservation-info-section p-4 bg-white rounded shadow-sm mt-4">
                     <div class="selected-info mb-3">
                         <h4 class="fw-bold">선택한 날짜: <span id="selectedDateDisplay" aria-live="polite">선택되지 않음</span></h4>
-                        <h4 class="fw-bold">선택한 시작 시간: <span id="selectedStartTimeDisplay" aria-live="polite">선택되지 않음</span></h4>
-                        <h4 class="fw-bold">선택한 종료 시간: <span id="selectedEndTimeDisplay" aria-live="polite">선택되지 않음</span></h4>
+                        <h4 class="fw-bold">선택한 시간: <span id="selectedStartTimeDisplay" aria-live="polite">선택되지 않음</span></h4>
 
                         <!-- 인원 선택 섹션 -->
                         <h4 class="fw-bold">
@@ -67,7 +66,13 @@
                         </label>
                         <label for="confirmSelection" class="ms-2">예약을 확인하세요</label>
                     </div>
-                    <button class="reservation-button btn btn-primary w-100 mt-4 py-2" id="makeReservation" disabled>예약하기</button>
+                    <form id="reservationForm" action="/reservation/{{ rent.spaceno }}/confirm" method="post">
+                        <input type="hidden" name="date" id="formDate">
+                        <input type="hidden" name="time" id="formTime">
+                        <input type="hidden" name="people" id="formPeople">
+                        <button type="button" class="reservation-button btn btn-primary w-100 mt-4 py-2" id="makeReservation" disabled>예약하기</button>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -81,12 +86,11 @@
             var maxPeople = parseInt("{{ rent.people }}", 10);
             var selectedPeople = 1;
             var selectedDate = null;
-            var selectedStartTime = null;
-            var selectedEndTime = null;
+            var selectedTimes = [];
             var pricePerSlot = parseInt("{{ rent.price }}", 10);
             var calendarEl = document.getElementById('calendar');
-            var spaceno = "{{ rent.spaceno }}";
             var makeReservationButton = document.getElementById('makeReservation');
+            var reservationForm = document.getElementById('reservationForm');
 
             // Initialize Calendar
             if (calendarEl) {
@@ -103,13 +107,6 @@
                         start: new Date(),
                         end: new Date(new Date().setMonth(new Date().getMonth() + 3))
                     },
-                    events: fetchAvailableDates,
-                    buttonText: {
-                        today: '오늘',
-                        month: '월',
-                        week: '주',
-                        day: '일'
-                    },
                     dateClick: function(info) {
                         selectedDate = info.dateStr;
                         updateSelectedInfo();
@@ -119,94 +116,79 @@
                 calendar.render();
             }
 
-            // Fetch available dates
-            function fetchAvailableDates(fetchInfo, successCallback, failureCallback) {
-                fetch(`/api/rental/${spaceno}/avail_dates`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (Array.isArray(data)) {
-                            var events = data.map(date => ({
-                                title: '예약 가능',
-                                start: date,
-                                display: 'background'
-                            }));
-                            successCallback(events);
-                        } else {
-                            console.error('Unexpected data format:', data);
-                            failureCallback('Unexpected data format');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching available dates:', error);
-                        failureCallback(error);
-                    });
-            }
-
             // Generate time slots dynamically
-            function generateTimeSlots() {
+            function generateTimeSlots(availTime) {
                 var morningSlotsEl = document.getElementById('morningSlots');
                 var afternoonSlotsEl = document.getElementById('afternoonSlots');
-                var slots = {
-                    morning: ['09:00', '11:00'],
-                    afternoon: ['13:00', '15:00', '17:00', '19:00', '21:00']
-                };
+                var [startHour, startMinute] = availTime.split(':').map(Number);
 
-                for (const [period, times] of Object.entries(slots)) {
-                    times.forEach(function(time) {
+                var currentHour = startHour;
+                var currentMinute = startMinute;
+
+                while (currentHour < 22) {
+                    (function(hour, minute) {
+                        var timeSlot = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
                         var button = document.createElement('button');
                         button.className = 'btn btn-outline-secondary time-slot';
-                        button.textContent = time;
+                        button.textContent = timeSlot;
                         button.addEventListener('click', function() {
-                            toggleTimeSlot(button, time);
+                            toggleTimeSlot(button, timeSlot);
                         });
 
-                        if (period === 'morning') {
+                        if (hour < 12) {
                             morningSlotsEl.appendChild(button);
                         } else {
                             afternoonSlotsEl.appendChild(button);
                         }
-                    });
+
+                    })(currentHour, currentMinute);
+
+                    // Increment by 2 hours
+                    currentHour += 2;
                 }
             }
 
-            generateTimeSlots();
+            // 서버에서 제공된 시간 사용 예시
+            generateTimeSlots("{{ rent.availtime }}");
 
             function toggleTimeSlot(button, time) {
                 var timeFormatted = time + ':00'; // HH:mm -> HH:mm:ss로 변경
 
-                if (!selectedStartTime) {
-                    // 첫 번째 시간 선택 시
-                    selectedStartTime = timeFormatted;
-                    button.classList.add('active');
-                } else if (!selectedEndTime && selectedStartTime !== timeFormatted) {
-                    // 두 번째 시간 선택 시
-                    selectedEndTime = timeFormatted;
-                    button.classList.add('active');
-                } else if (selectedStartTime === timeFormatted) {
-                    // 선택된 시작 시간 취소 시
-                    selectedStartTime = null;
+                if (selectedTimes.includes(timeFormatted)) {
+                    // 시간 슬롯이 이미 선택된 경우, 선택 해제
+                    selectedTimes = selectedTimes.filter(t => t !== timeFormatted);
                     button.classList.remove('active');
-                } else if (selectedEndTime === timeFormatted) {
-                    // 선택된 종료 시간 취소 시
-                    selectedEndTime = null;
-                    button.classList.remove('active');
+                } else if (selectedTimes.length < 2) {
+                    // 새로운 시간 슬롯 선택
+                    selectedTimes.push(timeFormatted);
+                    button.classList.add('active');
                 } else {
-                    alert('이미 두 개의 시간을 선택했습니다.');
+                    alert('최대 2개의 시간을 선택할 수 있습니다.');
                 }
+
                 updateSelectedInfo();
             }
 
             function updateSelectedInfo() {
                 document.getElementById('selectedDateDisplay').innerText = selectedDate || '선택되지 않음';
-                document.getElementById('selectedStartTimeDisplay').innerText = selectedStartTime || '선택되지 않음';
-                document.getElementById('selectedEndTimeDisplay').innerText = selectedEndTime || '선택되지 않음';
-                document.getElementById('selectedPriceDisplay').innerText = pricePerSlot + '원'; // 가격은 인원에 따라 바뀌지 않음
+                document.getElementById('selectedStartTimeDisplay').innerText = selectedTimes.join(' / ') || '선택되지 않음';
+                var totalPrice = pricePerSlot * selectedTimes.length;
+                document.getElementById('selectedPriceDisplay').innerText = totalPrice + '원';
+
+                // 폼 필드 업데이트
+                document.getElementById('formDate').value = selectedDate;
+                document.getElementById('formTime').value = selectedTimes.join(',');
+                document.getElementById('formPeople').value = selectedPeople;
+
+                // '예약하기' 버튼 활성화
+                makeReservationButton.disabled = !selectedDate || selectedTimes.length === 0;
             }
 
             document.getElementById('increasePeople').addEventListener('click', function() {
                 if (selectedPeople < maxPeople) {
                     selectedPeople++;
                     document.getElementById('selectedPeople').innerText = selectedPeople;
+                    updateSelectedInfo();
                 }
             });
 
@@ -214,6 +196,7 @@
                 if (selectedPeople > 1) {
                     selectedPeople--;
                     document.getElementById('selectedPeople').innerText = selectedPeople;
+                    updateSelectedInfo();
                 }
             });
 
@@ -221,52 +204,17 @@
                 makeReservationButton.disabled = !this.checked;
             });
 
-            makeReservationButton.addEventListener('click', function() {
-                if (!selectedDate || !selectedStartTime || !selectedEndTime) {
-                    alert('날짜와 시간을 선택해주세요.');
+            makeReservationButton.addEventListener('click', function(event) {
+                // 서버로 폼 제출 전에 선택된 날짜와 시간이 있는지 확인
+                if (!selectedDate || selectedTimes.length === 0) {
+                    alert('예약 날짜와 시간을 선택해주세요.');
                     return;
                 }
 
-                var reservationData = {
-                    spaceno: spaceno,
-                    resdate: selectedDate,
-                    resstart: selectedStartTime,
-                    resend: selectedEndTime,
-                    people: selectedPeople,
-                    price: pricePerSlot
-                };
-
-                makeReservationButton.disabled = true; // Disable button to prevent multiple submissions
-
-                fetch('/api/reservation', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(reservationData)
-                })
-                    .then(response => {
-                        console.log('Response status:', response.status); // 응답 상태 코드 로그 출력
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('Response data:', data); // 응답 데이터 로그 출력
-                        if (data.success) {
-                            window.location.href = `/payment?resno=${data.resno}`;
-                        } else {
-                            alert('예약에 실패했습니다. 다시 시도해주세요.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('예약 처리 중 오류 발생:', error);
-                        alert('예약 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
-                    })
-                    .finally(() => {
-                        makeReservationButton.disabled = false; // Re-enable button after processing
-                    });
+                // 서버로 폼 제출
+                reservationForm.submit();
             });
 
         });
-
     </script>
 {% endblock %}

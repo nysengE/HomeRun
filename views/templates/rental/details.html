@@ -15,7 +15,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <div id="carouselExampleControls" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
-                    <div class="carousel-inner">
+                        <div class="carousel-inner">
                             {% for image in rent.attachs %}
                                 <div class="carousel-item {% if loop.first %}active{% endif %}">
                                     <img src="/cdn/img/{{ image.fname }}" class="d-block w-100 rounded" alt="{{ rent.title }} 이미지">
@@ -46,19 +46,21 @@
                         <p>가능 날짜: {{ rent.availdate }} 이후</p>
                         <p>가능 시간: <span id="formatted-time"></span> 등</p>
                     </div>
-
                     <a href="/reservation/{{ rent.spaceno }}" class="btn btn-primary">예약하기</a>
                 </div>
             </div>
 
             <!-- 장소 소개 / 지도 섹션 -->
-            <section class="mt-4">
+            <section class="mt-4 section-spacing">
                 <h2>장소 소개</h2>
                 <p>{{ rent.contents }}</p>
+            </section>
 
+            <section class="mt-4">
                 <h3>지도</h3>
                 <div id="map" class="map-container shadow-sm rounded"></div>
             </section>
+
         </div>
     </main>
 {% endblock %}
@@ -98,17 +100,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeMap(latitude, longitude);
         });
-    </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 가격에 쉼표 추가
-            const priceElement = document.getElementById('formatted-price');
-            const price = parseInt(priceElement.textContent.replace('원~', '').replace(',', ''));
-            priceElement.textContent = new Intl.NumberFormat().format(price) + '원~';
+        function formatPrice(price) {
+            return new Intl.NumberFormat().format(price) + '원~';
+        }
 
-            // 시간을 오전/오후로 변환
-            const originalTime = "{{ rent.availtime }}";  // 서버에서 전달된 원본 시간
+        function formatTime(originalTime) {
             const [hours, minutes] = originalTime.split(':').map(Number);
             let period = "오전";
             let formattedHours = hours;
@@ -118,9 +115,16 @@
                 if (hours > 12) formattedHours = hours - 12;
             }
 
-            const formattedTime = `${period} ${String(formattedHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-            document.getElementById('formatted-time').textContent = formattedTime;
+            return `${period} ${String(formattedHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const priceElement = document.getElementById('formatted-price');
+            const price = parseInt(priceElement.textContent.replace('원~', '').replace(',', ''));
+            priceElement.textContent = formatPrice(price);
+
+            const originalTime = "{{ rent.availtime }}";
+            document.getElementById('formatted-time').textContent = formatTime(originalTime);
         });
     </script>
-
 {% endblock %}

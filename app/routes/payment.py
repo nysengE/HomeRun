@@ -6,6 +6,7 @@ from starlette.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
 
 from app.dbfactory import get_db
+from app.model.payment import Payment
 from app.model.rental import Rental
 
 app = FastAPI()
@@ -15,7 +16,7 @@ templates = Jinja2Templates(directory='views/templates')
 
 
 
-@payment_router.get('/', response_class=HTMLResponse)
+@payment_router.get('/{spaceno}', response_class=HTMLResponse)
 async def club(req: Request):
     return templates.TemplateResponse('payment/payment.html', {'request': req})
 
@@ -46,7 +47,7 @@ async def get_access_token():
             raise Exception("아임포트 액세스 토큰 발급 실패")
 
 @app.post("/pay/complete")
-async def pay_complete(request: Request):
+async def pay_complete(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     imp_uid = data.get("imp_uid")
 
@@ -62,10 +63,24 @@ async def pay_complete(request: Request):
         response_data = response.json()
 
     if response_data["code"] == 0:
-        # 결제 검증 로직 추가 (예: 데이터베이스와 대조)
+        # 결제 성공: 결제 정보 저장
+        payment_info = response_data["response"]
+        from datetime import datetime
+        new_payment = Payment(
+            paydate=datetime.now().date(),
+            totalprice=payment_info["amount"],
+            resdate=payment_info["custom_data"]["date"],
+            restime=payment_info["custom_data"]["time"],
+            resprice=payment_info["amount"],  # 여기서 가격은 예시입니다.
+            respeople=payment_info["custom_data"]["people"],
+            spaceno=payment_info["custom_data"]["spaceno"]
+        )
+        db.add(new_payment)
+        db.commit()
         return JSONResponse(content={"message": "결제가 완료되었습니다."})
     else:
         return JSONResponse(content={"message": "결제 검증에 실패했습니다."}, status_code=400)
+
 
 
 

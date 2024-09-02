@@ -12,15 +12,15 @@
     <main class="container payment-page">
         <!-- 예약 확인 섹션 -->
         <section class="reservation-summary">
-            <h2>{{ }}</h2>
-            <p>일정: {{ }} - {{  }}</p>
+            <h2>{{ rent.title }}</h2>
+            <p>일정: {{ date }} {{ time }}</p>
             <div class="item">
-                <span>인원: {{  }}명</span>
-                <span>{{  }}원</span>
+                <span>인원: {{ people }}명</span>
+                <span>{{ rent.price * selectedTimes|length }}원</span>
             </div>
             <div class="total">
                 <span>합계</span>
-                <span>{{  }}원</span>
+                <span>{{ rent.price * selectedTimes|length }}원</span>
             </div>
         </section>
 
@@ -40,8 +40,7 @@
                     <label for="email">이메일:</label>
                     <input type="email" id="email" name="email" required>
                 </div>
-                <!-- CSRF Token 추가 -->
-                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
             </form>
         </section>
 
@@ -69,6 +68,5 @@
 
 {% block script %}
     <script src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"></script>
-    <script src="/static/js//rental/payment.js"></script>
-
+    <script src="/static/js/rental/payment.js"></script>
 {% endblock %}
