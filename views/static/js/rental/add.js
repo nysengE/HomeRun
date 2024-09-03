@@ -37,8 +37,8 @@ document.getElementById('price').addEventListener('blur', function(e) {
     let value = e.target.value.replace(/[^0-9]/g, '');
     let numberValue = parseInt(value, 10);
 
-    if (!isNaN(numberValue) && numberValue < 10000) {
-        e.target.value = '10,000'; // 최소값 1만으로 설정
+    if (!isNaN(numberValue) && numberValue < 10) {
+        e.target.value = '10'; // 최소값 1만으로 설정
     }
 });
 

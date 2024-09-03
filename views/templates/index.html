@@ -1,14 +1,23 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>HomeRun</title>
-    <link rel="stylesheet" href="/static/css/bs5/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/header.css" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link rel="stylesheet" href="/static/css/index.css">
 </head>
 <body>
-<div id="wrap" class="container">
-    <h1>index 페이지</h1>
+<div class="container">
+    <div class="left-section" onclick="navigateTo('/club')">
+        <div class="text"></div>
+    </div>
+    <div class="right-section" onclick="navigateTo('/rental')">
+        <div class="text"></div>
+    </div>
+    <div class="icon">
+        <img src="/static/img/icon.png" alt="Central Icon" id="center-icon">
+    </div>
 </div>
+    <script src="/static/js/index.js"></script>
 </body>
 </html>

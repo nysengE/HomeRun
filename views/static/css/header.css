@@ -9,10 +9,18 @@
     justify-content: space-between;
     align-items: center;
 }
-.logo {
-    width: 80%;
-    height: 60%;
+
+.d-flex {
+    display: flex;
+    align-items: center; /* 세로 정렬을 가운데로 맞춤 */
+    justify-content: center; /* 가로 정렬을 가운데로 맞춤 */
 }
+
+.logo {
+    width: 80%; /* 너비를 80%로 설정 */
+    height: 60%; /* 높이를 자동으로 설정하여 비율 유지 */
+}
+
 .container.text-start.mt-4 {
     width: 600px;
     display: flex;
