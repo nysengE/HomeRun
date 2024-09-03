@@ -17,4 +17,4 @@ class Users(Base):
     phone: Mapped[str]
     registdate: Mapped[datetime] = mapped_column(default=datetime.now)
     modifydate: Mapped[datetime] = mapped_column(default=datetime.now)
-    birth: Mapped[str]
+    birth: Mapped[datetime] = mapped_column(Date)

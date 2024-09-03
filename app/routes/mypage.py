@@ -12,8 +12,8 @@ from starlette.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
 
 from app.dbfactory import get_db
-from app.schema.mypage.userpage import RequestClubno, ModifyClub, CheckUser
-from app.service.userpage import UserpageService, get_club_data, process_upload
+from app.schema.mypage.userpage import RequestClubno, ModifyClub, CheckUser, ModifyUser
+from app.service.userpage import UserpageService, get_club_data, process_upload, get_user_data
 
 mypage_router = APIRouter()
 templates = Jinja2Templates(directory='views/templates')
@@ -36,6 +36,7 @@ async def userinfo(req: Request, db: Session = Depends(get_db)):
 
     except Exception as ex:
         print(f'▷▷▷ mypage userinfo 오류 발생 : {str(ex)}')
+
 
 @mypage_router.post('/checkpwd')
 async def checkpwd(req: Request, passwd: CheckUser,  db: Session = Depends(get_db)):
@@ -221,6 +222,30 @@ async def modify(req: Request, modifyclub: ModifyClub = Depends(get_club_data),
     except Exception as ex:
         print(f'▷▷▷ modify 오류발생 {str(ex)}')
         raise HTTPException(status_code=500, detail=f"Server error: {str(ex)}")
+
+@mypage_router.put('/userinfo', response_class=HTMLResponse)
+async def putuserinfo(req: Request, modifyuser: ModifyUser = Depends(get_user_data), db: Session = Depends(get_db)):
+    # try:
+        # userid = session['userid']
+        userid = 'dangdang'
+
+        # 비밀번호가 None이면 업데이트하지 않음
+        if modifyuser.passwd is None:
+            modifyuser.passwd = ""
+
+        userdata = UserpageService.select_users(userid, db)
+
+        if userdata is None:
+            userdata = []
+
+        passwd = userdata[0].passwd
+
+        if UserpageService.update_users(userid, modifyuser, db):
+            return templates.TemplateResponse('mypage/user/userinfo.html',
+                                              {'request': req, 'userdata': userdata, 'passwd':passwd, 'result': 'success'})
+
+    # except Exception as ex:
+    #     print(f'▷▷▷ mypage putuserinfo 오류 발생 : {str(ex)}')
 
 @mypage_router.get('/rentalapply', response_class=HTMLResponse)
 async def rentalapply(req: Request):

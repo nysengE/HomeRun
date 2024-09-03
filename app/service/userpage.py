@@ -1,5 +1,6 @@
 import os
-from datetime import datetime
+from datetime import datetime, date
+from typing import Optional
 
 from fastapi import Form, HTTPException
 from sqlalchemy import select, func, delete, update
@@ -9,7 +10,7 @@ from app.model.club import Apply, Club, ClubAttach
 from app.model.regions import Regions
 from app.model.sports import Sports
 from app.model.users import Users
-from app.schema.mypage.userpage import ModifyClub
+from app.schema.mypage.userpage import ModifyClub, ModifyUser
 
 UPLOAD_PATH = 'C:/Java/nginx-1.26.2/nginx-1.26.2/html/homerun/img'
 
@@ -28,6 +29,38 @@ async def get_club_data(title: str = Form(...),
                        clubno = int(clubno))
     except ValueError as e:
         raise HTTPException(status_code=400, detail=f"get_club_data 오류: {e}")
+
+async def get_user_data(name: str = Form(...),
+                        passwd: Optional[str] = Form(None),
+                        email: str = Form(...),
+                        phone: str = Form(...),
+                        birth: Optional[str] = Form(None)) -> ModifyUser:
+    try:
+
+        # birth_date = None
+        # if birth:
+        #     birth = birth.strip()
+        #     if birth:  # Ensure birth is not an empty string
+        #         if isinstance(birth, str):  # Ensure birth is a string
+        #             try:
+        #                 # 로그를 추가하여 실제로 어떤 값이 전달되는지 확인
+        #                 print(f"Received birth value: {birth}, {type(birth)}")
+        #                 birth_date = date.fromisoformat(birth)
+        #                 print(f'birth_date: {birth_date}, {type(birth_date)}')
+        #             except ValueError:
+        #                 raise HTTPException(status_code=400, detail="Invalid date format. Expected YYYY-MM-DD.")
+        #         else:
+        #             raise HTTPException(status_code=400, detail="Birth date must be a string.")
+
+        return ModifyUser(name=name,
+                          passwd=passwd,
+                          email=email,
+                          phone=phone,
+                          birth=birth)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"get_user_data 오류: {e}")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid date format: {e}")
 
 
 async def process_upload(files):
@@ -167,6 +200,39 @@ class UserpageService:
 
             db.commit()
 
+            return result
+
+        except SQLAlchemyError as ex:
+            print(f'▶▶▶ update_club 에서 오류 발생: {str(ex)}')
+            db.rollback()
+
+    @staticmethod
+    def update_users(userid, modifyuser, db):
+        try:
+            user = db.query(Users.name, Users.email, Users.phone, Users.birth).filter(Users.userid == userid).first()
+            if not user:
+                return None
+
+            update_values = {
+                "name": modifyuser.name,
+                "email": modifyuser.email,
+                "phone": modifyuser.phone,
+                "birth": modifyuser.birth
+            }
+
+            if modifyuser.passwd:
+                update_values["passwd"] = modifyuser.passwd
+
+            # Perform the update
+            stmt = (
+                update(Users).
+                where(Users.userid == userid).
+                values(update_values)
+            )
+            result = db.execute(stmt)
+            db.commit()
+
+            # return db.query(Users).filter(Users.userid == userid).first()
             return result
 
         except SQLAlchemyError as ex:
