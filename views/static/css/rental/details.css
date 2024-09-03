@@ -3,26 +3,34 @@ main .container {
     margin-top: 40px; /* 컨테이너 상단 여백 증가 */
     padding: 20px; /* 컨테이너 내부 패딩 추가 */
     background-color: #ffffff; /* 배경색을 흰색으로 설정 */
-    border-radius: 12px; /* 둥근 모서리 적용 */
+    border-radius: 16px; /* 둥근 모서리 적용 */
+    width: 100%; /* 전체 너비 사용 */
+    max-width: 1200px; /* sportnav의 최대 너비와 동일하게 설정 */
+    margin: 0 auto; /* 가운데 정렬 */
     /*box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); !* 부드러운 그림자 효과 추가 *!*/
 }
 
 /* 이미지 갤러리 스타일 */
 .carousel.slide {
-    border-radius: 12px; /* 이미지 갤러리에 둥근 모서리 */
+    border-radius: 16px; /* 이미지 갤러리에 둥근 모서리 */
     overflow: hidden; /* 내용이 넘치지 않도록 설정 */
     margin-bottom: 20px; /* 갤러리 하단 여백 */
+    width: 100%; /* 전체 너비 사용 */
+    max-width: 1200px; /* sportnav의 최대 너비와 동일하게 설정 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 추가 */
+    margin: 0 auto; /* 가운데 정렬 */
 }
 
 /* 지도 컨테이너 스타일 */
 .map-container {
     width: 100%;
+    max-width: 1200px; /* sportnav의 최대 너비와 동일하게 설정 */
     height: 350px; /* 지도 높이 설정 */
     border-radius: 12px; /* 지도에 둥근 모서리 적용 */
     overflow: hidden; /* 지도 내용이 넘치지 않도록 설정 */
     margin-top: 20px; /* 상단 여백 추가 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 추가 */
+    margin: 0 auto; /* 가운데 정렬 */
 }
 
 /* 가격과 텍스트 스타일 */

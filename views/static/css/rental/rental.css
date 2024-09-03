@@ -16,7 +16,8 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     margin: 20px auto;
-    width: 80%;
+    width: 100%; /* 너비를 100%로 설정하여 화면을 꽉 채움 */
+    max-width: 1200px; /* 최대 너비 설정 */
 }
 
 #filters select,
@@ -49,6 +50,9 @@ body {
     flex-wrap: wrap;
     padding: 20px;
     background-color: #faf8f5;
+    width: 100%; /* 너비를 100%로 설정 */
+    max-width: 1200px; /* 최대 너비 설정 */
+    margin: 0 auto; /* 가운데 정렬 */
 }
 
 .item {
@@ -57,7 +61,8 @@ body {
     padding: 20px;
     border-radius: 8px;
     text-align: center;
-    width: 300px;
+    width: 100%; /* 너비를 100%로 설정하여 부모 요소를 꽉 채우도록 함 */
+    max-width: 300px; /* 각 아이템의 최대 너비 설정 */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
 }
@@ -84,7 +89,8 @@ body {
 /* 슬라이더 관련 스타일 추가 */
 .slider {
     position: relative;
-    width: 100%;
+    width: 100%; /* 너비를 100%로 설정 */
+    max-width: 1200px; /* 최대 너비 설정 */
     height: 180px;
     overflow: hidden;
     border-radius: 8px;

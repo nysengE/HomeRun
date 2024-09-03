@@ -5,17 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
     <link rel="stylesheet" href="/static/css/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+
+
 </head>
 <body>
 <div class="container">
     <div class="left-section" onclick="navigateTo('/club')">
-        <div class="text"></div>
+        <div class="text">
+            <span class="arrow">&#x276E;</span> Meet
+        </div>
     </div>
     <div class="right-section" onclick="navigateTo('/rental')">
-        <div class="text"></div>
+        <div class="text">
+            Space <span class="arrow2">&#x276F;</span>
+        </div>
     </div>
     <div class="icon">
         <img src="/static/img/icon.png" alt="Central Icon" id="center-icon">
+        <div class="sports-text">Sports</div>
     </div>
 </div>
     <script src="/static/js/index.js"></script>
