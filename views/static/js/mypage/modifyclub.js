@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             })
                 .then((res) => {
                 if (res.redirected) {
+                    alert('수정되었습니다.');
                     location.href = res.url;
                 }
             })

@@ -9,15 +9,40 @@
 {% endblock %}
 
 {% block main %}
-    <main>
-    {% include 'mypage/user/userside.html' %}
+    <main class="d-flex justify-content-between">
+        <div>{% include 'mypage/user/userside.html' %}</div>
+        <div class="content d-flex flex-column px-3" style="width: 800px">
+            <h2 class="py-3 mt-2">공간대여 신청내역</h2>
 
-    <div class="content">
-        <h2>공간대여 신청내역</h2>
-    </div>
+            <table class="table table-bordered mt-3">
+                <thead>
+                <tr>
+                    <th>운동명</th>
+                    <th>제목</th>
+                    <th>등록일</th>
+                    <th>신청자</th>
+                    <th>수정</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>결제번호</td>
+                    <td>제목</td>
+                    <td>결제일</td>
+                    <td>내용</td>
+                    <td>일일</td>
+                    <td>
+                        <button type="button" class="btn btn-success view" >상세보기</button>
+                    </td>
+
+                </tr>
+                <!-- 추가적인 글 항목들 -->
+                </tbody>
+            </table>
+        </div>
     </main>
 {% endblock %}
-
 {% block script %}
-{#    <script src="/static/js/mypage/userside.js"></script>#}
+    <script src="/static/js/mypage/userside.js"></script>
 {% endblock %}

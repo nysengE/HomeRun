@@ -41,12 +41,12 @@
                                     <input type="hidden" id="applyclubno" value="{{ club.clubno }}">
                                 </button></td>
                             <td>
-                                <button type="button" class="btn btn-primary" onclick="modifyclub({{ club.clubno }})">
+                                <button type="button" class="btn btn-primary" onclick="modifyclub('{{ club.clubno }}')">
                                     수정
                                 </button>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-danger delete" onclick="deleteclub({{ club.clubno }})" >삭제</button>
+                                <button type="button" class="btn btn-danger delete" onclick="deleteclub('{{ club.clubno }}')" >삭제</button>
                             </td>
 
                         </tr>
@@ -84,7 +84,7 @@
                                     <td>
                                         <button type="button" class="btn btn-success applyusers" data-bs-toggle="modal" data-bs-target="#exampleModal" >
                                             승인
-                                            <input type="hidden" id="applyclubno" value="">
+<!--                                            <input type="hidden" id="applyclubno" value="">-->
                                         </button>
                                     </td>
                                 </tr>
