@@ -1,6 +1,6 @@
 from datetime import date, datetime, time
 
-from sqlalchemy import INTEGER, DATE, TIME, VARCHAR
+from sqlalchemy import INTEGER, DATE, TIME, VARCHAR, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.model.base import Base
@@ -8,6 +8,7 @@ from app.model.base import Base
 
 class Payment(Base):
     __tablename__ = 'payment'
+    __table_args__ = {'sqlite_autoincrement': True}
 
     payno: Mapped[int] = mapped_column(INTEGER, primary_key=True, autoincrement=True, index=True)
     paydate: Mapped[date] = mapped_column(DATE, default=datetime.now().date())    #결제일
@@ -16,7 +17,7 @@ class Payment(Base):
     restime: Mapped[time] = mapped_column(TIME)      # 예약 시간
     resprice: Mapped[int] = mapped_column(INTEGER)  # 예약 가격
     respeople: Mapped[int] = mapped_column(INTEGER)  # 예약 인원
-    userid: Mapped[str] = mapped_column(VARCHAR(255))
+    userid: Mapped[str] = mapped_column(String(255))
     spaceno: Mapped[int] = mapped_column(INTEGER)   # 공간번호
 
 
