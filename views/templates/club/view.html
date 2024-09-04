@@ -76,7 +76,7 @@
                             <h5 class="w-20 px-2">{{ re[0].userid }}</h5>
                             <p class="45 px-2">{{ re[0].reply }}</p>
                         </div>
-                        <div class="d-flex justify-content-end w-15"><p class="px-2">{{ re[0].regdate }}</p></div>
+                        <div class="d-flex justify-content-end w-15"><p class="px-2">{{ re[0].regdate.strftime('%Y-%m-%d') }}</p></div>
                     <!-- 대댓글 Modal 트리거 버튼 -->
                         {% if re[0].rno == re[0].rpno %}
                         <button type="button" id="rreplyadd" class="btn btn-danger mx-3 w-20" data-bs-toggle="modal" data-bs-target="#replyModal" onclick="addrreply('{{ re[0].rno }}')">
@@ -139,6 +139,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </main>
 </div>

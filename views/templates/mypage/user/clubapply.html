@@ -33,7 +33,7 @@
             <tr>
                 <td>{{ apply.sportsname }}</td>
                 <td>{{ apply.title }}</td>
-                <td>{{ apply.applyregdate }}</td>
+                <td>{{ apply.applyregdate.strftime('%Y-%m-%d') }}</td>
                 <td>{{ apply.status }}</td>
                 <td>
                     <button type="button" class="btn btn-info view" >상세보기

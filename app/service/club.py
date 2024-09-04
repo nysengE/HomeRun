@@ -89,7 +89,7 @@ class ClubService:
 
             stmt3 = select(Club.clubno,
                           Club.title,
-                          func.strftime('%Y-%m-%d', Club.registdate).label('registdate'),
+                          Club.registdate,
                           ClubAttach.fname,
                           Sports.name.label('sportname'),
                           Regions.name.label('regionname')
@@ -128,7 +128,8 @@ class ClubService:
                           Club.people,
                           Club.registdate,
                           Club.modifydate,
-                          func.strftime('%Y-%m-%d', Club.registdate).label('registdate'),
+                          #func.strftime('%Y-%m-%d', Club.registdate).label('registdate'),
+                          Club.registdate,
                           Club.modifydate,
                           Club.views,
                           Club.userid,
@@ -183,7 +184,7 @@ class ClubService:
 
             stmt = select(Club.clubno,
                            Club.title,
-                           func.strftime('%Y-%m-%d', Club.registdate).label('registdate'),
+                           Club.registdate,
                            ClubAttach.fname,
                            Sports.name.label('sportname'),
                            Regions.name.label('regionname')
