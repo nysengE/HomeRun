@@ -28,6 +28,8 @@ async def club(req: Request, cpg: int, db: Session = Depends(get_db)):
         # 총 페이지 수
         allpage = ceil(cnt / 8)
 
+        print(clublist)
+
         return templates.TemplateResponse('club/club.html',
                                           {'request': req, 'clublist': clublist,
                                            'sports': sports, 'regions': regions,

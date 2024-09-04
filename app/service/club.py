@@ -97,6 +97,7 @@ class ClubService:
                     .join(ClubAttach, Club.clubno == ClubAttach.clubno)\
                     .join(Sports, Club.sportsno == Sports.sportsno)\
                     .join(Regions, Club.sigunguno == Regions.sigunguno) \
+                    .where(Club.status == 'open') \
                     .order_by(Club.registdate.desc()) \
                     .offset(stdno).limit(8)
             result = db.execute(stmt3).fetchall()
@@ -191,7 +192,8 @@ class ClubService:
                            ).select_from(Club) \
                 .join(ClubAttach, Club.clubno == ClubAttach.clubno) \
                 .join(Sports, Club.sportsno == Sports.sportsno) \
-                .join(Regions, Club.sigunguno == Regions.sigunguno)
+                .join(Regions, Club.sigunguno == Regions.sigunguno) \
+                .where(Club.status == 'open')
             #     .order_by(Club.registdate.desc()) \
             #     .offset(stdno).limit(8)
             # result = db.execute(stmt).fetchall()
