@@ -10,6 +10,7 @@
 
 {% block main %}
     <main class="d-flex justify-content-start gap-5">
+        {% if userdata %}
         <div class="px-0 mx-0">
             {% include 'mypage/user/userside.html' %}
         </div>
@@ -85,6 +86,7 @@
                 </form>
             </div>
         </div>
+    {% endif %}
     </main>
 {% endblock %}
 
