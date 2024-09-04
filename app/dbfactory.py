@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from app.model import rental, sports, regions, payment
-from app.model.regions import Region
+from app.model import rental, sports, regions, payment, users, club, usermanage
+from app.model.regions import Regions
 from app.model.sports import Sports
 from app.setting import config
 
@@ -22,13 +22,16 @@ async def db_startup():
     sports.Base.metadata.create_all(engine)
     regions.Base.metadata.create_all(engine)
     payment.Base.metadata.create_all(engine)
+    users.Base.metadata.create_all(engine)
+    usermanage.Base.metadata.create_all(engine)
+    club.Base.metadata.create_all(engine)
 
 
     # 세션 생성
     db: Session = SessionLocal()
     try:
         # 기존에 데이터가 있는지 확인
-        if db.query(Region).count() == 0:  # 테이블에 데이터가 없는 경우에만 삽입
+        if db.query(Regions).count() == 0:  # 테이블에 데이터가 없는 경우에만 삽입
             # 지역 목록
             region_names = [
                 "종로구", "중구", "용산구", "성동구", "광진구", "동대문구", "중랑구",
@@ -39,7 +42,7 @@ async def db_startup():
 
             # 지역 데이터 삽입
             for index, name in enumerate(region_names, start=1):
-                region = Region(sigunguno=index, name=name)
+                region = Regions(sigunguno=index, name=name)
                 db.add(region)
             db.commit()
 

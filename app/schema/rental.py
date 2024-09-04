@@ -13,6 +13,7 @@ class NewRental(BaseModel):
     longitude: float  # 추가된 필드
     sportsno: int
     sigunguno: int
+    userno: int
     availdate: date
     availtime: time
 

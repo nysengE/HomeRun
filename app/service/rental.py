@@ -61,6 +61,7 @@ class RentalService:
                 sigunguno=rent['sigunguno'],
                 availdate=rent['availdate'],  # 추가된 필드
                 availtime=rent['availtime'],  # 추가된 필드
+                userno=rent['userno'],  # 추가된 필드
                 regisdate=datetime.now()
             )
             result = db.execute(stmt)
@@ -90,6 +91,7 @@ class RentalService:
     def select_rentals(db: Session, limit=25):
         try:
             rentals = db.query(Rental).options(joinedload(Rental.attachs)) \
+                .where(Rental.status == 'open') \
                 .order_by(Rental.spaceno.desc()).limit(limit).all()
             return rentals
 

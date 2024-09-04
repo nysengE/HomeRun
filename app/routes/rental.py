@@ -7,7 +7,7 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from app.dbfactory import get_db
-from app.model.regions import Region
+from app.model.regions import Regions
 from app.schema.rental import NewRental
 from app.service.rental import RentalService, get_rental_data, process_upload
 
@@ -18,8 +18,10 @@ templates = Jinja2Templates(directory='views/templates')
 async def rental(req: Request, db: Session = Depends(get_db)):
     try:
         rentals = RentalService.select_rentals(db)
-        regions = db.query(Region).all()  # 지역 정보 가져오기
-        return templates.TemplateResponse('rental/rental.html', {'request': req, 'rentals': rentals, 'regions': regions})
+        regions = db.query(Regions).all()  # 지역 정보 가져오기
+        # 세션에서 사용자 ID 가져오기
+        userid = req.session.get('logined_uid')
+        return templates.TemplateResponse('rental/rental.html', {'request': req, 'rentals': rentals, 'regions': regions, 'userid': userid})
     except Exception as ex:
         print(f'▷▷▷ rental 오류 발생 : {str(ex)}')
         raise HTTPException(status_code=500, detail="Internal Server Error")
@@ -28,11 +30,20 @@ async def rental(req: Request, db: Session = Depends(get_db)):
 @rental_router.get("/add", response_class=HTMLResponse)
 async def read_add(request: Request, db: Session = Depends(get_db)):
     try:
-        regions = db.query(Region).all()  # 지역 정보를 데이터베이스에서 가져옴
-        return templates.TemplateResponse("rental/add.html", {"request": request, "regions": regions})
+        regions = db.query(Regions).all()  # 지역 정보를 데이터베이스에서 가져옴
+        # 세션에서 사용자 ID 가져오기
+        userid = request.session.get('logined_uid', None)
+        userno = request.session.get('logined_userno', None)  # userno도 세션에서 가져옴
+
+        if not userid:
+            # 세션에 userid가 없는 경우 로그인 페이지로 리디렉트
+            return RedirectResponse('/user/login', status_code=303)
+
+        return templates.TemplateResponse("rental/add.html", {"request": request, "regions": regions, "userid": userid, "userno": userno})
     except Exception as ex:
         print(f'오류 발생: {str(ex)}')
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
 
 
 @rental_router.post("/add", response_class=RedirectResponse)
@@ -48,6 +59,7 @@ async def add_rental(
         sigunguno: int = Form(...),
         availdate: str = Form(...),
         availtime: str = Form(...),
+        userno: str = Form(...),
         files: List[UploadFile] = File([]),
         db: Session = Depends(get_db)
 ):
@@ -78,7 +90,8 @@ async def add_rental(
         "sportsno": sportsno,
         "sigunguno": sigunguno,
         "availdate": availdate,
-        "availtime": availtime
+        "availtime": availtime,
+        "userno": userno
     }
 
     try:
@@ -97,7 +110,17 @@ async def detail_rental(req: Request, spaceno: int, db: Session = Depends(get_db
         rent = RentalService.select_one_rental(spaceno, db)
         if not rent:
             raise HTTPException(status_code=404, detail="Rental not found")  # 스페이스 번호에 해당하는 항목이 없을 때
-        return templates.TemplateResponse('rental/details.html', {'request': req, 'rent': rent})
+
+        userid = req.session.get('logined_uid', None)
+        userno = req.session.get('logined_userno', None)
+
+        # 템플릿에 userid와 userno를 전달
+        return templates.TemplateResponse('rental/details.html', {
+            'request': req,
+            'rent': rent,
+            'userid': userid,
+            'userno': userno
+        })
     except Exception as ex:
         print(f'▷▷▷ detail_rental 오류 발생 : {str(ex)}')
         raise HTTPException(status_code=500, detail="Internal Server Error")

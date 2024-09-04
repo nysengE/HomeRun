@@ -51,14 +51,14 @@ body, html {
     transform: translate(-50%, -50%); /* 정밀하게 중앙에 배치 */
 }
 #center-icon {
-    width: 140%;
-    height: 1200%;
+    width: 80%;
+    height: 700%;
     /*max-width: 120%;/*/
     /*max-height: 120%;*/
 }
 
 .text {
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: bold;
     color: #333;
     display: flex;
@@ -66,12 +66,12 @@ body, html {
 }
 
 .arrow {
-    font-size: 2.5rem; /* 화살표 크기 조정 */
+    font-size: 2rem; /* 화살표 크기 조정 */
     margin-right: 30px; /* 텍스트와 화살표 사이 간격 조정 */
 }
 
 .arrow2 {
-    font-size: 2.5rem; /* 화살표 크기 조정 */
+    font-size: 2rem; /* 화살표 크기 조정 */
     margin-left: 30px; /* 텍스트와 화살표 사이 간격 조정 */
 }
 

@@ -23,8 +23,9 @@
                     </div>
                     <label for="userid" class="col-sm-2 col-form-label text-end">작성자</label>
                     <div class="col-sm-4">
-                        <p class="form-control-plaintext" id="author">dragon</p>
-                        <input type="hidden" name="userid" id="userid">
+                        <p class="form-control-plaintext" id="author">{{ userid }}</p> <!-- 세션에서 가져온 userid를 출력 -->
+                        <input type="hidden" name="userid" id="userid" value="{{ userid }}"> <!-- hidden input에도 userid 추가 -->
+                        <input type="hidden" name="userno" id="userno" value="{{ userno }}">
                     </div>
                 </div>
                 <div class="row">

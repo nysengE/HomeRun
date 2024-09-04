@@ -19,7 +19,9 @@ IMP_BASE_URL = "https://api.iamport.kr"
 
 @payment_router.get('/{spaceno}', response_class=HTMLResponse)
 async def club(req: Request):
-    return templates.TemplateResponse('payment/payment.html', {'request': req})
+    userid = req.session.get('logined_uid', None)
+    userno = req.session.get('logined_userno', None)
+    return templates.TemplateResponse('payment/payment.html', {'request': req, 'userid': userid, 'userno': userno})
 
 # 아임포트 액세스 토큰 가져오기
 async def get_access_token():

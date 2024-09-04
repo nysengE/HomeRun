@@ -10,23 +10,31 @@
 
 {% block main %}
     <main>
-        <section id="filters">
-            <select id="region">
-                <option value="모든 지역">모든 지역</option>
-                {% for region in regions %}
-                    <option value="{{ region.sigunguno }}">{{ region.name }}</option>
-                {% endfor %}
-            </select>
-            <!-- 가격 범위 스크롤바 -->
-            <label for="priceRange">가격:</label>
-            <input type="range" id="priceRange" name="priceRange" min="0" max="1000000" step="10000" value="0" oninput="this.nextElementSibling.value = this.value">
-            <output>0</output>
-            <!-- 날짜 선택 -->
-            <input type="date" id="date" placeholder="날짜">
-            <!-- 인원 범위 스크롤바 -->
-            <label for="peopleRange">인원:</label>
-            <input type="range" id="peopleRange" name="peopleRange" min="1" max="100" step="1" value="1" oninput="this.nextElementSibling.value = this.value">
-            <output>1</output>
+        <section id="filters" class="d-flex align-items-center justify-content-between">
+            <div class="filter-options">
+                <select id="region">
+                    <option value="모든 지역">모든 지역</option>
+                    {% for region in regions %}
+                        <option value="{{ region.sigunguno }}">{{ region.name }}</option>
+                    {% endfor %}
+                </select>
+                <!-- 가격 범위 스크롤바 -->
+                <label for="priceRange">가격:</label>
+                <input type="range" id="priceRange" name="priceRange" min="0" max="1000000" step="10000" value="0" oninput="this.nextElementSibling.value = this.value">
+                <output>0</output>
+                <!-- 날짜 선택 -->
+                <input type="date" id="date" placeholder="날짜">
+                <!-- 인원 범위 스크롤바 -->
+                <label for="peopleRange">인원:</label>
+                <input type="range" id="peopleRange" name="peopleRange" min="1" max="100" step="1" value="1" oninput="this.nextElementSibling.value = this.value">
+                <output>1</output>
+            </div>
+            {% if userid %}
+            <!-- 글쓰기 버튼: 로그인된 사용자인 경우에만 표시 -->
+            <div class="write-button">
+                <a href="/rental/add" class="btn btn-primary">글쓰기</a>
+            </div>
+            {% endif %}
         </section>
 
 
