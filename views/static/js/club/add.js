@@ -4,7 +4,7 @@ let prebtn = document.getElementById('prebtn');
 // 목록버튼 click
 prebtn.addEventListener('click', () => {
     console.log('hello')
-    window.location.href = '/club';
+    window.location.href = '/club/1';
 });
 
 
