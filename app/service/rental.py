@@ -61,7 +61,7 @@ class RentalService:
                 sigunguno=rent['sigunguno'],
                 availdate=rent['availdate'],  # 추가된 필드
                 availtime=rent['availtime'],  # 추가된 필드
-                userno=rent['userno'],  # 추가된 필드
+                userid=rent['userid'],  # userno 대신 userid로 수정
                 regisdate=datetime.now()
             )
             result = db.execute(stmt)

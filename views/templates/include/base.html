@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %}</title>
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/bs5/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/header.css" >
     <link rel="stylesheet" href="/static/css/footer.css" >
     {% block link %} {% endblock %}
-    {% block style %} {% endblock %}
+    {% block style %}
+        <style>
+            /* 기본 폰트 설정 */
+            main {
+                font-family: 'NanumSquare Neo', sans-serif;
+            }
+        </style>
+    {% endblock %}
 </head>
 <body>
 <div id="wrap" class="container-fluid">

@@ -8,7 +8,7 @@ class Users(Base):
     __table_args__ = {'sqlite_autoincrement': True}
 
     userno: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
-    userid: Mapped[str] = mapped_column(String(100),unique=True, nullable=False)
+    userid: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     passwd: Mapped[str] = mapped_column(String(255), nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     email: Mapped[str] = mapped_column(String(255), nullable=False)

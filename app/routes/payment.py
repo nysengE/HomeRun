@@ -17,11 +17,10 @@ IMP_REST_API_KEY = os.getenv("IMP_REST_API_KEY", "3330350811307223")
 IMP_REST_API_SECRET = os.getenv("IMP_REST_API_SECRET", "wlMWRVhEkwkYjY5B1mfBA356GRRSpFTSrULnWFUM5oiUn7DxZt8LfjAUBIEYqtzZqrUQT2EE9S8UawlL")
 IMP_BASE_URL = "https://api.iamport.kr"
 
-@payment_router.get('/{spaceno}', response_class=HTMLResponse)
-async def club(req: Request):
-    userid = req.session.get('logined_uid', None)
-    userno = req.session.get('logined_userno', None)
-    return templates.TemplateResponse('payment/payment.html', {'request': req, 'userid': userid, 'userno': userno})
+# @payment_router.get('/{spaceno}', response_class=HTMLResponse)
+# async def club(req: Request):
+#     userid = req.session.get('logined_uid', None)
+#     return templates.TemplateResponse('payment/payment.html', {'request': req, 'userid': userid})
 
 # 아임포트 액세스 토큰 가져오기
 async def get_access_token():

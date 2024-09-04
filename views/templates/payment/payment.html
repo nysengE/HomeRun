@@ -10,16 +10,47 @@
 
 {% block main %}
     <main class="container payment-page">
+{#        <!-- 이미지 갤러리 섹션 -->#}
+{#        <section class="thumbnail-gallery">#}
+{#            {% for image in rent.attachs %}#}
+{#                {% if loop.first %}#}
+{#                    <img src="/cdn/img/{{ image.fname }}" alt="{{ rent.title }} 이미지">#}
+{#                {% endif %}#}
+{#            {% endfor %}#}
+{#        </section>#}
+{#        <!-- 예약 확인 섹션 -->#}
+{#        <section class="reservation-summary">#}
+{#            <h2 data-rent-title="{{ rent.title }}">{{ rent.title }}</h2>#}
+{#            <p>일정: {{ date }} / {{ time }}</p>#}
+{#            <div class="item">#}
+{#                <span>인원: {{ people }}명</span>#}
+{#            </div>#}
+{#            <div class="total">#}
+{#                <span>합계</span>#}
+{#                <span id="totalPrice">{{ rent.price * selectedTimes|length }}원</span>#}
+{#            </div>#}
+{#        </section>#}
         <!-- 예약 확인 섹션 -->
         <section class="reservation-summary">
-            <h2 data-rent-title="{{ rent.title }}">{{ rent.title }}</h2>
-            <p>일정: {{ date }} / {{ time }}</p>
-            <div class="item">
-                <span>인원: {{ people }}명</span>
-            </div>
-            <div class="total">
-                <span>합계</span>
-                <span id="totalPrice">{{ rent.price * selectedTimes|length }}원</span>
+            <div class="item-wrapper">
+                <div class="thumbnail-gallery">
+                    {% for image in rent.attachs %}
+                        {% if loop.first %}
+                            <img src="/cdn/img/{{ image.fname }}" alt="{{ rent.title }} 이미지">
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="reservation-details">
+                    <h2 data-rent-title="{{ rent.title }}">{{ rent.title }}</h2>
+                    <p>일정: {{ date }} / {{ time }}</p>
+                    <div class="item">
+                        <span>인원: {{ people }}명</span>
+                    </div>
+                    <div class="total">
+                        <span>합계</span>&nbsp; :  &nbsp;
+                        <span id="totalPrice">{{ rent.price * selectedTimes|length }}원</span>
+                    </div>
+                </div>
             </div>
         </section>
 

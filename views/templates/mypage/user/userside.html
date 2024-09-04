@@ -1,24 +1,23 @@
-{% extends 'include/base.html' %}
-
-{% block title %}
-    공간대여 결제페이지
-{% endblock %}
-
-{% block link %}
-    <link rel="stylesheet" href="/static/css/club.css" />
-{% endblock %}
-
-{% block main %}
-    <main>
-        <h2>동호회 게시글</h2>
-        <div>
-            <div class="card" style="width: 18rem;">
-                <img src="/static/img/clubsample.png" class="card-img-top img-fluid" alt="...">
-                <div class="card-body">
-                    <hr>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                </div>
-            </div>
-        </div>
-    </main>
-{% endblock %}
+<div class="sidebar mt-3">
+    <ul class="nav flex-column text-center">
+        <li class="nav-item">
+            <a class="nav-link active" id="member-info-link" href="/mypage/userinfo" aria-current="true">
+                회원정보
+            </a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="club-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                동호회
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="club-dropdown">
+                <li><a class="dropdown-item" id="written-link" href="/mypage/clubwrite">작성내역</a></li>
+                <li><a class="dropdown-item" id="applied-link" href="/mypage/clubapply">신청내역</a></li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="space-rental-link" href="/mypage/rentalapply">
+                공간대여 신청내역
+            </a>
+        </li>
+    </ul>
+</div>

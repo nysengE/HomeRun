@@ -33,13 +33,12 @@ async def read_add(request: Request, db: Session = Depends(get_db)):
         regions = db.query(Regions).all()  # 지역 정보를 데이터베이스에서 가져옴
         # 세션에서 사용자 ID 가져오기
         userid = request.session.get('logined_uid', None)
-        userno = request.session.get('logined_userno', None)  # userno도 세션에서 가져옴
 
         if not userid:
             # 세션에 userid가 없는 경우 로그인 페이지로 리디렉트
             return RedirectResponse('/user/login', status_code=303)
 
-        return templates.TemplateResponse("rental/add.html", {"request": request, "regions": regions, "userid": userid, "userno": userno})
+        return templates.TemplateResponse("rental/add.html", {"request": request, "regions": regions, "userid": userid})
     except Exception as ex:
         print(f'오류 발생: {str(ex)}')
         raise HTTPException(status_code=500, detail="Internal Server Error")
@@ -59,7 +58,7 @@ async def add_rental(
         sigunguno: int = Form(...),
         availdate: str = Form(...),
         availtime: str = Form(...),
-        userno: str = Form(...),
+        userid: str = Form(...),  # userid 받기
         files: List[UploadFile] = File([]),
         db: Session = Depends(get_db)
 ):
@@ -91,8 +90,9 @@ async def add_rental(
         "sigunguno": sigunguno,
         "availdate": availdate,
         "availtime": availtime,
-        "userno": userno
+        "userid": userid  # 여기서도 userno 대신 userid로 사용
     }
+
 
     try:
         RentalService.insert_rental(rental_data, attachs, db)
