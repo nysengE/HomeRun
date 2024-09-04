@@ -30,6 +30,8 @@ async def userinfo(req: Request, db: Session = Depends(get_db)):
             userdata = []
 
         passwd = userdata[0].passwd
+        if passwd is None:
+            passwd = ''
 
         return templates.TemplateResponse('mypage/user/userinfo.html',
                                           {'request': req, 'userdata': userdata, 'passwd': passwd})
@@ -167,6 +169,8 @@ async def clubwrite(req: Request, clubno:int, db: Session = Depends(get_db)):
     try:
 
         club = UserpageService.selectone_club(clubno, db)
+        if club is None:
+            club = []
 
         return templates.TemplateResponse('mypage/user/modifyclub.html',
                                           {'request': req, 'club': club})

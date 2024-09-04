@@ -101,8 +101,17 @@ async def view(req: Request, clubno: int, db: Session = Depends(get_db)):
         club = ClubService.selectone_club(clubno, db)
         reply = ClubService.select_reply(clubno, db)
 
+        if club is None:
+            club = []
+
+        if reply is None:
+            reply = []
+
         # 신청목록에서 신청한 아이디 가져오기
         applyuid = ClubService.select_apply_userid(clubno, db)
+
+        if applyuid is None:
+            applyuid = ''
         # print('applyuid: ',applyuid)
 
         return templates.TemplateResponse('club/view.html',
