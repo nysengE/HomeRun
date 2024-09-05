@@ -24,4 +24,3 @@ class ModifyUser(BaseModel):
 
 class CheckUser(BaseModel):
     passwd: str
-
