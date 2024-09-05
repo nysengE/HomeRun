@@ -1,0 +1,11 @@
+.inline-container {
+    display: flex;
+    gap: 10px; /* 요소 간격 */
+    justify-content: center; /* 선택 사항: 중앙 정렬 */
+}
+.inline-container p {
+    margin: 0; /* 기본 여백 제거 */
+    padding: 10px;
+    border: 1px solid black;
+    background-color: red;
+}
