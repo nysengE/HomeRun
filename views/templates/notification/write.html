@@ -1,0 +1,53 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+세미프로젝트 - 공지 등록
+{% endblock %}
+
+{% block main %}
+<main class="container">
+    <h1 class="my-4">공지사항 등록</h1>
+    <!-- 공지사항 작성 폼 -->
+    <form method="post" action="/notification/write" enctype="multipart/form-data" onsubmit="return validateForm();">
+        <!-- 제목 입력 필드 -->
+        <div class="mb-3">
+            <label for="title" class="form-label">제목</label>
+            <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+        <!-- 상세 내용 입력 필드 -->
+        <div class="mb-3">
+            <label for="contents" class="form-label">상세 내용</label>
+            <textarea id="contents" name="contents" rows="10" class="form-control" required></textarea>
+        </div>
+        <!-- 파일 업로드 필드 -->
+        <div class="mb-3">
+            <label for="file" class="form-label">사진 업로드</label>
+            <input type="file" id="file" name="files" class="form-control" accept="image/*" onchange="previewImage(event)">
+
+            <!-- 업로드된 파일이 있을 경우 미리보기 이미지 표시 -->
+            {% if attach and attach.fname %}
+            <img id="preview" class="img-thumbnail mt-3" src="http://127.0.0.1/img/ntf/{{ attach.fname }}" alt="첨부 이미지" style="max-width: 200px;">
+            {% else %}
+            <!-- 업로드된 파일이 없을 경우 숨김 -->
+            <img id="preview" class="img-thumbnail mt-3" src="" alt="첨부 이미지" style="display:none; max-width: 200px;">
+            {% endif %}
+        </div>
+        <!-- 등록 버튼 -->
+        <button type="submit" class="btn btn-primary">등록 완료</button>
+    </form>
+
+    <!-- 이미지 미리보기 스크립트 -->
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();  // FileReader 객체 생성
+            reader.onload = function() {  // 파일이 로드되면 실행될 함수
+                const output = document.getElementById('preview');  // 미리보기 이미지 요소 선택
+                output.src = reader.result;  // 로드된 파일의 데이터 URL 설정
+                output.style.display = 'block';  // 이미지 요소를 표시
+            };
+            reader.readAsDataURL(event.target.files[0]);  // 선택된 파일을 비동기적으로 읽음
+        }
+    </script>
+</main>
+{% endblock %}
+
