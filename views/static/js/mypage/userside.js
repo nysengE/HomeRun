@@ -1,3 +1,4 @@
+
 // 현재 페이지 링크 활성화
 document.addEventListener('DOMContentLoaded', function() {
     console.log('hello');
@@ -19,3 +20,4 @@ document.addEventListener('DOMContentLoaded', function() {
         // document.querySelector(currentPath)?.classList.add('show', 'active');
     }
 });
+

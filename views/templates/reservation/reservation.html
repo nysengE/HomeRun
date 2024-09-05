@@ -1,0 +1,228 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+    예약
+{% endblock %}
+
+{% block link %}
+    <link rel="stylesheet" href="/static/css/reservation/reservation.css" />
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css' rel='stylesheet' />
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css' rel='stylesheet' />
+{% endblock %}
+
+{% block main %}
+    <main class="container py-4">
+        <div class="row">
+            <!-- 왼쪽 컬럼: 달력 -->
+            <div class="col-md-6 mb-4">
+                <div class="reservation-calendar-section p-4 bg-white rounded shadow-sm">
+                    <div class="reservation-header d-flex align-items-center mb-3 border-bottom pb-2">
+                        <h2 class="mb-0">
+                            <i class="fa-solid fa-calendar-alt me-2 text-warning" aria-hidden="true"></i>
+                            일정을 선택하세요.
+                        </h2>
+                    </div>
+                    <div class="reservation-calendar" id="calendar" role="grid"></div>
+                </div>
+            </div>
+
+            <!-- 오른쪽 컬럼: 시간 슬롯 -->
+            <div class="col-md-6 mb-4">
+                <div class="time-slot-section p-4 bg-white rounded shadow-sm">
+                    <div class="time-slot-selection">
+                        <h3 class="fs-5">오전</h3>
+                        <div class="d-flex flex-wrap gap-2 mb-3" id="morningSlots" role="listbox" aria-label="오전 시간대"></div>
+                        <h3 class="fs-5">오후</h3>
+                        <div class="d-flex flex-wrap gap-2" id="afternoonSlots" role="listbox" aria-label="오후 시간대"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 섹션: 선택된 정보와 예약 버튼 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="reservation-info-section p-4 bg-white rounded shadow-sm mt-4">
+                    <div class="selected-info mb-3">
+                        <h4 class="fw-bold">선택한 날짜: <span id="selectedDateDisplay" aria-live="polite">선택되지 않음</span></h4>
+                        <h4 class="fw-bold">선택한 시간: <span id="selectedStartTimeDisplay" aria-live="polite">선택되지 않음</span></h4>
+
+                        <!-- 인원 선택 섹션 -->
+                        <h4 class="fw-bold">
+                            <i class="fa fa-user" aria-hidden="true"></i> 인원을 선택하세요:
+                            <div class="d-inline-flex align-items-center">
+                                <button id="decreasePeople" class="btn btn-outline-secondary btn-sm" type="button" aria-label="인원 감소">-</button>
+                                <span id="selectedPeople" class="mx-2" aria-live="polite">1</span>
+                                <button id="increasePeople" class="btn btn-outline-secondary btn-sm" type="button" aria-label="인원 증가">+</button>
+                            </div>
+                        </h4>
+                        <h4 class="fw-bold">가격: <span id="selectedPriceDisplay">{{ rent.price if rent.price else '가격 없음' }}</span></h4>
+                    </div>
+
+                    <div class="confirmation-switch d-flex align-items-center mb-3">
+                        <label class="switch">
+                            <input type="checkbox" id="confirmSelection" aria-checked="false">
+                            <span class="slider round"></span>
+                        </label>
+                        <label for="confirmSelection" class="ms-2">예약을 확인하세요</label>
+                    </div>
+                    <form id="reservationForm" action="/reservation/{{ rent.spaceno }}/confirm" method="post">
+                        <input type="hidden" name="date" id="formDate">
+                        <input type="hidden" name="time" id="formTime">
+                        <input type="hidden" name="people" id="formPeople">
+                        <button type="button" class="reservation-button btn btn-primary w-100 mt-4 py-2" id="makeReservation" disabled>예약하기</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block script %}
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var maxPeople = parseInt("{{ rent.people }}", 10);
+            var selectedPeople = 1;
+            var selectedDate = null;
+            var selectedTimes = [];
+            var pricePerSlot = parseInt("{{ rent.price }}", 10);
+            var calendarEl = document.getElementById('calendar');
+            var makeReservationButton = document.getElementById('makeReservation');
+            var reservationForm = document.getElementById('reservationForm');
+
+            // Initialize Calendar
+            if (calendarEl) {
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    locale: 'ko',
+                    themeSystem: 'bootstrap',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    validRange: {
+                        start: new Date(),
+                        end: new Date(new Date().setMonth(new Date().getMonth() + 3))
+                    },
+                    dateClick: function(info) {
+                        selectedDate = info.dateStr;
+                        updateSelectedInfo();
+                    }
+                });
+
+                calendar.render();
+            }
+
+            // Generate time slots dynamically
+            function generateTimeSlots(availTime) {
+                var morningSlotsEl = document.getElementById('morningSlots');
+                var afternoonSlotsEl = document.getElementById('afternoonSlots');
+                var [startHour, startMinute] = availTime.split(':').map(Number);
+
+                var currentHour = startHour;
+                var currentMinute = startMinute;
+
+                while (currentHour < 22) {
+                    (function(hour, minute) {
+                        var timeSlot = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+                        var button = document.createElement('button');
+                        button.className = 'btn btn-outline-secondary time-slot';
+                        button.textContent = timeSlot;
+                        button.addEventListener('click', function() {
+                            toggleTimeSlot(button, timeSlot);
+                        });
+
+                        if (hour < 12) {
+                            morningSlotsEl.appendChild(button);
+                        } else {
+                            afternoonSlotsEl.appendChild(button);
+                        }
+
+                    })(currentHour, currentMinute);
+
+                    // Increment by 2 hours
+                    currentHour += 2;
+                }
+            }
+
+            // 서버에서 제공된 시간 사용 예시
+            generateTimeSlots("{{ rent.availtime }}");
+
+            function toggleTimeSlot(button, time) {
+                var timeFormatted = time + ':00'; // HH:mm -> HH:mm:ss로 변경
+
+                if (selectedTimes.includes(timeFormatted)) {
+                    // 시간 슬롯이 이미 선택된 경우, 선택 해제
+                    selectedTimes = selectedTimes.filter(t => t !== timeFormatted);
+                    button.classList.remove('active');
+                } else if (selectedTimes.length < 2) {
+                    // 새로운 시간 슬롯 선택
+                    selectedTimes.push(timeFormatted);
+                    button.classList.add('active');
+                } else {
+                    alert('최대 2개의 시간을 선택할 수 있습니다.');
+                }
+
+                updateSelectedInfo();
+            }
+
+            function updateSelectedInfo() {
+                document.getElementById('selectedDateDisplay').innerText = selectedDate || '선택되지 않음';
+
+                // 선택된 시간 포맷 수정 (HH:mm 형식으로 출력)
+                var formattedTimes = selectedTimes.map(function(time) {
+                    var [hours, minutes] = time.split(':');
+                    return `${hours}:${minutes}`; // 시/분 형식으로 출력
+                });
+
+                document.getElementById('selectedStartTimeDisplay').innerText = formattedTimes.join(' / ') || '선택되지 않음';
+
+                var totalPrice = pricePerSlot * selectedTimes.length;
+                document.getElementById('selectedPriceDisplay').innerText = totalPrice + '원';
+
+                // 폼 필드 업데이트
+                document.getElementById('formDate').value = selectedDate;
+                document.getElementById('formTime').value = selectedTimes.join(',');
+                document.getElementById('formPeople').value = selectedPeople;
+
+                // '예약하기' 버튼 활성화
+                makeReservationButton.disabled = !selectedDate || selectedTimes.length === 0;
+            }
+
+            document.getElementById('increasePeople').addEventListener('click', function() {
+                if (selectedPeople < maxPeople) {
+                    selectedPeople++;
+                    document.getElementById('selectedPeople').innerText = selectedPeople;
+                    updateSelectedInfo();
+                }
+            });
+
+            document.getElementById('decreasePeople').addEventListener('click', function() {
+                if (selectedPeople > 1) {
+                    selectedPeople--;
+                    document.getElementById('selectedPeople').innerText = selectedPeople;
+                    updateSelectedInfo();
+                }
+            });
+
+            document.getElementById('confirmSelection').addEventListener('change', function() {
+                makeReservationButton.disabled = !this.checked;
+            });
+
+            makeReservationButton.addEventListener('click', function(event) {
+                // 서버로 폼 제출 전에 선택된 날짜와 시간이 있는지 확인
+                if (!selectedDate || selectedTimes.length === 0) {
+                    alert('예약 날짜와 시간을 선택해주세요.');
+                    return;
+                }
+
+                // 서버로 폼 제출
+                reservationForm.submit();
+            });
+
+        });
+    </script>
+{% endblock %}

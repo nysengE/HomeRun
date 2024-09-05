@@ -1,95 +1,153 @@
+/* 전체 페이지의 기본 스타일 설정 */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* 헤더 및 콘텐츠 레이아웃 설정 */
 .headermain {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%; /* 헤더가 전체 너비를 차지하도록 설정 */
 }
 
 .headercontainer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%; /* 전체 너비 사용 */
+    padding: 0;
+    margin: 0;
+}
+
+.d-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.logo {
+    max-width: 100%; /* 최대 너비를 100%로 설정 */
+    height: auto;
 }
 
 .container.text-start.mt-4 {
-    width: 500px;
+    width: 100%; /* 전체 너비 사용 */
     display: flex;
-    justify-content: center; /* 버튼들을 가운데 정렬 */
+    justify-content: center;
     align-items: center;
-    gap: 0px; /* 버튼 사이에 간격 추가 */
+    gap: 0px;
 }
 
-.headernav{
-    width: 100%;
+.nav-link {
+    color: black;
+}
+
+.headernav {
     display: flex;
     justify-content: flex-end;
-    align-items: end;
+    align-items: center;
+    width: 100%; /* 전체 너비 사용 */
     padding-top: 10px;
-    /*margin-left: 10px;*/
 }
 
 .sportnav {
     padding: 0;
     margin: 0;
-    background-color: lightblue;
+    background-color: #faf8f5;
+    width: 100%;
 }
 
 .headerul {
-    text-align: center;
+    display: flex;
+    justify-content: center;
     gap: 10%;
+    padding: 0;
+    margin: 0;
 }
 
 .headerli {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     border: none;
     cursor: pointer;
-    background-color: lightblue;
+    background-color: #faf8f5;
     text-align: center;
-: 10px;
 }
 
-/*switch button*/
+.btn-group {
+    display: flex;
+    position: relative;
+    width: 100%; /* 전체 너비 사용 */
+    border-radius: 30px;
+    overflow: hidden;
+    background-color: #E0E0E0;
+}
+
+.btn-group .sliding {
+    position: absolute;
+    height: 100%;
+    width: 50%;
+    background-color: #FFC107;
+    border-radius: 30px;
+    transition: left 0.3s ease;
+    z-index: 1;
+    left: 0;
+}
+
 .btn-group .btn-toggle {
-    border-radius: 30px; /* 버튼의 둥근 모서리를 설정 */
-    padding: 10px 20px;
-    font-weight: bold;
-    transition: all 0.3s ease; /* 부드러운 전환 효과 */
-    text-decoration: none; /* 링크 밑줄 제거 */
+    flex-grow: 1;
+    text-align: center;
+    padding: 0;
+    background-color: transparent;
+    color: gray;
+    border: none;
+    position: relative;
+    z-index: 2;
+    line-height: 40px;
+    height: 40px;
 }
 
-.btn-group .btn-toggle:not(:first-child) {
-    margin-left: -1px; /* 버튼 간의 경계선을 없애기 위해 겹침 */
+.btn-toggle:focus, .btn-toggle:active, .btn-toggle:visited {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
-.btn-group .btn-toggle:first-child {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-.btn-group .btn-toggle:last-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-.btn-group .btn-toggle:hover {
-    background-color: #FFC107; /* 호버 시 배경색 변경 */
-    color: white; /* 호버 시 텍스트 색상 변경 */
+.sliding:focus, .sliding:active, .sliding:visited {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .btn-group .btn-toggle.active {
-    background-color: #FFC107; /* 선택된 버튼의 배경색 */
-    color: white; /* 선택된 버튼의 텍스트 색상 */
+    color: white;
+}
+
+.btn-group .btn-toggle:hover {
+    color: white;
 }
 
 .btn-group .btn-toggle:not(.active) {
-    background-color: #E0E0E0; /* 비활성화된 버튼의 배경색 */
-    color: gray; /* 비활성화된 버튼의 텍스트 색상 */
+    color: gray;
 }
 
-/*footer*/
+.basketball, .soccer, .baseball, .tennis, .pingpong {
+    width: 120px;
+    height: auto;
+}
+
+/* 푸터 위치 고정 및 스타일 설정 */
 footer {
     position: fixed;
-    left: 0px;
-    bottom: 0px;
+    left: 0;
+    bottom: 0;
     height: 120px;
     width: 100%;
     padding-top: 20px;
+    text-align: center;
+    background-color: #faf8f5; /* 푸터의 배경색 설정 */
 }

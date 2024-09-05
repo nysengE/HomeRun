@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 방법 선택</title>
+    <link rel="stylesheet" href="/static/css/bs5/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/project.css">
+    <style>
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .btn-light {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+        .btn-light img {
+            width: 40%;
+        }
+        .text-link {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #bcd0c7;
+        }
+    </style>
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script>
+        <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+
+</head>
+<body>
+<div class="login-box">
+    <h3 class="my-5 text-center">HomeRun</h3>
+    <h6 class="my-5 text-center">고객님 환영합니다! 기다리고 있었습니다.</h6>
+
+    <div class="mb-3 row justify-content-center">
+        <div class="col-12 text-center">
+            <a href="javascript:kakaoLogin();">
+                <button type="button" class="btn btn-light" id="kakao-login-btn">
+                    <img src="/static/img/kakao_login_medium_narrow.png" alt="카카오 로그인">
+                </button>
+        </div>
+    </div>
+
+    <div class="mb-3 row justify-content-center">
+        <div class="col-12 text-center">
+            <button type="button" class="btn btn-success">
+                <a href="login" class="text-link">이메일로 로그인</a>
+            </button>
+        </div>
+    </div>
+
+    <p class="text-center my-3">
+        계정이 없으신가요?
+        <a href="form" class="text-link">이메일로 회원가입</a>
+    </p>
+</div>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script>
+    // 카카오 로그인 함수
+    function kakaoLogin() {
+        Kakao.Auth.login({
+            success: function (response) {
+                console.log('로그인 성공:', response);
+                Kakao.API.request({
+                    url: '/v2/user/me',
+                    success: function (response) {
+                        console.log('사용자 정보:', response);
+                        // 로그인 후 kakaologin.html 페이지로 이동
+                        window.location.href = '/user/kakaologin'; // 로그인 후 이 페이지로 이동
+                    },
+                    fail: function (error) {
+                        console.log('사용자 정보 요청 실패:', error);
+                    },
+                });
+            },
+            fail: function (error) {
+                console.log('로그인 실패:', error);
+            },
+        });
+    }
+
+    // Kakao SDK 초기화
+    document.addEventListener('DOMContentLoaded', function() {
+        Kakao.init('42ca1670b87e77f5665027dd0c1c21a8'); // 실제 Kakao JavaScript Key로 교체하세요.
+        console.log('Kakao SDK initialized:', Kakao.isInitialized()); // SDK가 올바르게 초기화되었는지 확인
+    });
+</script>
+</body>
+</html>

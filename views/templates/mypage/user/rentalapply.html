@@ -9,40 +9,48 @@
 {% endblock %}
 
 {% block main %}
-    <main class="d-flex justify-content-between">
-        <div>{% include 'mypage/user/userside.html' %}</div>
-        <div class="content d-flex flex-column px-3" style="width: 800px">
+
+    <main class="d-flex">
+        <!-- 사이드바 영역 -->
+        <div class="sidebar-container">
+            {% include 'mypage/user/userside.html' %}
+        </div>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <div class="content-container">
             <h2 class="py-3 mt-2">공간대여 신청내역</h2>
 
-            <table class="table table-bordered mt-3">
-                <thead>
-                <tr>
-                    <th>운동명</th>
-                    <th>제목</th>
-                    <th>등록일</th>
-                    <th>신청자</th>
-                    <th>수정</th>
-                    <th>삭제</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>결제번호</td>
-                    <td>제목</td>
-                    <td>결제일</td>
-                    <td>내용</td>
-                    <td>일일</td>
-                    <td>
-                        <button type="button" class="btn btn-success view" >상세보기</button>
-                    </td>
+            <!-- 이미지 갤러리 섹션 -->
+            <section class="thumbnail-gallery">
+                {% for image in rent.attachs %}
+                    {% if loop.first %}
+                        <img src="/cdn/img/{{ image.fname }}" alt="{{ rent.title }} 이미지" class="img-fluid w-100">
+                    {% endif %}
+                {% endfor %}
+            </section>
 
-                </tr>
-                <!-- 추가적인 글 항목들 -->
-                </tbody>
-            </table>
+            <!-- 예약 확인 섹션 -->
+            <section class="reservation-summary">
+                <h2 data-rent-title="{{ rent.title }}">{{ rent.title }}</h2>
+                <p>일정: {{ date }} / {{ time }}</p>
+                <div class="item">
+                    <span>인원: {{ people }}명</span>
+                </div>
+                <div class="total">
+                    <span>합계</span>
+                    <span id="totalPrice">{{ rent.price * selectedTimes|length }}원</span>
+                </div>
+            </section>
+
+            <!-- 결제 완료 메시지 -->
+            <div class="completed-text">
+                결제가 완료되었습니다.
+            </div>
         </div>
     </main>
 {% endblock %}
+
 {% block script %}
     <script src="/static/js/mypage/userside.js"></script>
 {% endblock %}
+

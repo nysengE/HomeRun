@@ -16,6 +16,7 @@ from app.service.club import get_club_data, process_upload, ClubService
 club_router = APIRouter()
 templates = Jinja2Templates(directory='views/templates')
 
+
 @club_router.get('/{cpg}', response_class=HTMLResponse)
 async def club(req: Request, cpg: int, db: Session = Depends(get_db)):
     try:
@@ -146,6 +147,7 @@ async def reply(req: Request, reply: NewReply, db: Session = Depends(get_db)):
             return RedirectResponse(f'/club/view/{reply.clubno}',303)
     except Exception as ex:
         print(f'▷▷▷ reply 오류 발생 : {str(ex)}')
+
 
 
 

@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="/static/css/bs5/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+    <script type="text/javascript">
+        var onloadCallback = () => {
+            grecaptcha.render('captcha', { 'sitekey': '6LeKoCsqAAAAAHBUAE7T3VyLPC9sYrosoYDgJRRD' });
+        };
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .login-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            display: flex;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            height: 400px;
+            text-align: center;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            text-align: left;
+            margin-top: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="login-box">
+    <main class="container bg-gradient">
+        <h1 class="text-center text-white"></h1>
+        <h2 class="text-center my-5">회원가입</h2>
+        <h3 class="text-center my-5">홈런과 함께해 주셔서 감사합니다!!</h3>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6">
+                <form name="joinfrm" method="post" action="/user/join">
+                    <!-- 사용자 유형 -->
+                    <div class="mb-3 d-flex justify-content-center">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="usertype" id="nomeluser" checked>
+                            <label class="form-check-label" for="nomeluser">일반 사용자</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="usertype" id="business">
+                            <label class="form-check-label" for="business">사업자 사용자</label>
+                        </div>
+                    </div>
+
+                    <!-- 이름 -->
+                    <div class="mb-3 row">
+                        <label for="name" class="col-sm-4 col-form-label text-end">이름</label>
+                        <div class="col-sm-8">
+                            <input type="text" placeholder="이름을 입력하세요" name="name" id="name" required class="form-control">
+                            <div id="nameError" class="error-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- 생년월일 -->
+                    <div class="mb-3 row">
+                        <label for="birth" class="col-sm-4 col-form-label text-end">생년월일</label>
+                        <div class="col-sm-8">
+                            <input type="date" name="birth" id="birth" required class="form-control">
+                            <div id="birthError" class="error-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- 아이디 -->
+                    <div class="mb-3 row">
+                        <label for="userid" class="col-sm-4 col-form-label text-end">아이디</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input type="text" placeholder="아이디입력 (6자~16자)" name="userid" id="userid" minlength="6" maxlength="16" required class="form-control">
+                                <button id="idckbtn" class="btn btn-primary" type="button">중복체크</button>
+                            </div>
+                            <div id="useridError" class="error-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- 비밀번호 -->
+                    <div class="mb-3 row">
+                        <label for="passwd" class="col-sm-4 col-form-label text-end">비밀번호</label>
+                        <div class="col-sm-8">
+                            <input type="password" placeholder="비밀번호입력 (문자, 숫자,특수문자 포함6자~16자)" name="passwd" id="passwd" minlength="6" maxlength="16" required class="form-control">
+                            <div id="passwdError" class="error-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- 비밀번호 확인 -->
+                    <div class="mb-3 row">
+                        <label for="repasswd" class="col-sm-4 col-form-label text-end">비밀번호 확인</label>
+                        <div class="col-sm-8">
+                            <input type="password" placeholder="비밀번호를 확인하세요" name="repasswd" id="repasswd" minlength="6" maxlength="16" required class="form-control">
+                            <div id="repasswdError" class="error-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- 핸드폰 번호 -->
+                    <div class="mb-3 row">
+                        <label for="phone" class="col-sm-4 col-form-label text-end">핸드폰 번호</label>
+                        <div class="col-sm-8">
+                            <input type="text" placeholder="핸드폰 번호를 입력하세요" name="phone" id="phone" required class="form-control">
+                            <div id="phoneError" class="error-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- 이메일 -->
+                    <div class="mb-3 row">
+                        <label for="email" class="col-sm-4 col-form-label text-end">이메일</label>
+                        <div class="col-sm-8">
+                            <input type="email" placeholder="이메일을 입력하세요" name="email" id="email" required class="form-control">
+                            <div id="emailError" class="error-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- 사업자 등록번호 -->
+                    <div class="mb-3 row hidden" id="businessNumberRow">
+                        <label for="businessno" class="col-sm-4 col-form-label text-end">사업자 등록번호</label>
+                        <div class="col-sm-8">
+                            <input type="text" placeholder="사업자 등록번호를 입력하세요" name="businessno" id="businessno" class="form-control">
+                            <div id="businessnoError" class="error-message"></div>
+                            <button id="businessckbtn" class="btn btn-primary" type="button">사업자 번호 체크</button>
+                        </div>
+                    </div>
+
+
+
+
+                    <!-- 자동가입방지 -->
+                    <div class="mb-3 row">
+                        <label for="captcha" class="col-sm-4 col-form-label text-end">자동가입방지</label>
+                        <div class="col-sm-8">
+                            <div id="captcha" class="form-control"></div>
+                            <div id="captchaError" class="error-message"></div>
+                        </div>
+                    </div>
+
+
+                    <!-- 버튼들 -->
+                    <div class="mb-3 row justify-content-center">
+                        <div class="col-sm-6 d-flex justify-content-around ">
+                            <button  type="button" id="joinbtnUser" class="btn btn-success "><i class="bi bi-check-lg"></i>일반 사용자 가입</button>
+                            <button type="button" id="joinbtnBusiness" class="btn btn-success hidden">사업자 가입</button>
+                            <button type="reset" id="rstbtn" class="btn btn-danger"><i class="bi bi-x-lg"></i>다시입력</button>
+                        </div>
+                    </div>
+
+                    <!-- 카카오 로그인 버튼 -->
+                    <div class="mb-3 row justify-content-center">
+                        <div class="col-8 text-center">
+                            <a href="javascript:kakaoLogin();">
+                                <button type="button" class="btn btn-light">
+                                    <img src="/static/img/kakao_login_medium_narrow.png" alt="카카오 로그인" class="img-fluid">
+                                </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- 유효성 검사와 관련된 스크립트 -->
+<script>
+    // 공통 유효성 검사 함수
+    function validateField(inputElement, pattern, errorMsg, errorElement) {
+        let isValid = pattern.test(inputElement.value);
+
+        if (isValid) {
+            inputElement.classList.remove("is-invalid");
+            inputElement.classList.add("is-valid");
+            errorElement.textContent = '';
+        } else {
+            inputElement.classList.remove("is-valid");
+            inputElement.classList.add("is-invalid");
+            errorElement.textContent = errorMsg;
+        }
+        return isValid;
+    }
+
+    // 각 필드에 대한 유효성 검사 설정
+    document.querySelector('#userid').addEventListener("input", function () {
+        validateField(this, /^.{6,16}$/, '아이디 형식이 올바르지 않습니다 (6자~16자)', document.getElementById('useridError'));
+    });
+
+    document.querySelector('#passwd').addEventListener("input", function () {
+        validateField(this, /^.{6,16}$/, '비밀번호 형식이 올바르지 않습니다 (6자~16자)', document.getElementById('passwdError'));
+    });
+
+    document.querySelector('#repasswd').addEventListener("input", function () {
+        let passwd = document.querySelector('#passwd').value;
+        let repasswd = this.value;
+        let errorElement = document.getElementById('repasswdError');
+
+        if (passwd === repasswd) {
+            this.classList.remove("is-invalid");
+            this.classList.add("is-valid");
+            errorElement.textContent = '';
+        } else {
+            this.classList.remove("is-valid");
+            this.classList.add("is-invalid");
+            errorElement.textContent = '비밀번호가 일치하지 않습니다';
+        }
+    });
+
+    document.querySelector('#email').addEventListener("input", function () {
+        validateField(this, /^[^\s@]+@[^\s@]+\.[^\s@]+$/, '이메일 형식이 올바르지 않습니다', document.getElementById('emailError'));
+    });
+
+    document.querySelector('#businessno').addEventListener("input", function () {
+        validateField(this, /^[0-9]{3}-[0-9]{2}-[0-9]{5}$/, '사업자 번호가 올바르지 않습니다', document.getElementById('businessnoError'));
+    });
+
+    // 사용자 유형에 따른 폼 표시/숨기기
+    const businessRadio = document.getElementById('business');
+    const nomelUserRadio = document.getElementById('nomeluser');
+    const businessNumberRow = document.getElementById('businessNumberRow');
+    const joinfrm = document.joinfrm;
+    const joinbtnUser = document.getElementById('joinbtnUser');
+    const joinbtnBusiness = document.getElementById('joinbtnBusiness');
+
+    const toggleBusinessNumber = () => {
+        if (businessRadio.checked) {
+            businessNumberRow.classList.remove('hidden'); // 사업자 사용자 선택 시 사업자 등록번호 필드 표시
+            joinfrm.businessno.required = false; // 필수 항목으로 설정
+            joinbtnUser.classList.add('hidden');
+            joinbtnBusiness.classList.remove('hidden');
+        } else {
+            businessNumberRow.classList.add('hidden'); // 일반 사용자 선택 시 사업자 등록번호 필드 숨김
+            joinfrm.businessno.required = false; // 필수 항목 해제
+            joinbtnUser.classList.remove('hidden');
+            joinbtnBusiness.classList.add('hidden');
+        }
+    };
+
+    // 이벤트 리스너 설정
+    businessRadio.addEventListener('change', toggleBusinessNumber);
+    nomelUserRadio.addEventListener('change', toggleBusinessNumber);
+
+    // 폼 검증 함수
+    const checkjoinfrm = (frm) => {
+        const fields = [
+            { field: frm.name, error: '이름을 입력하세요', errorElement: document.getElementById('nameError') },
+            { field: frm.userid, error: '아이디를 입력하세요', errorElement: document.getElementById('useridError') },
+            { field: frm.passwd, error: '비밀번호를 입력하세요', errorElement: document.getElementById('passwdError') },
+            { field: frm.repasswd, error: '비밀번호를 확인하세요', errorElement: document.getElementById('repasswdError') },
+            { field: frm.email, error: '이메일을 입력하세요', errorElement: document.getElementById('emailError') },
+        ];
+
+        for (let item of fields) {
+            if (item.field.value.trim() === '') {
+                alert(item.error);
+                item.field.focus();
+                item.errorElement.textContent = item.error;
+                return false;
+            } else {
+                item.errorElement.textContent = '';
+            }
+        }
+
+        if (frm.passwd.value !== frm.repasswd.value) {
+            alert('입력한 비밀번호가 같은지 확인하세요');
+            frm.repasswd.focus();
+            document.getElementById('repasswdError').textContent = '입력한 비밀번호가 일치하지 않습니다';
+            return false;
+        }
+
+        if (businessRadio.checked && frm.businessno.value.trim() === '') {
+            alert('사업자 등록 번호를 입력하세요');
+            frm.businessno.focus();
+            document.getElementById('businessnoError').textContent = '사업자 등록 번호를 입력하세요';
+            return false;
+        }
+
+        if (grecaptcha.getResponse() === '') {
+            alert('자동가입 방지를 클릭하세요!');
+            document.getElementById('captchaError').textContent = '자동가입 방지를 클릭하세요!';
+            return false;
+        }
+
+        return true;
+    };
+
+    document.querySelector('#idckbtn').addEventListener('click', async function() {
+        const userid = document.querySelector('#userid').value;
+
+        if (userid.length < 6) {
+            alert('아이디는 6자 이상이여야 합니다.');
+            return;
+        }
+
+        // 서버로 아이디 중복 체크 요청
+        const response = await fetch('/user/check_userid', {
+            method: 'POST',
+            headers: {
+                'content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userid: userid  })
+        });
+
+        const result = await response.json();
+        const errorElement = document.getElementById('useridError');
+
+        if (result.exists) {
+            errorElement.textContent = result.message;
+            document.querySelector('#userid').classList.add('is-invalid');
+        } else {
+            errorElement.textContent = result.message;
+            document.querySelector('#userid').classList.remove('is-invalid');
+            document.querySelector('#userid').classList.add('is-valid');
+        }
+
+    });
+
+
+
+
+    // 일반 사용자 가입 버튼 이벤트
+    joinbtnUser.addEventListener('click', async () => {
+        if (!checkjoinfrm(joinfrm)) return;
+
+        const formData = new FormData(joinfrm);
+        let jsondata = {};
+        formData.forEach((val, key) => {
+            if (key === 'birth') {
+                jsondata[key] = new Date(val).toISOString().split('T')[0];
+            } else {
+                jsondata[key] = val;
+            }
+        });
+        jsondata['captcha'] = grecaptcha.getResponse();
+        jsondata['usertype'] = 'nomeluser';
+
+        try {
+            const response = await fetch('/user/join', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsondata)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            if (response.redirected) {
+                location.href = response.url;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('회원가입 처리 중 오류가 발생했습니다.');
+        }
+    });
+
+    // 비즈니스 가입 버튼 이벤트
+    joinbtnBusiness.addEventListener('click', async () => {
+        if (!checkjoinfrm(joinfrm)) return;
+
+        const formData = new FormData(joinfrm);
+        let jsondata = {};
+        formData.forEach((val, key) => {
+            if (key === 'birth') {
+                jsondata[key] = new Date(val).toISOString().split('T')[0];
+            } else {
+                jsondata[key] = val;
+            }
+        });
+        jsondata['captcha'] = grecaptcha.getResponse();
+        jsondata['usertype'] = 'business';
+
+        try {
+            const response = await fetch('/user/join', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsondata)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            if (response.redirected) {
+                location.href = response.url;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('비즈니스 가입 처리 중 오류가 발생했습니다.');
+        }
+    });
+
+    // 카카오 로그인 함수
+    function kakaoLogin() {
+        Kakao.Auth.login({
+            success: function (response) {
+                console.log('로그인 성공:', response);
+                Kakao.API.request({
+                    url: '/v2/user/me',
+                    success: function (response) {
+                        console.log('사용자 정보:', response);
+                        // 로그인 후 kakaologin.html 페이지로 이동
+                        window.location.href = 'kakaologin'; // 로그인 후 이 페이지로 이동
+                    },
+                    fail: function (error) {
+                        console.log('사용자 정보 요청 실패:', error);
+                    },
+                });
+            },
+            fail: function (error) {
+                console.log('로그인 실패:', error);
+            },
+        });
+    }
+
+
+    // Kakao SDK 초기화
+    document.addEventListener('DOMContentLoaded', function() {
+        Kakao.init('42ca1670b87e77f5665027dd0c1c21a8'); // 실제 Kakao JavaScript Key로 교체하세요.
+        console.log('Kakao SDK initialized:', Kakao.isInitialized()); // SDK가 올바르게 초기화되었는지 확인
+    });
+
+    // Kakao SDK 초기화
+    document.addEventListener('DOMContentLoaded', function() {
+        Kakao.init('42ca1670b87e77f5665027dd0c1c21a8'); // 실제 Kakao JavaScript Key로 교체하세요.
+        console.log('Kakao SDK initialized:', Kakao.isInitialized()); // SDK가 올바르게 초기화되었는지 확인
+    });
+
+
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const businessckbtn = document.querySelector('#businessckbtn');
+        const businessNumberInput = document.querySelector('#businessno');
+        const businessError = document.getElementById('businessnoError');
+
+        // 요소가 존재하는지 확인
+        if (!businessckbtn || !businessNumberInput || !businessError) {
+            console.error('필요한 HTML 요소가 존재하지 않습니다.');
+            return;
+        }
+
+        businessckbtn.addEventListener('click', () => {
+            const businessNumber = businessNumberInput.value.trim(); // 앞뒤 공백 제거
+
+            if (!businessNumber) {
+                alert('사업자 번호를 입력해주세요.');
+                return;
+            }
+
+            // 사업자 등록 번호 형식 검증
+            if (validateBusinessNumber(businessNumber)) {
+                businessError.textContent = '유효한 사업자 번호입니다.';
+                businessNumberInput.classList.remove('is-invalid');
+                businessNumberInput.classList.add('is-valid');
+            } else {
+                businessError.textContent = '유효하지 않은 사업자 번호입니다.';
+                businessNumberInput.classList.add('is-invalid');
+            }
+        });
+    });
+
+    // 사업자 등록 번호의 형식 검증 함수
+    function validateBusinessNumber(businessNumber) {
+        // 사업자 등록 번호 형식: 123-45-67890
+        const pattern = /^\d{3}-\d{2}-\d{5}$/;
+        return pattern.test(businessNumber);
+    }
+
+
+</script>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+
+</body>
+</html>
