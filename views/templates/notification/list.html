@@ -31,10 +31,9 @@
             {% endif %}
         </ul>
 
-        {% if request.session.get('userid') == 'manager' %}
+        {% if 'logined_uid' in request.session and request.session.logined_uid == 'manager' %}
         <a href="/notification/write" class="btn btn-success">등록</a>
         {% endif %}
-        <a href="/notification/write" class="btn btn-success">등록</a>
 
         <!-- 페이지네이션 -->
         <nav aria-label="Page navigation" class="mt-4">
