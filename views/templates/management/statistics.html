@@ -1,0 +1,204 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+    통계 관리
+{% endblock %}
+
+{% block main %}
+    <main class="container">
+        <h1 class="my-4">동호회 및 대여 게시글 통계</h1>
+
+        <!-- Chart.js 라이브러리 추가 -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <!-- 동호회 카테고리별 게시글 수 -->
+        <h2 class="mt-4">동호회 카테고리별 게시글 수</h2>
+        <canvas id="clubCategoryPostsChart" width="400" height="200"></canvas>
+
+        <!-- 대여 카테고리별 게시글 수 -->
+        <h2 class="mt-4">대여 카테고리별 게시글 수</h2>
+        <canvas id="rentalCategoryPostsChart" width="400" height="200"></canvas>
+
+        <!-- 카테고리별 연령대 수 -->
+        <h2 class="mt-4">카테고리별 연령대 수</h2>
+        <select id="category-select" class="form-select mb-3" onchange="updateAgeGroup()">
+            <option value="" disabled selected>카테고리를 선택하세요</option>
+            {% for age in stats.age_group_count %}
+                <option value="{{ age.name }}">{{ age.name }}</option>
+            {% endfor %}
+        </select>
+        <canvas id="ageGroupChart" width="400" height="200"></canvas>
+
+        <!-- 지역별 카테고리 수 -->
+        <h2 class="mt-4">지역별 카테고리 수</h2>
+        <select id="region-select" class="form-select mb-3" onchange="updateSportsByRegion()">
+            <option value="" disabled selected>지역을 선택하세요</option>
+            {% for region in stats.sport_count_by_region %}
+                <option value="{{ region.region_name }}">{{ region.region_name }}</option>
+            {% endfor %}
+        </select>
+        <canvas id="sportsByRegionChart" width="400" height="200"></canvas>
+    </main>
+
+    <script>
+        // 전역 차트 변수 설정
+        let clubCategoryPostsChart;
+        let rentalCategoryPostsChart;
+        let ageGroupChart;
+        let sportsByRegionChart;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // 동호회 카테고리별 게시글 수 데이터
+            const clubCategoryPostsData = {
+                labels: [{% for post in stats.posts_count %}"{{ post.name }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: '동호회 게시글 수',
+                    data: [{% for post in stats.posts_count %}{{ post.count }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            // 대여 카테고리별 게시글 수 데이터
+            const rentalCategoryPostsData = {
+                labels: [{% for rental in stats.rental_count_by_sport %}"{{ rental.name }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: '대여 게시글 수',
+                    data: [{% for rental in stats.rental_count_by_sport %}{{ rental.count }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            // 동호회 카테고리별 게시글 수 차트 초기화
+            const ctxClubCategoryPosts = document.getElementById('clubCategoryPostsChart').getContext('2d');
+            clubCategoryPostsChart = new Chart(ctxClubCategoryPosts, {
+                type: 'bar',
+                data: clubCategoryPostsData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // 대여 카테고리별 게시글 수 차트 초기화
+            const ctxRentalCategoryPosts = document.getElementById('rentalCategoryPostsChart').getContext('2d');
+            rentalCategoryPostsChart = new Chart(ctxRentalCategoryPosts, {
+                type: 'bar',
+                data: rentalCategoryPostsData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // 카테고리별 연령대 수 차트 초기화
+            const ctxAgeGroup = document.getElementById('ageGroupChart').getContext('2d');
+            ageGroupChart = new Chart(ctxAgeGroup, {
+                type: 'bar',
+                data: {
+                    labels: ['10대', '20대', '30대', '40대', '50대 이상'],
+                    datasets: [{
+                        label: '연령대 수',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // 지역별 카테고리 수 차트 초기화
+            const ctxSportsByRegion = document.getElementById('sportsByRegionChart').getContext('2d');
+            sportsByRegionChart = new Chart(ctxSportsByRegion, {
+                type: 'bar',
+                data: {
+                    labels: ['축구', '야구', '농구', '테니스', '기타'],
+                    datasets: [{
+                        label: '카테고리 수',
+                        data: [0, 0, 0, 0, 0],  // 초기 데이터는 0으로 설정
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+
+        function updateAgeGroup() {
+            const selectedCategory = document.getElementById('category-select').value;
+            const ageGroups = {{ stats.age_group_count | tojson }};
+            const selectedAgeGroup = ageGroups.find(age => age.name === selectedCategory);
+
+            if (selectedAgeGroup) {
+                const newData = [selectedAgeGroup['10대'], selectedAgeGroup['20대'], selectedAgeGroup['30대'], selectedAgeGroup['40대'], selectedAgeGroup['50대 이상']];
+
+                // 데이터 업데이트
+                ageGroupChart.data.datasets[0].data = newData;
+                ageGroupChart.update();
+            }
+        }
+
+        function updateSportsByRegion() {
+            const selectedRegion = document.getElementById('region-select').value;
+            const regions = {{ stats.sport_count_by_region | tojson }};
+            const selectedRegionData = regions.find(region => region.region_name === selectedRegion);
+
+            if (selectedRegionData) {
+                // 카테고리별 데이터 초기화
+                let soccerCount = 0, baseballCount = 0, basketballCount = 0, tennisCount = 0, othersCount = 0;
+
+                selectedRegionData.sports.forEach(sport => {
+                    switch (sport.name) {
+                        case '축구':
+                            soccerCount += sport.count;
+                            break;
+                        case '야구':
+                            baseballCount += sport.count;
+                            break;
+                        case '농구':
+                            basketballCount += sport.count;
+                            break;
+                        case '테니스':
+                            tennisCount += sport.count;
+                            break;
+                        default:
+                            othersCount += sport.count;  // 기타 항목에 합산
+                            break;
+                    }
+                });
+
+                // 데이터 업데이트
+                sportsByRegionChart.data.datasets[0].data = [soccerCount, baseballCount, basketballCount, tennisCount, othersCount];
+                sportsByRegionChart.update();
+            }
+        }
+    </script>
+{% endblock %}
+
