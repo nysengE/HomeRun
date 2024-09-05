@@ -1,6 +1,8 @@
 import os
 from contextlib import asynccontextmanager
 from typing import List
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, HTTPException, Depends, Query, Form, UploadFile, File
 from sqlalchemy.orm import Session
@@ -21,8 +23,23 @@ from app.routes.payment import payment_router
 from app.routes.rental import rental_router
 from app.routes.reservation import reservation_router
 from app.routes.user import user_router
+from app.service.management import ManagementService
+from app.service.usermanage import UserService
 from app.service.rental import RentalService, process_upload
 from app.utils import format_time
+
+
+scheduler = AsyncIOScheduler()
+
+async def release_suspension_task():
+    # 데이터베이스 세션을 사용하여 작업 실행
+    db = next(get_db())
+    UserService.check_and_release_suspension(db)
+
+async def delete_old_private_posts_task():
+    # 데이터베이스 세션을 사용하여 작업 실행
+    db = next(get_db())
+    ManagementService.delete_old_private_posts(db)
 
 
 # Lifespan 관리 함수 정의
