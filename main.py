@@ -23,6 +23,7 @@ from app.routes.payment import payment_router
 from app.routes.rental import rental_router
 from app.routes.reservation import reservation_router
 from app.routes.user import user_router
+from app.routes.usermanage import usermanage_router
 from app.service.management import ManagementService
 from app.service.usermanage import UserService
 from app.service.rental import RentalService, process_upload
@@ -70,6 +71,7 @@ app.include_router(payment_router, prefix='/payment')
 app.include_router(rental_router, prefix='/rental')
 app.include_router(reservation_router, prefix="/reservation")
 app.include_router(user_router, prefix='/user')
+app.include_router(usermanage_router, prefix='/usermanage')
 
 
 @app.get("/", response_class=HTMLResponse)
