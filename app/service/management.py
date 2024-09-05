@@ -115,99 +115,62 @@ class ManagementService:
     @staticmethod
     def get_statistics(db: Session):
         try:
-            # Sports 테이블에 별칭을 사용하여 중복 참조 문제 해결
-            sports_alias_1 = aliased(Sports)
-            sports_alias_2 = aliased(Sports)
-            sports_alias_3 = aliased(Sports)
-            sports_alias_4 = aliased(Sports)
-
-            # regions 테이블에 대한 별칭 설정
-            regions_alias = aliased(Regions)  # 'Region' 클래스는 'regions' 테이블을 참조합니다.
-
-            # 카테고리별 게시글 수 조회 (Club과 Sports 조인)
-            stmt_posts_count = select(
-                sports_alias_1.name.label('name'),
-                func.count(Club.clubno).label('count')
-            ).join(sports_alias_1, Club.sportsno == sports_alias_1.sportsno).group_by(sports_alias_1.name)
-            posts_count = db.execute(stmt_posts_count).fetchall()
-
-            # 현재 연도 계산
             current_year = datetime.now().year
 
-            # 사용자의 나이 계산 (현재 연도에서 출생 연도를 빼기)
-            user_age = current_year - extract('year', Users.birth)
+            # 조건1: 동호회 카테고리별 게시글 수
+            club_count_by_sport = db.query(
+                Sports.name,
+                func.count(Club.clubno).label('club_count')
+            ).join(Club, Sports.sportsno == Club.sportsno).group_by(Sports.name).all()
+            club_count_by_sport = [{"name": row[0], "club_count": row[1]} for row in club_count_by_sport]
 
-            # 카테고리별 연령대 수 조회 (Club, User, Sports 조인)
-            stmt_age_group = select(
-                sports_alias_2.name.label('name'),
-                func.sum(case(
-                    (user_age.between(10, 19), 1),
-                    else_=0
-                )).label('10대'),
-                func.sum(case(
-                    (user_age.between(20, 29), 1),
-                    else_=0
-                )).label('20대'),
-                func.sum(case(
-                    (user_age.between(30, 39), 1),
-                    else_=0
-                )).label('30대'),
-                func.sum(case(
-                    (user_age.between(40, 49), 1),
-                    else_=0
-                )).label('40대'),
-                func.sum(case(
-                    (user_age >= 50, 1),
-                    else_=0
-                )).label('50대 이상')
-            ).join(Club, Club.userid == Users.userno).join(sports_alias_2, Club.sportsno == sports_alias_2.sportsno).group_by(sports_alias_2.name)
-            age_group_count = db.execute(stmt_age_group).fetchall()
+            # 조건2: 대여 카테고리별 게시글 수
+            rental_count_by_sport = db.query(
+                Sports.name,
+                func.count(Rental.spaceno).label('rental_count')
+            ).join(Rental, Sports.sportsno == Rental.sportsno).group_by(Sports.name).all()
+            rental_count_by_sport = [{"name": row[0], "rental_count": row[1]} for row in rental_count_by_sport]
 
-            # 운동 이름별 Rental 게시글 수 조회 (Rental과 Sports 조인)
-            stmt_rental_count_by_sport = select(
-                sports_alias_3.name.label('name'),
-                func.count(Rental.spaceno).label('count')
-            ).join(sports_alias_3, Rental.sportsno == sports_alias_3.sportsno).group_by(sports_alias_3.name)
-            rental_count_by_sport = db.execute(stmt_rental_count_by_sport).fetchall()
+            # 조건3: 카테고리별 사용자 연령대 수
+            age_group_count_by_sport = db.query(
+                Sports.name,
+                case(
+                    (current_year - func.strftime('%Y', Users.birth) < 20, '10대'),
+                    (current_year - func.strftime('%Y', Users.birth) < 30, '20대'),
+                    (current_year - func.strftime('%Y', Users.birth) < 40, '30대'),
+                    (current_year - func.strftime('%Y', Users.birth) < 50, '40대'),
+                    (current_year - func.strftime('%Y', Users.birth) < 60, '50대'),
+                    else_='60대 이상'
+                ).label('age_group'),
+                func.count(Users.userno).label('user_count')
+            ).join(Club, Users.userid == Club.userid).join(Sports, Club.sportsno == Sports.sportsno).group_by(Sports.name, 'age_group').all()
+            age_group_count_by_sport = [{"name": row[0], "age_group": row[1], "user_count": row[2]} for row in age_group_count_by_sport]
 
-            # 지역별 운동 이름 수 조회 (regions, Rental, Sports 조인)
-            stmt_sport_count_by_region = select(
-                regions_alias.name.label('region_name'),
-                sports_alias_4.name.label('name'),
-                func.count(Rental.spaceno).label('count')
-            ).join(Rental, Rental.sigunguno == regions_alias.sigunguno).join(sports_alias_4, Rental.sportsno == sports_alias_4.sportsno).group_by(regions_alias.name, sports_alias_4.name)
+            # 조건4: 지역별 스포츠 종류 수 (Rental 테이블 기준으로 모든 데이터 집계)
+            sports_count_by_region = db.query(
+                Regions.name,
+                Sports.name,
+                func.count(Rental.spaceno).label('sport_count')
+            ).join(Rental, Regions.sigunguno == Rental.sigunguno).join(Sports, Rental.sportsno == Sports.sportsno).group_by(Regions.name, Sports.name).all()
 
-            sport_count_by_region = db.execute(stmt_sport_count_by_region).fetchall()
+            # 데이터를 지역별로 그룹화하여 스포츠 종류 수를 딕셔너리 형태로 변환
+            sports_by_region = {}
+            for row in sports_count_by_region:
+                region_name = row[0]
+                sport_name = row[1]
+                count = row[2]
+                if region_name not in sports_by_region:
+                    sports_by_region[region_name] = {}
+                sports_by_region[region_name][sport_name] = count
 
-            # 결과를 딕셔너리로 변환하여 반환
-            stats = {
-                'posts_count': [{'name': row.name, 'count': row.count} for row in posts_count],
-                'age_group_count': [
-                    {'name': row.name, '10대': row[1], '20대': row[2], '30대': row[3], '40대': row[4], '50대 이상': row[5]}
-                    for row in age_group_count
-                ],
-                'rental_count_by_sport': [{'name': row.name, 'count': row.count} for row in rental_count_by_sport],
-                'sport_count_by_region': []
+            return {
+                "club_count_by_sport": club_count_by_sport,
+                "rental_count_by_sport": rental_count_by_sport,
+                "age_group_count_by_sport": age_group_count_by_sport,
+                "sports_count_by_region": sports_by_region
             }
 
-            # 지역별 운동 이름 수를 딕셔너리 형태로 변환하여 추가
-            region_dict = {}
-            for row in sport_count_by_region:
-                region_name = row.region_name
-                sport_name = row.name
-                count = row.count
-
-                if region_name not in region_dict:
-                    region_dict[region_name] = {'region_name': region_name, 'sports': []}
-
-                region_dict[region_name]['sports'].append({'name': sport_name, 'count': count})
-
-            # 딕셔너리 값을 리스트로 변환하여 stats에 추가
-            stats['sport_count_by_region'] = list(region_dict.values())
-
-            return stats
-
-        except SQLAlchemyError as ex:
-            print(f'▶▶▶ get_statistics에서 오류 발생 : {str(ex)}')
+        except Exception as ex:
+            print(f'▶▶▶ get_statistics에서 오류 발생: {str(ex)}')
             db.rollback()
             return {}

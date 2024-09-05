@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Depends, Query
 from sqlalchemy.orm import Session
-from starlette.responses import HTMLResponse
+from starlette.responses import HTMLResponse, RedirectResponse, JSONResponse
 from starlette.templating import Jinja2Templates
 from app.dbfactory import get_db
 from app.schema.management import StatusUpdate
@@ -12,6 +12,8 @@ templates = Jinja2Templates(directory='views/templates')
 
 @management_router.get('/club_list', response_class=HTMLResponse)
 async def list_posts(req: Request, cpg: int = Query(1), search: str = '', db: Session = Depends(get_db)):
+    if req.session.get('logined_uid') != 'manager':
+        return RedirectResponse(url='/error.html', status_code=303)
     try:
         post_list, total_pages = ManagementService.get_posts(db, cpg, search)
         return templates.TemplateResponse('management/club_list.html',
@@ -24,6 +26,8 @@ async def list_posts(req: Request, cpg: int = Query(1), search: str = '', db: Se
 
 @management_router.get('/rental_list', response_class=HTMLResponse)
 async def list_rentals(req: Request, cpg: int = Query(1), search: str = '', db: Session = Depends(get_db)):
+    if req.session.get('logined_uid') != 'manager':
+        return RedirectResponse(url='/error.html', status_code=303)
     try:
         rental_list, total_pages = ManagementService.get_rentals(db, cpg, search)
         return templates.TemplateResponse('management/rental_list.html', {'request': req, 'rental_list': rental_list, 'cpg': cpg, 'total_pages': total_pages, 'search': search})
@@ -53,12 +57,18 @@ async def update_rental_status(rental_id: int, status_update: StatusUpdate, db: 
         return {'message': '상태 변경에 실패했습니다.'}
 
 
-@management_router.get('/statistics', response_class=HTMLResponse)
-async def get_statistics(req: Request, db: Session = Depends(get_db)):
+@management_router.get('/statistics')
+async def statistics_page(req: Request):
+    if req.session.get('logined_uid') != 'manager':
+        return RedirectResponse(url='/error.html', status_code=303)
+    return templates.TemplateResponse('management/statistics.html', {'request': req})
+
+
+@management_router.get('/api/statistics')
+async def get_statistics_data(db: Session = Depends(get_db)):
     try:
         stats = ManagementService.get_statistics(db)
-        return templates.TemplateResponse('management/statistics.html', {'request': req, 'stats': stats})
-    except Exception as ex:
-        print(f'▷▷▷ 통계 조회 오류 발생 : {str(ex)}')
-        return templates.TemplateResponse('error.html', {'request': req})
-
+        return JSONResponse(content=stats)
+    except Exception as e:
+        print(f"통계 조회 오류 발생: {e}")
+        return JSONResponse(content={"error": "데이터를 가져오는 중 오류가 발생했습니다."}, status_code=500)

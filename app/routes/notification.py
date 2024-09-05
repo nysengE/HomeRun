@@ -28,8 +28,8 @@ async def list(req: Request, cpg: int, search: str = '', db: Session = Depends(g
 @notification_router.get('/write', response_class=HTMLResponse)
 async def write(req: Request):
     # 로그인 세션 처리
-    # if req.session.get('userid') != 'manager':
-    #     return RedirectResponse(url='/error.html', status_code=303)
+    if req.session.get('logined_uid') != 'manager':
+        return RedirectResponse(url='/error.html', status_code=303)
     # 공지사항 작성 페이지를 반환
     return templates.TemplateResponse('notification/write.html', {'request': req})
 
@@ -64,8 +64,8 @@ async def view(req: Request, notino: int, db: Session = Depends(get_db)):
 @notification_router.get('/edit/{notino}', response_class=HTMLResponse)
 async def edit(req: Request, notino: int, db: Session = Depends(get_db)):
     # 로그인 세션 처리
-    # if req.session.get('userid') != 'manager':
-    #     return RedirectResponse(url='/error.html', status_code=303)
+    if req.session.get('logined_uid') != 'manager':
+        return RedirectResponse(url='/error.html', status_code=303)
     try:
         # 공지사항 정보 조회
         notification = NotificationService.selectone_notification(notino, db)
