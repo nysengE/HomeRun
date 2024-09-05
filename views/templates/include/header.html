@@ -8,17 +8,23 @@
 
         <div class="container-fluid text-start mt-4 btn-group">
             <div class="sliding"></div> <!-- 슬라이딩 추가 -->
-            <a href="/club" class="btn btn-toggle btn-primary d-inline-block" id="clubBtn">동호회</a>
+            <a href="/club/1" class="btn btn-toggle btn-primary d-inline-block" id="clubBtn">동호회</a>
             <a href="/rental" class="btn btn-toggle btn-warning d-inline-block" id="rentalBtn">공간대여</a>
         </div>
 
         <div class="d-flex headernav">
             <nav>
                 <ul class="nav nav-fill">
-                    <li class="nav-item"><a class="nav-link" href="#">공지사항</a></li>
-                    {% if userid %}
+                    <li class="nav-item"><a class="nav-link" href="/notificarion/list/1">공지사항</a></li>
+                    {% if 'logined_uid' in request.session %}
                         <li class="nav-item"><a class="nav-link" href="/user/logout">로그아웃</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">마이페이지</a></li>
+                        {% if 'logined_uid' in request.session and request.session.logined_uid == 'manager' %}
+                            <li class="nav-item"><a class="nav-link" href="/management/club_list">게시글관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/usermanage/list">회원관리</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/management/statistics">통계</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="/mypage/user/userinfo">마이페이지</a></li>
+                        {% endif %}
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="/user/login">로그인</a></li>
                     {% endif %}

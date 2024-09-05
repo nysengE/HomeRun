@@ -1,6 +1,8 @@
 import os
 from contextlib import asynccontextmanager
 from typing import List
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, HTTPException, Depends, Query, Form, UploadFile, File
 from sqlalchemy.orm import Session
@@ -21,15 +23,39 @@ from app.routes.payment import payment_router
 from app.routes.rental import rental_router
 from app.routes.reservation import reservation_router
 from app.routes.user import user_router
+from app.service.management import ManagementService
+from app.service.usermanage import UserService
 from app.service.rental import RentalService, process_upload
 from app.utils import format_time
+
+
+scheduler = AsyncIOScheduler()
+
+async def release_suspension_task():
+    # 데이터베이스 세션을 사용하여 작업 실행
+    db = next(get_db())
+    UserService.check_and_release_suspension(db)
+
+async def delete_old_private_posts_task():
+    # 데이터베이스 세션을 사용하여 작업 실행
+    db = next(get_db())
+    ManagementService.delete_old_private_posts(db)
 
 
 # Lifespan 관리 함수 정의
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await db_startup()  # 서버 시작 시 실행될 코드
+
+    # 스케줄러 작업 추가: 매일 자정에 함수 실행
+    scheduler.add_job(release_suspension_task, 'cron', hour=0, minute=0)  # 매일 자정 00:00에 실행
+    scheduler.add_job(delete_old_private_posts_task, 'cron', hour=0, minute=0)  # 매일 자정 00:00에 실행
+    scheduler.start()
+
     yield
+
+    # 앱 종료 시 스케줄러 종료
+    scheduler.shutdown()
     await db_shutdown()  # 서버 종료 시 실행될 코드
 
 # FastAPI 앱 인스턴스 생성 시 lifespan 함수 전달

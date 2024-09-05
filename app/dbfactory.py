@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from app.model import rental, sports, regions, payment, users, club, usermanage
+from app.model import rental, sports, regions, payment, users, club, usermanage, notification, business
 from app.model.regions import Regions
 from app.model.sports import Sports
 from app.setting import config

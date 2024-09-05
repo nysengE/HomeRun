@@ -22,7 +22,7 @@ class Club(Base):
     sigunguno: Mapped[int] = mapped_column(ForeignKey('regions.sigunguno'), nullable=False)
     userid: Mapped[str] = mapped_column(String(255), ForeignKey('users.userid'), nullable=False)
     attachs = relationship('ClubAttach', back_populates='clubs')
-    replys = relationship('Reply', back_populates='clubs')
+    replys = relationship('Reply', back_populates='club')
 
     # 각 동호회는 하나의 스포츠 카테고리에 속함
     sports = relationship('Sports', back_populates='clubs')
@@ -62,4 +62,4 @@ class Reply(Base):
     userid: Mapped[str] = mapped_column(String(255),ForeignKey('users.userid'), index=True)
     clubno: Mapped[int] = mapped_column(Integer, ForeignKey('club.clubno'))
     rpno: Mapped[int] = mapped_column(Integer, ForeignKey('reply.rno'))
-    clubs = relationship('Club', back_populates='replys')
+    club = relationship('Club', back_populates='replys')
