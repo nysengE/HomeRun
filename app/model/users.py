@@ -15,7 +15,7 @@ class Users(Base):
     phone: Mapped[str] = mapped_column(String(255))
     birth: Mapped[datetime] = mapped_column(Date)
     registdate: Mapped[datetime] = mapped_column(default=datetime.now)
-    modifydate: Mapped[datetime] = mapped_column(default=datetime.now)
+    modifydate: Mapped[datetime] = mapped_column(default=datetime.now, nullable=True)
     status: Mapped[int] = mapped_column(Integer, default=None, nullable=True)
     suspension: Mapped[datetime] = mapped_column(DateTime, default=None, nullable=True)
     # Club과 관계

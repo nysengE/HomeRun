@@ -1,6 +1,8 @@
 import os
 from contextlib import asynccontextmanager
 from typing import List
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, HTTPException, Depends, Query, Form, UploadFile, File
 from sqlalchemy.orm import Session
@@ -21,8 +23,24 @@ from app.routes.payment import payment_router
 from app.routes.rental import rental_router
 from app.routes.reservation import reservation_router
 from app.routes.user import user_router
+from app.routes.usermanage import usermanage_router
+from app.service.management import ManagementService
+from app.service.usermanage import UserService
 from app.service.rental import RentalService, process_upload
 from app.utils import format_time
+
+
+scheduler = AsyncIOScheduler()
+
+async def release_suspension_task():
+    # 데이터베이스 세션을 사용하여 작업 실행
+    db = next(get_db())
+    UserService.check_and_release_suspension(db)
+
+async def delete_old_private_posts_task():
+    # 데이터베이스 세션을 사용하여 작업 실행
+    db = next(get_db())
+    ManagementService.delete_old_private_posts(db)
 
 
 # Lifespan 관리 함수 정의
@@ -42,7 +60,7 @@ app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 templates = Jinja2Templates(directory='views/templates')
 app.mount('/static', StaticFiles(directory='views/static'), name='static')
 # Static files 설정
-app.mount("/cdn/img", StaticFiles(directory="C:/java/nginx-1.26.2/html/cdn/img"), name="cdn")
+app.mount("/cdn/img", StaticFiles(directory="C:/java/nginx-1.26.2/html/homerun/img"), name="cdn")
 
 
 app.include_router(club_router, prefix='/club')
@@ -53,6 +71,7 @@ app.include_router(payment_router, prefix='/payment')
 app.include_router(rental_router, prefix='/rental')
 app.include_router(reservation_router, prefix="/reservation")
 app.include_router(user_router, prefix='/user')
+app.include_router(usermanage_router, prefix='/usermanage')
 
 
 @app.get("/", response_class=HTMLResponse)

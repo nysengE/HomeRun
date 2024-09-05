@@ -40,7 +40,7 @@
         <a href="/notification/list/1" class="btn btn-light btn-sm text-dark fw-bold" style="font-size: 1.1em;">목록으로</a>
 
         <!-- 관리자만 보이는 수정 및 삭제 버튼 -->
-        {% if request.session.get('userid') == 'manager' %}
+        {% if 'logined_uid' in request.session and request.session.logined_uid == 'manager' %}
         <div class="d-flex gap-2">
             <a href="/notification/edit/{{ notification.notino }}" class="btn btn-outline-warning btn-sm">수정</a>
             <form method="post" action="/notification/delete/{{ notification.notino }}" onsubmit="return confirmDelete()" class="d-inline">
@@ -48,13 +48,6 @@
             </form>
         </div>
         {% endif %}
-
-        <div class="d-flex gap-2">
-            <a href="/notification/edit/{{ notification.notino }}" class="btn btn-outline-warning btn-sm">수정</a>
-            <form method="post" action="/notification/delete/{{ notification.notino }}" onsubmit="return confirmDelete()" class="d-inline">
-                <button type="submit" class="btn btn-outline-danger btn-sm">삭제</button>
-            </form>
-        </div>
 
     </div>
 </main>
