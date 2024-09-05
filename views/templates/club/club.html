@@ -5,20 +5,123 @@
 {% endblock %}
 
 {% block link %}
-<link rel="stylesheet" href="/static/css/club.css" />
+{#<link rel="stylesheet" href="/static/css/club/club.css" />#}
 {% endblock %}
 
 {% block main %}
-    <main>
-        <h2>동호회 게시글</h2>
-        <div>
-            <div class="card" style="width: 18rem;">
-                <img src="/static/img/clubsample.png" class="card-img-top img-fluid" alt="...">
-                <div class="card-body">
-                    <hr>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+<main class="container mt-4">
+    <h2>동호회 게시글</h2>
+
+    <!-- 검색 & 버튼 start -->
+    <div>
+        <div class="mt-4 py-3">
+            <div class="row align-items-center d-flex justify-content-center">
+                <form class="d-flex align-items-center flex-wrap w-75">
+                    <div class="mb-2 me-2">
+                        <select class="form-select" id="sports" aria-label="Select Option 1">
+                            <option value="99" selected>운동종목</option>
+                            {% for sport in sports %}
+                            <option value="{{ sport[0].sportsno }}">{{ sport[0].name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-2 me-2">
+                        <select class="form-select" id="regions" aria-label="Select Option 2">
+                            <option value="99" selected>지역명</option>
+                            {% for region in regions %}
+                            <option value="{{ region[0].sigunguno }}">{{ region[0].name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-2 me-2">
+                        <select class="form-select" id="people" aria-label="Select Option 2">
+                            <option value="9999" selected>인원수</option>
+                            <option value="10">10명 이하</option>
+                            <option value="20">20명 이하</option>
+                            <option value="30">30명 이하</option>
+                            <option value="9999">전체</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3 ml-3 flex-grow-1">
+                        <input class="form-control" type="search" id="findtext" placeholder="제목을 입력하세요." aria-label="Search">
+                    </div>
+
+                    <div class="mb-3 mr-3">
+                        <button class="btn btn-primary" id="findbtn" type="submit">검색</button>
+                    </div>
+                </form>
+
+                <!-- 글쓰기 버튼 -->
+                <div class="col-auto align-items-center mb-3 ml-5">
+                    <button class="btn btn-primary" id="addbtn">글쓰기</button>
+
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+    <!-- 검색 & 버튼 end -->
+    <!-- 카드정렬 start-->
+    {% if not clublist %}
+    <p class="text-center">검색한 결과값이 없습니다.</p>
+    {% else %}
+    <div>
+        <div class="row g-3 d-flex justify-content-start" style="width: 100%; margin: 0 auto; gap: 15px">
+            {% for club in clublist %}
+            <div class="col-md-3" style="width: 300px; height: 400px;">
+                <div class="card clubcard">
+                    <input type="hidden" id="clubno" value="{{ club.clubno }}">
+                    <img src="http://127.0.0.1/homerun/img/{{ club.fname }}" class="card-img-top img-fluid" alt="..." style="height: 250px;">
+                    <div class="card-body" style="height:150px;">
+                        <div class="inline-container text-center">
+                            <div class="card-text float-start"><h4><span class="badge text-bg-secondary bg-success">{{ club.sportname }}</span></h4></div>
+                            <div class="card-text float-end"><h4><span class="badge text-bg-secondary bg-warning">{{ club.regionname }}</span></h4></div>
+                        </div>
+                        <div class="inline-container text-center mt-5">
+                            <div class="card-title text-center"><h3>{{ club.title }}<span class="badge text-bg-secondary"></span></h3></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- 카드정렬 end -->
+    </div>
+    {% endif %}
+
+    <!-- 페이지 -->
+    <div class="mt-5 d-flex justify-content-center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if cpg > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ baseurl }}{{ cpg - 1 }}" tabindex="-1">이전</a>
+                </li>
+                {% endif %}
+                {% for idx in range(stpgb, stpgb + 5) %}
+                {% if idx <= allpage %}
+                {% if idx == cpg %}
+                <li class="page-item active">
+                    {% else %}
+                <li class="page-item ">
+                    {% endif %}
+                    <a class="page-link" href="{{ baseurl }}{{ idx }}">{{ idx }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+                {% if cpg < allpage %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ baseurl }}{{ cpg + 1 }}">다음</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/club/club.js"></script>
 {% endblock %}
