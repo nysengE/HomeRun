@@ -10,16 +10,19 @@
 
 {% block main %}
 
-    <main class="d-flex">
+    <main class="d-flex justify-content-center gap-5 text-center">
         <!-- 사이드바 영역 -->
-        <div class="sidebar-container">
+        <div class="sidebar-container px-0 mx-0">
             {% include 'mypage/user/userside.html' %}
         </div>
 
         <!-- 메인 콘텐츠 영역 -->
-        <div class="content-container">
+        <div class="content-container d-flex justify-content-center flex-column">
             <h2 class="py-3 mt-2">공간대여 신청내역</h2>
 
+            {% if not rent %}
+                <p>결제 내역이 없습니다.</p>
+            {% else %}
             <!-- 이미지 갤러리 섹션 -->
             <section class="thumbnail-gallery">
                 {% for image in rent.attachs %}
@@ -46,6 +49,7 @@
             <div class="completed-text">
                 결제가 완료되었습니다.
             </div>
+            {% endif %}
         </div>
     </main>
 {% endblock %}

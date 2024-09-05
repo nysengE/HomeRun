@@ -8,7 +8,7 @@ applyusers.forEach((applybtn) => {
            let jsondata = {};
            jsondata['clubno'] = clubno;
 
-           fetch(`/mypage/clubwrite/apply`, {
+           await fetch(`/mypage/clubwrite/apply`, {
             method: 'POST',
                headers: {
                    'Accept': 'application/json',
@@ -45,7 +45,7 @@ applyusers.forEach((applybtn) => {
 
                            row.innerHTML = `
                             <td>${applicant.userid}</td>
-                            <td>${applicant.regdate.strftime('%Y-%m-%d')}</td>
+                            <td>${applicant.regdate}</td>
                             <td>${applicant.status}</td>
                             <td>
                                 <button type="button" class="btn ${buttonClass}" ${buttonDisabled} data-ano="${applicant.ano}">승인</button>

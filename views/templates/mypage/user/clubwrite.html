@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block main %}
-    <main class="d-flex justify-content-between">
+    <main class="d-flex justify-content-center">
         <div>
             {% include 'mypage/user/userside.html' %}
         </div>
@@ -18,7 +18,7 @@
             {% if not clublist %}
             <p class="text-center">작성 내역이 없습니다.</p>
             {% else %}
-                <table class="table table-bordered mt-3">
+                <table class="table table-bordered mt-3" style="margin-left: 100px;">
                     <thead>
                     <tr>
                         <th>운동명</th>
