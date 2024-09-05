@@ -30,6 +30,7 @@ class Club(Base):
     regions = relationship('Regions', back_populates='clubs')
     # 각 동호회는 하나의 사용자에 의해 작성됨
     users = relationship('Users', back_populates='clubs')
+    replys = relationship('Reply', back_populates='club')
 
 class ClubAttach(Base):
     __tablename__ = 'clubattach'
@@ -62,4 +63,4 @@ class Reply(Base):
     userid: Mapped[str] = mapped_column(String(255),ForeignKey('users.userid'), index=True)
     clubno: Mapped[int] = mapped_column(Integer, ForeignKey('club.clubno'))
     rpno: Mapped[int] = mapped_column(Integer, ForeignKey('reply.rno'))
-    clubs = relationship('Club', back_populates='replys')
+    club = relationship('Club', back_populates='replys')
