@@ -1,0 +1,95 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+    회원페이지 - 회원정보
+{% endblock %}
+
+{% block link %}
+    <link rel="stylesheet" href="/static/css/userpage.css" />
+{% endblock %}
+
+{% block main %}
+    <main class="d-flex justify-content-start gap-5">
+        {% if userdata %}
+        <div class="px-0 mx-0">
+            {% include 'mypage/user/userside.html' %}
+        </div>
+        <div class="d-flex justify-content-center flex-column" style="width: 600px;">
+            <h2 class="p-3">회원 정보</h2>
+            <!-- 비밀번호 확인 폼 -->
+            <div id="checkpwd-container" style="width: 300px;">
+                <form name="checkpwdfrm" id="checkpwdfrm" >
+                    <div class="mb-3 text-center">
+                        <label for="password" class="form-label">비밀번호를 입력하세요.</label>
+                        <input type="password" class="form-control" id="password" name="passwd" placeholder="비밀번호를 입력하세요" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">확인</button>
+                </form>
+            </div>
+<!--            회원정보 수정 폼-->
+            <div id="modifyuser-container"  style="width: 100%">
+                <form name="modifyuserfrm">
+                    <table class="table table-borderless">
+                        <tbody>
+                        <!-- 이름 -->
+                        <tr>
+                            <th scope="row">이름</th>
+                            <td>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ userdata[0].name }}" placeholder="이름을 입력하세요" required>
+                            </td>
+                        </tr>
+
+                        <!-- 비밀번호 -->
+                        <tr>
+                            <th scope="row">비밀번호 변경</th>
+                            <td>
+                                <input type="password" class="form-control" id="passwd" name="passwd" placeholder="변경할 비밀번호를 입력하세요">
+                            </td>
+                        </tr>
+
+                        <!-- 비밀번호 확인 -->
+                        <tr>
+                            <th scope="row">비밀번호 확인</th>
+                            <td>
+                                <input type="password" class="form-control" id="ckpasswd" name="ckpasswd" placeholder="변경할 비밀번호를 한번 더 입력하세요">
+                            </td>
+                        </tr>
+
+                        <!-- 이메일 -->
+                        <tr>
+                            <th scope="row">이메일</th>
+                            <td>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ userdata[0].email }}" placeholder="이메일을 입력하세요" required>
+                            </td>
+                        </tr>
+
+                        <!-- 전화번호 -->
+                        <tr>
+                            <th scope="row">전화번호</th>
+                            <td>
+                                <input type="text" class="form-control" id="phone" name="phone" value="{{ userdata[0].phone }}" placeholder="전화번호를 입력하세요. (-부호 없이 입력하세요.)" required>
+                            </td>
+                        </tr>
+
+                        <!-- 생년월일 -->
+                        <tr>
+                            <th scope="row">생년월일</th>
+                            <td>
+                                <input type="date" class="form-control" id="birth" value="{{ userdata[0].birth }}" name="birth" required>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">수정하기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+    </main>
+{% endblock %}
+
+{% block script %}
+    <script src="/static/js/mypage/userinfo.js"></script>
+{% endblock %}

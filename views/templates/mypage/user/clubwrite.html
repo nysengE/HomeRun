@@ -1,0 +1,121 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+    회원페이지 - 신청한 동호회내역
+{% endblock %}
+
+{% block link %}
+    <link rel="stylesheet" href="/static/css/userpage.css" />
+{% endblock %}
+
+{% block main %}
+    <main class="d-flex justify-content-between">
+        <div>
+            {% include 'mypage/user/userside.html' %}
+        </div>
+        <div class="content d-flex flex-column px-3" style="width: 800px">
+            <h2 class="py-3 mt-2">작성한 동호회 글 목록</h2>
+            {% if not clublist %}
+            <p class="text-center">작성 내역이 없습니다.</p>
+            {% else %}
+                <table class="table table-bordered mt-3">
+                    <thead>
+                    <tr>
+                        <th>운동명</th>
+                        <th>제목</th>
+                        <th>등록일</th>
+                        <th>신청자</th>
+                        <th>수정</th>
+                        <th>삭제</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for club in clublist %}
+                        <tr>
+                            <td>{{ club.sportname }}</td>
+                            <td>{{ club.title }}</td>
+                            <td>{{ club.registdate }}</td>
+                            <td>
+                                <button type="button" class="btn btn-warning applyusers" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+                                    신청자
+                                    <input type="hidden" id="applyclubno" value="{{ club.clubno }}">
+                                </button></td>
+                            <td>
+                                <button type="button" class="btn btn-primary" onclick="modifyclub('{{ club.clubno }}')">
+                                    수정
+                                </button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger delete" onclick="deleteclub('{{ club.clubno }}')" >삭제</button>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                    <!-- 추가적인 글 항목들 -->
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </main>
+
+        <!-- 모달 -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">신청자 목록</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered mt-3" id="applyTable" style="display:none;">
+                            <thead>
+                            <tr>
+                                <th>신청자</th>
+                                <th>신청일</th>
+                                <th>상태</th>
+                                <th>승인</th>
+                            </tr>
+                            </thead>
+                            <tbody id="applyTableBody">
+                                <tr>
+                                    <td class="applyuserid">신청자</td>
+                                    <td class="applyregdate">신청일</td>
+                                    <td class="applystatus">상태</td>
+                                    <td>
+                                        <button type="button" class="btn btn-success applyusers" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+                                            승인
+<!--                                            <input type="hidden" id="applyclubno" value="">-->
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-center" id="noApplicants" style="display:none;">신청자가 없습니다.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block script %}
+    <script src="/static/js/mypage/clubwrite.js"></script>
+        <script>
+            // 모달 데이터 설정
+            document.querySelectorAll('.applyusers').forEach(button => {
+                button.addEventListener('click', function () {
+                    const modalTitle = document.getElementById('modal-title');
+                    const modalAuthor = document.getElementById('modal-author');
+                    const modalDate = document.getElementById('modal-date');
+                    const modalContent = document.getElementById('modal-content');
+
+                    modalTitle.textContent = this.getAttribute('data-title');
+                    modalAuthor.textContent = this.getAttribute('data-author');
+                    modalDate.textContent = this.getAttribute('data-date');
+                    modalContent.textContent = this.getAttribute('data-content');
+                });
+            });
+        </script>
+{% endblock %}
