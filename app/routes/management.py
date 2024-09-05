@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Depends, Query
 from sqlalchemy.orm import Session
-from starlette.responses import HTMLResponse
+from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 from app.dbfactory import get_db
 from app.schema.management import StatusUpdate
@@ -12,6 +12,8 @@ templates = Jinja2Templates(directory='views/templates')
 
 @management_router.get('/club_list', response_class=HTMLResponse)
 async def list_posts(req: Request, cpg: int = Query(1), search: str = '', db: Session = Depends(get_db)):
+    if req.session.get('logined_uid') != 'manager':
+        return RedirectResponse(url='/error.html', status_code=303)
     try:
         post_list, total_pages = ManagementService.get_posts(db, cpg, search)
         return templates.TemplateResponse('management/club_list.html',
@@ -24,6 +26,8 @@ async def list_posts(req: Request, cpg: int = Query(1), search: str = '', db: Se
 
 @management_router.get('/rental_list', response_class=HTMLResponse)
 async def list_rentals(req: Request, cpg: int = Query(1), search: str = '', db: Session = Depends(get_db)):
+    if req.session.get('logined_uid') != 'manager':
+        return RedirectResponse(url='/error.html', status_code=303)
     try:
         rental_list, total_pages = ManagementService.get_rentals(db, cpg, search)
         return templates.TemplateResponse('management/rental_list.html', {'request': req, 'rental_list': rental_list, 'cpg': cpg, 'total_pages': total_pages, 'search': search})
@@ -55,6 +59,8 @@ async def update_rental_status(rental_id: int, status_update: StatusUpdate, db: 
 
 @management_router.get('/statistics', response_class=HTMLResponse)
 async def get_statistics(req: Request, db: Session = Depends(get_db)):
+    if req.session.get('logined_uid') != 'manager':
+        return RedirectResponse(url='/error.html', status_code=303)
     try:
         stats = ManagementService.get_statistics(db)
         return templates.TemplateResponse('management/statistics.html', {'request': req, 'stats': stats})
