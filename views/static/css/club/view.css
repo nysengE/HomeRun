@@ -1,0 +1,19 @@
+main {
+    padding: 15px;
+}
+
+img {
+    width: 500px;
+    height: 300px;
+}
+
+.form-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.form-control {
+    border: 1px solid #ced4da;
+}

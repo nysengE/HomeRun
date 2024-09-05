@@ -1,0 +1,56 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+    회원페이지 - 신청한 동호회내역
+{% endblock %}
+
+{% block link %}
+    <link rel="stylesheet" href="/static/css/userpage.css" />
+{% endblock %}
+
+{% block main %}
+    <main class="d-flex justify-content-between">
+    <div>
+    {% include 'mypage/user/userside.html' %}
+    </div>
+    <div class="content d-flex flex-column" style="width: 800px">
+        <h2 class="py-3 mt-2">신청한 동호회 목록</h2>
+        {% if not applylist %}
+            <p class="text-center">신청 내역이 없습니다.</p>
+        {% else %}
+        <table class="table table-bordered mt-3">
+            <thead>
+            <tr>
+                <th>운동명</th>
+                <th>제목</th>
+                <th>신청일자</th>
+                <th>상태</th>
+                <th>상세보기</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for apply in applylist %}
+            <tr>
+                <td>{{ apply.sportsname }}</td>
+                <td>{{ apply.title }}</td>
+                <td>{{ apply.applyregdate.strftime('%Y-%m-%d') }}</td>
+                <td>{{ apply.status }}</td>
+                <td>
+                    <button type="button" class="btn btn-info view" >상세보기
+                        <input type="hidden" class="clubno" value="{{ apply.clubno }}">
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+            <!-- 추가적인 글 항목들 -->
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+    </main>
+
+{% endblock %}
+
+{% block script %}
+    <script src="/static/js/mypage/clubapply.js"></script>
+{% endblock %}

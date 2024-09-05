@@ -1,0 +1,125 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+    회원페이지 - 신청한 동호회내역
+{% endblock %}
+
+{% block link %}
+    <link rel="stylesheet" href="/static/css/userpage.css" />
+{% endblock %}
+
+{% block main %}
+    <main class="d-flex justify-content-between">
+        <div>
+            {% include 'mypage/user/userside.html' %}
+        </div>
+        <div class="content d-flex flex-column px-3" style="width: 800px">
+            <h2 class="py-3 mt-2">작성한 동호회 글 수정</h2>
+            <form name="modifyfrm" enctype="multipart/form-data">
+                <table class="table table-form">
+                    <tr>
+                        <td class="label-cell">
+                            <label for="title" class="form-label">제목</label>
+                        </td>
+                        <td colspan="3" class="input-cell">
+                            <input type="text" class="form-control" name="title" id="title" value="{{ club[0].title }}" placeholder="제목을 입력하세요" required>
+                        </td>
+                        <td class="label-cell">
+                            <label for="userid" class="form-label">작성자</label>
+                        </td>
+                        <td class="input-cell">
+                            <p class="form-control" id="author">kiki</p>
+                            <input type="hidden" name="userid" id="userid" value="kiki" readonly>
+                        </td>
+                    </tr>
+
+                    <!-- 운동종목, 지역, 인원수를 한 행에 배치 -->
+                    <tr>
+                        <td class="label-cell">
+                            <label for="sports" class="form-label">운동 종목</label>
+                        </td>
+                        <td class="input-cell">
+                            <select class="form-select" name="sportsno" id="sports" required>
+                                <option value="" disabled selected>운동 종목을 선택하세요</option>
+                                <option value=1 {% if club[0].sportsno == 1 %}selected{% endif %}>축구</option>
+                                <option value=2 {% if club[0].sportsno == 2 %}selected{% endif %}>야구</option>
+                                <option value=3 {% if club[0].sportsno == 3 %}selected{% endif %}>농구</option>
+                                <option value=4 {% if club[0].sportsno == 4 %}selected{% endif %}>테니스</option>
+                                <option value=5 {% if club[0].sportsno == 5 %}selected{% endif %}>기타</option>
+                            </select>
+                        </td>
+                        <td class="label-cell">
+                            <label for="region" class="form-label">지역</label>
+                        </td>
+                        <td class="input-cell">
+                            <select class="form-select" name="sigunguno" id="region" required>
+                                <option value="" disabled selected>지역을 선택하세요</option>
+                                <option value=1 {% if club[0].sigunguno == 1 %}selected{% endif %}>강동구</option>
+                                <option value=2 {% if club[0].sigunguno == 2 %}selected{% endif %}>서대문구</option>
+                                <option value=3 {% if club[0].sigunguno == 3 %}selected{% endif %}>영등포구</option>
+                                <option value=4 {% if club[0].sigunguno == 4 %}selected{% endif %}>서초구</option>
+                                <option value=5 {% if club[0].sigunguno == 5 %}selected{% endif %}>동대문구</option>
+                            </select>
+                        </td>
+                        <td class="label-cell">
+                            <label for="people" class="form-label">인원수</label>
+                        </td>
+                        <td class="input-cell">
+                            <input type="number" class="form-control" name="people" id="people" value="{{ club[0].people }}" placeholder="인원수를 입력하세요" min="1" required>
+                        </td>
+                    </tr>
+
+                    <!-- 내용 -->
+                    <tr>
+                        <td class="label-cell">
+                            <label for="content" class="form-label">내용</label>
+                        </td>
+                        <td class="input-cell" colspan="5">
+                            <textarea class="form-control" name="contents" id="content" rows="4" placeholder="내용을 입력하세요" required>
+                                {{ club[0].contents }}
+                            </textarea>
+                        </td>
+                    </tr>
+
+                    <!-- 첨부파일 -->
+                    <tr>
+                        <td class="label-cell">
+                            <label class="form-label">첨부파일</label>
+                        </td>
+                        <td class="input-cell" colspan="5">
+                            <div id="file-container">
+                            <!-- 현재 파일이 있는 경우, 이미지와 삭제 버튼을 표시합니다 -->
+                            {% if club[0].fname %}
+                                <div class="file-preview d-flex flex-column">
+                                    <img class="mr-3" src="http://127.0.0.1/homerun/img/{{ club[0].fname }}" id="current-image" style="max-width: 200px; max-height: 150px;"/>
+{#                                    <button type="button" class="btn btn-danger m-3 d-flex" id="delete-image-btn" style="width: 60px;">삭제</button>#}
+                                </div>
+                            {% endif %}
+
+                            <input type="file" class="form-control mb-2" name="files" id="file">
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- 제출 버튼 -->
+                    <tr>
+                        <td colspan="1" class="text-center">
+                            <button class="btn btn-primary" id="prebtn">목록</button>
+                        </td>
+                        <td colspan="4"></td>
+                        <td colspan="1" class="text-end">
+                            <input type="hidden" name="clubno" id="hiddenclubno" value="{{ club[0].clubno }}">
+                            <button type="submit" class="btn btn-primary" id="modifybtn">수정하기</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </main>
+
+
+{% endblock %}
+
+{% block script %}
+    <script src="/static/js/mypage/modifyclub.js"></script>
+{% endblock %}
