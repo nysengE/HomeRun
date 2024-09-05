@@ -10,7 +10,7 @@
 
 {% block main %}
 <div class="d-flex justify-content-center">
-    <main style="width: 80%">
+    <main style="width: 1000px">
         <div class="botton-row d-flex justify-content-between mb-3">
             <button type="button" class="btn btn-secondary" id="prebtn">이전</button>
         </div>
@@ -18,11 +18,11 @@
             <tbody>
             {% for c in club %}
             <tr>
-                <td class="align-top imgtd" style="width: 360px;">
+                <td class="align-top imgtd" style="width: 400px;">
                     <img src='http://127.0.0.1/homerun/img/{{ c.fname }}' alt="이미지" class="table-img" style="width: 100%;">
                 </td>
                 <td style="width: 400px;">
-                    <div class="title-text text-start mb-3 d-flex align-items-center">
+                    <div class="title-text text-start mb-3 d-flex align-items-center p-3">
                         <h2><b>{{ c.title }}</b></h2>
                     </div>
                     <div class="badge-container">
@@ -44,9 +44,8 @@
                         <p>작성자: {{ c.userid }}</p>
                     </div>
                     <div class="title-text text-end">
-                        {% if "dangdang" != c.userid%}
-                            {% if "dangdang" != applyuid %}
-                        <!--            로그인한 아이디가 작성자와 다를 경우 처리하기-->
+                        {% if 'logined_uid' in request.session and request.session.logined_uid != c.userid %}
+                            {% if 'logined_uid' in request.session and request.session.logined_uid != applyuid %}
                         <input type="hidden" id="clubno" name="clubno" value="{{ clubno }}">
                         <button type="button" class="btn btn-primary" id="applybtn">신청하기</button>
                             {% endif %}
@@ -94,7 +93,7 @@
                 <div class="row mb-3 align-items-center">
                     <div class="col-md-3">
                         <label for="userid" class="form-label">작성자</label>
-                        <input type="text" class="form-control" id="userid" name="userid" value="dangdang" style="border:none" readonly>
+                        <input type="text" class="form-control" id="userid" name="userid" value="{{ request.session.logined_uid }}" style="border:none" readonly>
                     </div>
                     <div class="col-md-7">
                         <label for="reply" class="form-label">댓글 내용</label>
@@ -122,7 +121,7 @@
                         <form id="rreplyfrm" name="rreplyfrm">
                             <div class="mb-3">
                                 <label for="ruserid" class="form-label">작성자</label>
-                                <input type="text" class="form-control" id="ruserid" name="userid" value="dangdang" readonly>
+                                <input type="text" class="form-control" id="ruserid" name="userid" value="{{ request.session.logined_uid }}" readonly>
                             </div>
                             <div class="mb-3">
                                 <label for="rreply" class="form-label">댓글 내용</label>

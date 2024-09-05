@@ -27,8 +27,8 @@
                         <label for="userid" class="form-label">작성자</label>
                     </td>
                     <td class="input-cell">
-                        <p class="form-control" id="author">kiki</p>
-                        <input type="hidden" name="userid" id="userid" value="kiki">
+                        <p class="form-control" id="author">{{ request.session.logined_uid }}</p>
+                        <input type="hidden" name="userid" id="userid" value="{{ userid }}">
                     </td>
                 </tr>
 
@@ -39,12 +39,10 @@
                     </td>
                     <td class="input-cell">
                         <select class="form-select" name="sportsno" id="sports" required>
-                            <option value="" disabled selected>운동 종목을 선택하세요</option>
-                            <option value=1>축구</option>
-                            <option value=2>야구</option>
-                            <option value=3>농구</option>
-                            <option value=4>테니스</option>
-                            <option value=5>기타</option>
+                            <option value="99" selected>운동종목</option>
+                            {% for sport in sports %}
+                            <option value="{{ sport[0].sportsno }}">{{ sport[0].name }}</option>
+                            {% endfor %}
                         </select>
                     </td>
                     <td class="label-cell">
@@ -52,12 +50,10 @@
                     </td>
                     <td class="input-cell">
                         <select class="form-select" name="sigunguno" id="region" required>
-                            <option value="" disabled selected>지역을 선택하세요</option>
-                            <option value=1>강동구</option>
-                            <option value=2>서대문구</option>
-                            <option value=3>영등포구</option>
-                            <option value=4>서초구</option>
-                            <option value=5>동대문구</option>
+                            <option value="99" selected>지역명</option>
+                            {% for region in regions %}
+                            <option value="{{ region[0].sigunguno }}">{{ region[0].name }}</option>
+                            {% endfor %}
                         </select>
                     </td>
                     <td class="label-cell">

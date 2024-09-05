@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block main %}
-    <main class="d-flex justify-content-between">
+    <main class="d-flex justify-content-center gap-5 text-center">
         <div>
             {% include 'mypage/user/userside.html' %}
         </div>
@@ -28,8 +28,8 @@
                             <label for="userid" class="form-label">작성자</label>
                         </td>
                         <td class="input-cell">
-                            <p class="form-control" id="author">kiki</p>
-                            <input type="hidden" name="userid" id="userid" value="kiki" readonly>
+                            <p class="form-control" id="author">{{ request.session.logined_uid }}</p>
+                            <input type="hidden" name="userid" id="userid" value="{{ request.session.logined_uid }}" readonly>
                         </td>
                     </tr>
 
@@ -53,12 +53,12 @@
                         </td>
                         <td class="input-cell">
                             <select class="form-select" name="sigunguno" id="region" required>
-                                <option value="" disabled selected>지역을 선택하세요</option>
-                                <option value=1 {% if club[0].sigunguno == 1 %}selected{% endif %}>강동구</option>
-                                <option value=2 {% if club[0].sigunguno == 2 %}selected{% endif %}>서대문구</option>
-                                <option value=3 {% if club[0].sigunguno == 3 %}selected{% endif %}>영등포구</option>
-                                <option value=4 {% if club[0].sigunguno == 4 %}selected{% endif %}>서초구</option>
-                                <option value=5 {% if club[0].sigunguno == 5 %}selected{% endif %}>동대문구</option>
+                                <option value="" selected>지역을 선택하세요</option>
+                                {% for region in regions %}
+                                <option value="{{ region[0].sigunguno }}"
+                                        {% if region[0].sigunguno == club[0].sigunguno %} selected{% endif %}>
+                                {{ region[0].name }}</option>
+                                {% endfor %}
                             </select>
                         </td>
                         <td class="label-cell">

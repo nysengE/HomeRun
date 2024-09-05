@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import urlparse
 
-from fastapi import APIRouter, File, UploadFile, HTTPException,  Depends, HTTPException, Request, Form
+from fastapi import APIRouter, File, UploadFile, HTTPException, Form
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from starlette.requests import Request
@@ -16,7 +16,8 @@ from app.model.rental import Rental
 import logging
 
 from app.dbfactory import get_db
-from app.schema.mypage.userpage import RequestClubno, ModifyClub, CheckUser, ModifyUser
+from app.schema.userpage import RequestClubno, ModifyClub, CheckUser, ModifyUser
+from app.service.club import ClubService
 from app.service.userpage import UserpageService, get_club_data, process_upload, get_user_data
 
 from app.service.reservation import process_reservation
@@ -31,9 +32,14 @@ templates = Jinja2Templates(directory='views/templates')
 @mypage_router.get('/userinfo', response_class=HTMLResponse)
 async def userinfo(req: Request, db: Session = Depends(get_db)):
     try:
+        # 세션에서 'logined_uid' 값을 가져오기
+        session = req.session
+        userid = session.get('logined_uid')
+
         # userid = session['userid']
-        userid = 'dangdang'
+
         userdata = UserpageService.select_users(userid, db)
+        print(userdata[0].passwd)
 
         if userdata is None:
             userdata = []
@@ -53,7 +59,9 @@ async def userinfo(req: Request, db: Session = Depends(get_db)):
 async def checkpwd(req: Request, passwd: CheckUser,  db: Session = Depends(get_db)):
     try:
 
-        userid = "dangdang"
+        # 세션에서 'logined_uid' 값을 가져오기
+        session = req.session
+        userid = session.get('logined_uid')
 
         password = UserpageService.select_pwd(userid, db)
 
@@ -78,8 +86,9 @@ async def checkpwd(req: Request, passwd: CheckUser,  db: Session = Depends(get_d
 @mypage_router.get('/clubwrite', response_class=HTMLResponse)
 async def clubwrite(req: Request, db: Session = Depends(get_db)):
     try:
-        # userid = session['userid']
-        userid = 'dangdang'
+        # 세션에서 'logined_uid' 값을 가져오기
+        session = req.session
+        userid = session.get('logined_uid')
         clublist = UserpageService.select_club(userid, db)
 
         if clublist is None:
@@ -156,12 +165,14 @@ async def clubwriteapprove(req: Request, db: Session = Depends(get_db)):
 @mypage_router.get('/clubapply', response_class=HTMLResponse)
 async def clubapply(req: Request, db: Session = Depends(get_db)):
     try:
-        # userid = session['userid']
-        userid = 'hehe'
+        # 세션에서 'logined_uid' 값을 가져오기
+        session = req.session
+        userid = session.get('logined_uid')
         applylist = UserpageService.select_apply(userid, db)
 
         if applylist is None:
             applylist = []
+
 
         return templates.TemplateResponse('mypage/user/clubapply.html',
                                           {'request': req, 'applylist': applylist})
@@ -181,8 +192,10 @@ async def clubwrite(req: Request, clubno:int, db: Session = Depends(get_db)):
         if club is None:
             club = []
 
+        regions = ClubService.select_regions(db)
+
         return templates.TemplateResponse('mypage/user/modifyclub.html',
-                                          {'request': req, 'club': club})
+                                          {'request': req, 'club': club, 'regions': regions})
 
     except Exception as ex:
         print(f'▷▷▷ mypage clubapply 오류 발생 : {str(ex)}')
@@ -200,7 +213,7 @@ async def deletefile(request: Request, db: Session = Depends(get_db)):
 
         filename = Path(path).name
 
-        filepath = Path('C:/Java/nginx-1.26.2/nginx-1.26.2/html/homerun/img')/filename
+        filepath = Path('C:/Java/nginx-1.26.2/html/homerun/img')/filename
 
         print('filepath: ',filepath)
 
@@ -239,8 +252,9 @@ async def modify(req: Request, modifyclub: ModifyClub = Depends(get_club_data),
 @mypage_router.put('/userinfo', response_class=HTMLResponse)
 async def putuserinfo(req: Request, modifyuser: ModifyUser = Depends(get_user_data), db: Session = Depends(get_db)):
     # try:
-    # userid = session['userid']
-    userid = 'dangdang'
+    # 세션에서 'logined_uid' 값을 가져오기
+    session = req.session
+    userid = session.get('logined_uid')
 
     # 비밀번호가 None이면 업데이트하지 않음
     if modifyuser.passwd is None:

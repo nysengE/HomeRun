@@ -10,7 +10,7 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from app.dbfactory import get_db
-from app.schema.club.club import NewClub, NewReply
+from app.schema.club import NewClub, NewReply
 from app.service.club import get_club_data, process_upload, ClubService
 
 club_router = APIRouter()
@@ -26,6 +26,8 @@ async def club(req: Request, cpg: int, db: Session = Depends(get_db)):
         sports = ClubService.select_sports(db)
         regions = ClubService.select_regions(db)
 
+        userid = req.session.get('logined_uid')
+
         # 총 페이지 수
         allpage = ceil(cnt / 8)
 
@@ -35,7 +37,7 @@ async def club(req: Request, cpg: int, db: Session = Depends(get_db)):
                                           {'request': req, 'clublist': clublist,
                                            'sports': sports, 'regions': regions,
                                            'cpg': cpg, 'allpage': allpage, 'stpgb': stpgb,
-                                           'baseurl': '/club/'})
+                                           'baseurl': '/club/', 'userid':userid})
 
     except Exception as ex:
         print(f'▷▷▷ /club router 오류 발생 : {str(ex)}')
@@ -81,8 +83,12 @@ async def findclub(req: Request, cpg: int, sport: int = 99, region: int = 99, pe
 
 
 @club_router.get('/club/add', response_class=HTMLResponse)
-async def add(req: Request):
-    return templates.TemplateResponse('club/add.html', {'request': req})
+async def add(req: Request, db: Session = Depends(get_db)):
+    userid = req.session.get('logined_uid')
+    sports = ClubService.select_sports(db)
+    regions = ClubService.select_regions(db)
+    return templates.TemplateResponse('club/add.html', {'request': req,
+                                    'sports': sports, 'regions': regions, 'userid': userid})
 
 @club_router.post('/add', response_class=HTMLResponse)
 async def addok(req: Request, club: NewClub = Depends(get_club_data),

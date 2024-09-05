@@ -1,18 +1,18 @@
 import os
-from datetime import datetime, date
+from datetime import datetime
 from typing import Optional
 
 from fastapi import Form, HTTPException
-from sqlalchemy import select, func, delete, update
+from sqlalchemy import select, delete, update
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.model.club import Apply, Club, ClubAttach
 from app.model.regions import Regions
 from app.model.sports import Sports
 from app.model.users import Users
-from app.schema.mypage.userpage import ModifyClub, ModifyUser
+from app.schema.userpage import ModifyClub, ModifyUser
 
-UPLOAD_PATH = 'C:/Java/nginx-1.26.2/nginx-1.26.2/html/homerun/img'
+UPLOAD_PATH = 'C:/Java/nginx-1.26.2/html/homerun/img'
 
 async def get_club_data(title: str = Form(...),
                         contents: str = Form(...),

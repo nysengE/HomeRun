@@ -9,9 +9,9 @@ from sqlalchemy.orm import joinedload
 from app.model.club import Club, ClubAttach, Apply, Reply
 from app.model.regions import Regions
 from app.model.sports import Sports
-from app.schema.club.club import NewClub
+from app.schema.club import NewClub
 
-UPLOAD_PATH = 'C:/Java/nginx-1.26.2/nginx-1.26.2/html/homerun/img'
+UPLOAD_PATH = 'C:/Java/nginx-1.26.2/html/homerun/img'
 
 async def get_club_data(title: str = Form(...),
                   contents: str = Form(...),
@@ -91,6 +91,7 @@ class ClubService:
                           Club.title,
                           Club.registdate,
                           ClubAttach.fname,
+                          Club.views,
                           Sports.name.label('sportname'),
                           Regions.name.label('regionname')
                     ).select_from(Club)\
