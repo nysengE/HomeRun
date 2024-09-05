@@ -61,3 +61,4 @@ async def get_statistics(req: Request, db: Session = Depends(get_db)):
     except Exception as ex:
         print(f'▷▷▷ 통계 조회 오류 발생 : {str(ex)}')
         return templates.TemplateResponse('error.html', {'request': req})
+

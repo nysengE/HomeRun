@@ -110,3 +110,4 @@ def delete_image(notino: int, fname: str = Form(...), db: Session = Depends(get_
     except Exception as ex:
         print(f'▷▷▷ delete_image 오류발생: {str(ex)}')
         return JSONResponse(content={"message": "파일 삭제 실패"}, status_code=500)
+

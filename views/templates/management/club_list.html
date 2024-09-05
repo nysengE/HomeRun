@@ -1,0 +1,118 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+    게시글 관리
+{% endblock %}
+
+{% block main %}
+    <main class="container">
+        <h1 class="my-4">게시글 관리 페이지</h1>
+
+        <!-- 검색 바 -->
+        <div class="d-flex justify-content-between mb-4">
+            <form method="get" action="/management/club_list" class="d-flex">
+                <input type="text" name="search" placeholder="제목으로 검색" value="{{ search }}" class="form-control me-2">
+                <button type="submit" class="btn btn-primary">검색</button>
+            </form>
+            <div>
+                <button class="btn btn-outline-secondary" onclick="window.location.href='/management/club_list'">Club 관리</button>
+                <button class="btn btn-outline-secondary" onclick="window.location.href='/management/rental_list'">Rental 관리</button>
+            </div>
+        </div>
+
+        <!-- 게시글 목록 테이블 -->
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>제목</th>
+                <th>카테고리</th>
+                <th>작성일</th>
+                <th>상태</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if post_list %}
+                {% for post in post_list %}
+                    <tr>
+                        <td><a href="#" class="text-decoration-none">{{ post.title }}</a></td>
+                        <td>{{ post.name }}</td>
+                        <td>{{ post.registdate.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <!-- 상태 드롭다운 -->
+                            <select class="form-select" onchange="updateStatus('{{ post.clubno }}', this.value, 'club')">
+                                {% if post.status.strip() | lower == 'open' %}
+                                    <option value="open" selected>공개</option>
+                                    <option value="close">비공개</option>
+                                {% else %}
+                                    <option value="open">공개</option>
+                                    <option value="close" selected>비공개</option>
+                                {% endif %}
+                            </select>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">결과가 없습니다.</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+
+        <!-- 페이지네이션 -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+
+                <!-- 이전 페이지 버튼 -->
+                <li class="page-item {% if cpg <= 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{% if cpg > 1 %}/management/club_list?cpg={{ cpg - 1 }}&search={{ search }}{% else %}#{% endif %}">이전</a>
+                </li>
+
+                <!-- 페이지 번호 표시 -->
+                {% if total_pages <= 5 %}
+                    {% set start_page = 1 %}
+                    {% set end_page = total_pages %}
+                {% elif cpg <= 3 %}
+                    {% set start_page = 1 %}
+                    {% set end_page = 5 %}
+                {% elif cpg > total_pages - 3 %}
+                    {% set start_page = total_pages - 4 %}
+                    {% set end_page = total_pages %}
+                {% else %}
+                    {% set start_page = cpg - 2 %}
+                    {% set end_page = cpg + 2 %}
+                {% endif %}
+
+                {% for page_num in range(start_page, end_page + 1) %}
+                    <li class="page-item {% if page_num == cpg %}active{% endif %}">
+                        <a class="page-link" href="/management/club_list?cpg={{ page_num }}&search={{ search }}">{{ page_num }}</a>
+                    </li>
+                {% endfor %}
+
+                <!-- 다음 페이지 버튼 -->
+                <li class="page-item {% if cpg >= total_pages %}disabled{% endif %}">
+                    <a class="page-link" href="{% if cpg < total_pages %}/management/club_list?cpg={{ cpg + 1 }}&search={{ search }}{% else %}#{% endif %}">다음</a>
+                </li>
+            </ul>
+        </nav>
+    </main>
+
+    <script>
+        async function updateStatus(postId, status, table) {
+            const response = await fetch(`/management/update_status/${postId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: status, table: table })
+            });
+
+            if (response.ok) {
+                alert('상태가 변경되었습니다.');
+                window.location.reload();
+            } else {
+                const errorText = await response.text();
+                alert('상태 변경에 실패했습니다: ' + errorText);
+            }
+        }
+    </script>
+{% endblock %}
+

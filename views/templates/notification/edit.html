@@ -1,0 +1,77 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+세미프로젝트 - 게시글 수정
+{% endblock %}
+
+{% block main %}
+<main class="container">
+    <h1 class="my-4">게시글 수정</h1>
+    <!-- 게시글 수정 폼 -->
+    <form method="post" action="/notification/edit/{{ notification.notino }}" enctype="multipart/form-data">
+        <!-- 제목 수정 필드 -->
+        <div class="mb-3">
+            <label for="title" class="form-label">제목</label>
+            <input type="text" id="title" name="title" value="{{ notification.title }}" class="form-control" required>
+        </div>
+        <!-- 상세 내용 수정 필드 -->
+        <div class="mb-3">
+            <label for="contents" class="form-label">상세 내용</label>
+            <textarea id="contents" name="contents" rows="10" class="form-control" required>{{ notification.contents }}</textarea>
+        </div>
+        <!-- 새로운 파일 업로드 필드 -->
+        <div class="mb-3">
+            <label for="file" class="form-label">새로운 사진 업로드 (기존 사진을 대체합니다.)</label>
+            <input type="file" id="file" name="files" class="form-control" accept="image/*" onchange="previewImage(event)">
+            <img id="preview" class="img-thumbnail mt-3" style="display:none;">
+        </div>
+        <!-- 기존 첨부된 사진 목록 -->
+        {% if notification.attachs %}
+        <div class="mb-3">
+            <label class="form-label">첨부된 사진:</label>
+            <div>
+                {% for attach in notification.attachs %}
+                <img src="http://127.0.0.1/img/ntf/{{ attach.fname }}" alt="첨부 이미지" class="img-thumbnail" style="max-width: 200px;">
+                <button type="button" class="btn btn-danger btn-sm" onclick="deleteImage(event, {{ notification.notino }}, '{{ attach.fname }}')">사진 삭제</button>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        <!-- 수정 완료 버튼 -->
+        <button type="submit" class="btn btn-primary">수정 완료</button>
+    </form>
+
+    <!-- 이미지 미리보기 스크립트 -->
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('preview');
+                output.src = reader.result;
+                output.style.display = 'block';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // 이미지 삭제 요청 처리
+        function deleteImage(event, notino, fname) {
+            event.preventDefault();  // 기본 폼 제출 방지
+
+            fetch(`/notification/delete_image/${notino}`, {  // 서버에 이미지 삭제 요청
+                method: 'POST',
+                body: new URLSearchParams({ 'fname': fname })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('이미지 삭제 성공');
+                        location.reload();  // 페이지를 다시 로드하여 변경사항 반영
+                    } else {
+                        console.error('이미지 삭제 실패:', response.statusText);
+                    }
+                })
+                .catch(error => console.error('이미지 삭제 중 오류 발생:', error));
+        }
+    </script>
+</main>
+{% endblock %}
+
