@@ -1,0 +1,176 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+    회원 관리
+{% endblock %}
+
+{% block main %}
+    <main class="container">
+        <h1 class="my-4">회원 관리 페이지</h1>
+
+        <!-- 검색 바 -->
+        <div class="d-flex justify-content-between mb-4">
+            <form method="get" action="/usermanage/list" class="d-flex">
+                <input type="text" name="search" placeholder="사용자 ID로 검색" value="{{ search }}" class="form-control me-2">
+                <button type="submit" class="btn btn-primary">검색</button>
+            </form>
+        </div>
+
+        <!-- 회원 목록 테이블 -->
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+            <tr>
+                <th>사용자 ID</th>
+                <th>정지 날짜</th>
+                <th>활동 관리</th>
+                <th>정지 사유</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if user_list %}
+                {% for users, usermanage in user_list %}
+                    <tr>
+                        <td><a href="#" class="text-decoration-none">{{ users.userid }}</a></td>
+                        <td>{{ users.suspension.strftime('%Y-%m-%d') if users.suspension else 'N/A' }}</td>
+                        <td>
+                            <!-- status가 있을 경우 활동 정지 해제 버튼 표시 -->
+                            {% if users.status %}
+                                <button class="btn btn-success btn-sm" onclick="confirmUnsuspend('{{ users.userid }}')">활동 정지 해제</button>
+                            {% else %}
+                                <button class="btn btn-danger btn-sm" onclick="openSuspendPopup('{{ users.userid }}')">활동 정지</button>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- status가 NULL일 경우 정지 사유를 'N/A'로 표시 -->
+                            {% if users.status %}
+                                {{ usermanage.reason if usermanage and usermanage.reason else 'N/A' }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">결과가 없습니다.</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+
+        <!-- 페이지네이션 -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if cpg <= 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{% if cpg > 1 %}/usermanage/list?cpg={{ cpg - 1 }}&search={{ search }}{% else %}#{% endif %}">이전</a>
+                </li>
+                {% for page_num in range(1, total_pages + 1) %}
+                    {% if page_num >= cpg - 5 and page_num <= cpg + 5 %}
+                        <li class="page-item {% if page_num == cpg %}active{% endif %}">
+                            <a class="page-link" href="/usermanage/list?cpg={{ page_num }}&search={{ search }}">{{ page_num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if cpg >= total_pages %}disabled{% endif %}">
+                    <a class="page-link" href="{% if cpg < total_pages %}/usermanage/list?cpg={{ cpg + 1 }}&search={{ search }}{% else %}#{% endif %}">다음</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- 활동 정지 팝업 -->
+        <div id="suspendPopup" class="modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">활동 정지 설정</h5>
+                        <button type="button" class="btn-close" onclick="closeSuspendPopup()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="suspendForm">
+                            <div class="mb-3">
+                                <label for="suspendReason" class="form-label">정지 사유:</label>
+                                <input type="text" id="suspendReason" name="suspendReason" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="suspendDuration" class="form-label">정지 기간:</label>
+                                <select id="suspendDuration" name="suspendDuration" class="form-select" required>
+                                    <option value="7">7일</option>
+                                    <option value="30">30일</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="confirmSuspend()">활동 정지</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeSuspendPopup()">취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-backdrop" style="display:none;"></div>
+
+        <script>
+            function openSuspendPopup(userid) {
+                document.getElementById('suspendPopup').style.display = 'block';
+                document.querySelector('.modal-backdrop').style.display = 'block';
+                document.getElementById('suspendForm').dataset.userid = userid;
+            }
+
+            function closeSuspendPopup() {
+                document.getElementById('suspendPopup').style.display = 'none';
+                document.querySelector('.modal-backdrop').style.display = 'none';
+            }
+
+            async function confirmSuspend() {
+                const userid = document.getElementById('suspendForm').dataset.userid;
+                const reason = document.getElementById('suspendReason').value;
+                const duration = parseInt(document.getElementById('suspendDuration').value);
+
+                if (confirm(`${userid} 사용자를 활동 정지 하겠습니까?`)) {
+                    try {
+                        const response = await fetch('/usermanage/suspend_user', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userid: userid, reason: reason, duration: duration })
+                        });
+
+                        if (response.ok) {
+                            alert('사용자가 성공적으로 활동 정지되었습니다.');
+                            location.reload();
+                        } else {
+                            const data = await response.json();
+                            alert('오류 발생: ' + JSON.stringify(data.detail));
+                        }
+                    } catch (error) {
+                        alert('네트워크 오류가 발생했습니다.');
+                    } finally {
+                        closeSuspendPopup();
+                    }
+                }
+            }
+
+            async function confirmUnsuspend(userid) {
+                if (confirm(`${userid} 사용자의 활동 정지를 취소하시겠습니까?`)) {
+                    try {
+                        const response = await fetch('/usermanage/unsuspend_user', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userid: userid })
+                        });
+
+                        if (response.ok) {
+                            alert('사용자의 활동 정지가 취소되었습니다.');
+                            location.reload();
+                        } else {
+                            const data = await response.json();
+                            alert('오류 발생: ' + JSON.stringify(data.detail));
+                        }
+                    } catch (error) {
+                        alert('네트워크 오류가 발생했습니다.');
+                    }
+                }
+            }
+        </script>
+    </main>
+{% endblock %}
