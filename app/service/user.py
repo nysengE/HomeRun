@@ -2,8 +2,7 @@ import string
 from datetime import date
 from typing import Optional
 
-import requests
-from fastapi import Form
+from fastapi import Form, requests
 from sqlalchemy import insert, select, and_
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
