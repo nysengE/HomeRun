@@ -1,0 +1,92 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    position: relative; /* 아이콘의 위치를 절대 위치로 지정하기 위해 사용 */
+}
+
+.left-section, .right-section {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.left-section {
+    background-color: #D0D0FF;
+}
+
+.left-section:hover {
+    background-color: #B0B0FF; /* Slightly darker blue */
+}
+
+.right-section {
+    background-color: #FDFFD0;
+}
+
+.right-section:hover {
+    background-color: #EDED9C; /* Slightly darker yellow */
+}
+
+.icon {
+    display: flex; /* Flexbox로 설정 */
+    flex-direction: column; /* 세로 방향으로 아이템 배치 */
+    align-items: center; /* 수평 중앙 정렬 */
+    justify-content: center; /* 수직 중앙 정렬 */
+    position: absolute; /* 절대 위치로 설정하여 중앙에 위치 */
+    top: 50%; /* 수직 중앙 정렬 */
+    left: 50%; /* 수평 중앙 정렬 */
+    transform: translate(-50%, -50%); /* 정밀하게 중앙에 배치 */
+}
+#center-icon {
+    width: 80%;
+    height: 700%;
+    /*max-width: 120%;/*/
+    /*max-height: 120%;*/
+}
+
+.text {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center; /* 세로 가운데 정렬 */
+}
+
+.arrow {
+    font-size: 2rem; /* 화살표 크기 조정 */
+    margin-right: 30px; /* 텍스트와 화살표 사이 간격 조정 */
+}
+
+.arrow2 {
+    font-size: 2rem; /* 화살표 크기 조정 */
+    margin-left: 30px; /* 텍스트와 화살표 사이 간격 조정 */
+}
+
+.sports-text {
+    font-family: 'Yellowtail', cursive;
+    font-size: 6rem;
+    color: #333;
+    position: relative;
+    top: 120px;
+    text-align: center;
+}
+
+
+
+
+
+
+

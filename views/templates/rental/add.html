@@ -1,0 +1,141 @@
+{% extends 'include/base.html' %}
+
+{% block title %}
+    공간대여 등록 페이지
+{% endblock %}
+
+{% block link %}
+    <link rel="stylesheet" href="/static/css/rental/add.css" />
+    <!-- jQuery UI Timepicker Addon CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css" />
+{% endblock %}
+
+{% block main %}
+    <main>
+        <div class="form-container mt-5">
+            <h1 class="mb-4 text-center">공간대여 글 등록 페이지</h1>
+            <!-- action에 라우터의 POST 엔드포인트 설정 -->
+            <form name="addfrm" enctype="multipart/form-data" method="post" action="/rental/add" class=" p-4 bg-white rounded">
+                <div class="row">
+                    <label for="title" class="col-sm-2 col-form-label text-end">제목</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" name="title" id="title" placeholder="제목을 입력하세요" required>
+                    </div>
+                    <label for="userid" class="col-sm-2 col-form-label text-end">작성자</label>
+                    <div class="col-sm-4">
+                        <p class="form-control-plaintext" id="author">{{ userid }}</p> <!-- 세션에서 가져온 userid를 출력 -->
+                        <input type="hidden" name="userid" id="userid" value="{{ userid }}">
+                    </div>
+
+                </div>
+                <div class="row">
+                    <label for="sigunguno" class="col-sm-2 col-form-label text-end">지역</label>
+                    <div class="col-sm-4">
+                        <select class="form-select" name="sigunguno" id="sigunguno" required>
+                            <option value="" disabled selected>지역을 선택하세요</option>
+                            {% for region in regions %}
+                                <option value="{{ region.sigunguno }}">{{ region.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <label for="sportsno" class="col-sm-2 col-form-label text-end">운동 종목</label>
+                    <div class="col-sm-4">
+                        <select class="form-select" name="sportsno" id="sportsno" required>
+                            <option value="" disabled selected>운동 종목을 선택하세요</option>
+                            <option value="1">축구</option>
+                            <option value="2">야구</option>
+                            <option value="3">농구</option>
+                            <option value="4">테니스</option>
+                            <option value="5">기타</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <label for="price" class="col-sm-2 col-form-label text-end">가격</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="price" id="price" placeholder="최소 1만" required>
+                            <span class="input-group-text">원</span>
+                        </div>
+                    </div>
+                    <label for="people" class="col-sm-2 col-form-label text-end">인원수</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" name="people" id="people" placeholder="최대인원수를 입력하세요" min="1" max="40" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <label for="address" class="col-sm-2 col-form-label text-end">주소</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="address" id="address" placeholder="주소를 입력하세요" required>
+                        <button type="button" class="btn btn-secondary mt-2" onclick="searchAddress()">주소 확인</button>
+                        <input type="hidden" name="latitude" id="latitude">
+                        <input type="hidden" name="longitude" id="longitude">
+                    </div>
+                </div>
+                <div class="row">
+                    <label for="availdate" class="col-sm-2 col-form-label text-end">사용 가능 날짜</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" name="availdate" id="availdate" placeholder="날짜를 선택하세요" readonly required>
+                    </div>
+                    <label for="availtime" class="col-sm-2 col-form-label text-end">사용 가능 시간</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" name="availtime" id="availtime" placeholder="시간을 선택하세요" readonly required>
+                    </div>
+                </div>
+                <div class="row">
+                    <label for="contents" class="col-sm-2 col-form-label text-end">내용</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" name="contents" id="contents" rows="4" placeholder="내용을 입력하세요" required></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <label for="file1" class="col-sm-2 col-form-label text-end">첨부파일</label>
+                    <div class="col-sm-10">
+                        <input type="file" class="form-control mb-2" name="files" id="file1" required>
+                        <input type="file" class="form-control" name="files" id="file2">
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">등록하기</button>
+                </div>
+            </form>
+        </div>
+    </main>
+{% endblock %}
+
+{% block script %}
+    <script src="/static/js/rental/add.js"></script>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=fc8381a8e078184c69d4c4085d49468f&libraries=services"></script>
+    <!-- jQuery 및 jQuery UI 추가 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <!-- jQuery UI Timepicker Addon JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script>
+        $(document).ready(function () {
+            $("#availdate").datepicker({
+                dateFormat: "yy-mm-dd",
+                minDate: new Date(),
+                maxDate: "+3M",
+                onSelect: function (dateText, inst) {
+                    $('#availdate').val(dateText);
+                }
+            });
+
+            // jQuery UI Timepicker 설정
+            $("#availtime").timepicker({
+                timeFormat: "HH:mm",
+                interval: 60,
+                minTime: "00:00",
+                maxTime: "23:59",
+                defaultTime: "00:00",
+                startTime: "00:00",
+                dynamic: false,
+                dropdown: true,
+                scrollbar: true
+            });
+        });
+    </script>
+{% endblock %}

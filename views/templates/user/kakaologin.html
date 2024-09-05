@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="/static/css/bs5/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/project.css">
+    <style>
+        /* 배경 설정 */
+        body {
+            background-color: #f0f0f0; /* 전체 배경색 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* 회원가입 박스 설정 */
+        .signup-box {
+            background-color: rgba(255, 255, 255, 0.9); /* 반투명 흰색 배경 */
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+            width: 100%;
+            max-width: 400px; /* 최대 너비 설정 */
+            text-align: center;
+        }
+
+        /* 폼 필드 스타일 */
+        .form-control {
+            margin-bottom: 15px;
+        }
+
+        /* 버튼 스타일 */
+        .btn-success {
+            background-color: #28a745; /* 버튼 배경색 */
+            border: none;
+            width: 100%; /* 버튼 너비 설정 */
+            margin-bottom: 20px;
+        }
+
+        /* 이메일 로그인 링크 배치 설정 */
+        .links {
+            margin-top: 15px;
+            color: #888;
+        }
+
+        /* 이메일 로그인 링크 스타일 */
+        .links a.login {
+            color: #28a745; /* 이메일 로그인 링크 색상 */
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            text-decoration: underline; /* 링크 호버 시 밑줄 표시 */
+        }
+    </style>
+</head>
+
+<body>
+<div class="signup-box">
+    <h2>회원가입</h2>
+    <form action="/signup" method="POST">
+        <input type="text" name="username" class="form-control" placeholder="아이디" required>
+        <input type="text" name="name" class="form-control" placeholder="이름" required>
+        <input type="email" name="email" class="form-control" placeholder="이메일" required>
+        <input type="password" name="password" class="form-control" placeholder="비밀번호" required>
+        <input type="password" name="password_confirm" class="form-control" placeholder="비밀번호 확인" required>
+        <input type="date" name="birthdate" class="form-control" placeholder="생년월일" required>
+        <button type="submit" class="btn btn-success">회원가입</button>
+    </form>
+    <div class="links">
+        <p>이미 계정이 있으신가요? <a href="login" class="login">로그인</a></p>
+
+    </div>
+</div>
+</body>
+
+</html>

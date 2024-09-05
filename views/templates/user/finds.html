@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>아이디/비밀번호 찾기</title>
+    <link rel="stylesheet" href="/static/css/bs5/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/project.css">
+    <style>
+        /* 배경 설정 */
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* 박스 설정 */
+        .find-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* 버튼 스타일 */
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        /* 선택 버튼 스타일 */
+        .toggle-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .toggle-buttons button {
+            width: 48%;
+        }
+
+        /* 필드 숨기기 */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="find-box">
+    <h3 class="text-center my-5">아이디/비밀번호 찾기</h3>
+
+    <!-- 선택 버튼 -->
+    <div class="toggle-buttons">
+        <button id="find-id-btn" class="btn btn-secondary">아이디 찾기</button>
+        <button id="find-pw-btn" class="btn btn-secondary">비밀번호 찾기</button>
+    </div>
+
+    <div class="col-12 col-mb-6">
+        <!-- 아이디 찾기 폼 -->
+        <div id="find-id-form" class="hidden">
+            <div class="mb-3 row">
+                <label for="name-id" class="col-sm-4 col-form-label text-end">이름</label>
+                <div class="col-sm-7">
+                    <input type="text" placeholder="이름 입력" name="name-id" id="name-id" class="form-control">
+                </div>
+            </div>
+            <div class="mb-5 row">
+                <label for="email-id" class="col-sm-4 col-form-label text-end">이메일</label>
+                <div class="col-sm-7">
+                    <input type="email" placeholder="이메일 입력" name="email-id" id="email-id" class="form-control">
+                </div>
+            </div>
+            <div class="mb-3">
+                <button type="button" id="find-id-submit" class="btn btn-primary">아이디 찾기</button>
+            </div>
+        </div>
+
+        <!-- 비밀번호 찾기 폼 -->
+        <div id="find-pw-form" class="hidden">
+            <div class="mb-3 row">
+                <label for="userid-pw" class="col-sm-4 col-form-label text-end">아이디</label>
+                <div class="col-sm-7">
+                    <input type="text" placeholder="아이디 입력" name="userid-pw" id="userid-pw" class="form-control">
+                </div>
+            </div>
+            <div class="mb-5 row">
+                <label for="name-pw" class="col-sm-4 col-form-label text-end">이름</label>
+                <div class="col-sm-7">
+                    <input type="text" placeholder="이름 입력" name="name-pw" id="name-pw" class="form-control">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <button type="button" id="find-pw-submit" class="btn btn-primary">비밀번호 찾기</button>
+            </div>
+        </div>
+
+        <!-- 로그인 페이지로 돌아가기 -->
+        <div class="mt-3">
+            <a href="/user/login">로그인 페이지로 돌아가기</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 버튼과 폼 요소들
+    const findIdBtn = document.getElementById('find-id-btn');
+    const findPwBtn = document.getElementById('find-pw-btn');
+    const findIdForm = document.getElementById('find-id-form');
+    const findPwForm = document.getElementById('find-pw-form');
+
+    // 아이디 찾기 버튼 클릭 시
+    findIdBtn.addEventListener('click', function() {
+        findIdForm.classList.remove('hidden');
+        findPwForm.classList.add('hidden');
+        findIdBtn.classList.add('btn-primary');
+        findIdBtn.classList.remove('btn-secondary');
+        findPwBtn.classList.remove('btn-primary');
+        findPwBtn.classList.add('btn-secondary');
+    });
+
+    // 비밀번호 찾기 버튼 클릭 시
+    findPwBtn.addEventListener('click', function() {
+        findPwForm.classList.remove('hidden');
+        findIdForm.classList.add('hidden');
+        findPwBtn.classList.add('btn-primary');
+        findPwBtn.classList.remove('btn-secondary');
+        findIdBtn.classList.remove('btn-primary');
+        findIdBtn.classList.add('btn-secondary');
+    });
+
+    // 아이디 찾기 제출 버튼 클릭 시
+    document.getElementById('find-id-submit').addEventListener('click', async function() {
+        const name = document.getElementById('name-id').value;
+        const email = document.getElementById('email-id').value;
+
+        if (name && email) {
+            try {
+                const response = await fetch('/user/find_id', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: name, email: email })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(`아이디: ${result.masked_id}`);
+                } else {
+                    alert(result.message || '아이디를 찾을 수 없습니다.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('오류가 발생했습니다. 나중에 다시 시도하세요.');
+            }
+        } else {
+            alert('이름과 이메일을 입력해주세요.');
+        }
+    });
+
+
+
+
+    // 비밀번호 찾기 제출 버튼 클릭 시
+    document.getElementById('find-pw-submit').addEventListener('click', async function() {
+        const userid = document.getElementById('userid-pw').value;
+        const name = document.getElementById('name-pw').value;
+        if (userid && name) {
+            try {
+                const response = await fetch('/user/find_password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userid: userid, name: name })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(`찾은 비밀번호: ${result.masked_password}`);
+                } else {
+                    alert(result.message || '비밀번호를 찾을 수 없습니다.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('오류가 발생했습니다. 나중에 다시 시도하세요.');
+            }
+        } else {
+            alert('아이디와 이름을 입력해주세요.');
+        }
+    });
+
+
+
+
+</script>
+</body>
+</html>

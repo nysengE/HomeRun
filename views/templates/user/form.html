@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입 양식</title>
+    <link rel="stylesheet" href="/static/css/bs5/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 60px); /* Adjust height to account for footer */
+            padding: 20px;
+        }
+
+        .formf {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .formf p {
+            margin: 0 0 10px 0;
+        }
+
+        .formf input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .hbtn {
+            background-color: #28a745;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .hbtn:disabled {
+            background-color: #d6d6d6;
+            cursor: not-allowed;
+        }
+
+        footer {
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+        }
+
+        #footerhr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <form class="formf" id="formf">
+        <div>
+            <p>
+                시행일자: 2024년 09월 06일
+            </p>
+            <br>
+            <p>
+                HomeRun(이하 "회사" 또는 "HomeRun"이라고 함)은 통신비밀보호법, 전기통신사업법, 정보통신망 이용촉진 및 정보보호 등에 관한
+                법률 등 정보통신서비스제공자가 준수하여야 할 관련
+                법령상의 개인정보보호 규정을 준수하며, 관련 법령에 의거한 개인정보취급방침을 정하여 이용자 권익 보호에 최선을 다하고
+                있습니다.<br/><br/>
+
+                본 개인정보취급방침은 다음과 같은 내용을 담고 있습니다.<br /><br />
+                <input type="checkbox" id="checkbox1">
+            </p>
+        </div>
+
+        <div>
+            <p>
+                시행일자: 2024년 09월 06일
+            </p>
+            <br>
+            <p>
+                개인정보보호에 따라 홈런에 회원가입 신청하시는 분께 수집하는 개인정보의
+                항목, 개인정보의 수집 및 이용목적, 개인정보의 보유 및 이용기간,
+                동의 거부권 및 동의 거부 시 불이익에 관한 사항을 안내 드리오니
+                자세히 읽은 후 동의하여 주시기 바랍니다.<br /><br />
+
+                본 개인정보취급방침은 다음과 같은 내용을 담고 있습니다.<br /><br />
+                <input type="checkbox" id="checkbox2">
+            </p>
+        </div>
+
+        <div>
+            <button type="button" class="hbtn" id="nextButton">다음</button>
+        </div>
+    </form>
+</main>
+
+<footer>
+    <hr class="text-center d-flex justify-content-center align-items-center" id="footerhr">
+    <p class="text-center">copyright &copy; 2024. HomeRun. all rights reserved.</p>
+</footer>
+
+<script>
+    document.getElementById('nextButton').disabled = true;
+
+    // 두 개의 체크박스 상태에 따라 '다음' 버튼 활성화
+    document.getElementById('formf').addEventListener('change', function() {
+        const checkbox1 = document.getElementById('checkbox1').checked;
+        const checkbox2 = document.getElementById('checkbox2').checked;
+        document.getElementById('nextButton').disabled = !(checkbox1 && checkbox2);
+    });
+
+    // '다음' 버튼 클릭 시 페이지 이동
+    document.getElementById('nextButton').addEventListener('click', function() {
+        if (!this.disabled) {
+            window.location.href = '/user/join';
+        }
+    });
+</script>
+</body>
+</html>

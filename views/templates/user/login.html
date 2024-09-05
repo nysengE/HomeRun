@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>이메일 로그인</title>
+    <link rel="stylesheet" href="/static/css/bs5/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/project.css">
+    <style>
+        /* 배경 설정 */
+        body {
+            background-color: #f0f0f0; /* 전체 배경색 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* 로그인 박스 설정 */
+        .login-box {
+            background-color: rgba(255, 255, 255, 0.9); /* 반투명 흰색 배경 */
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+            width: 100%;
+            max-width: 400px; /* 최대 너비 설정 */
+            text-align: center;
+        }
+
+        /* 버튼 스타일 */
+        .btn-success {
+            background-color: #28a745; /* 버튼 배경색 */
+            border: none;
+            width: 100%; /* 버튼 너비 설정 */
+            margin-bottom: 20px;
+        }
+
+        /* 링크 배치 설정 */
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            color: #bcd0c7;
+        }
+
+        /* 아이디/비밀번호 찾기 링크 스타일 */
+        .links a.find-id-pw {
+            color: #007bff; /* 아이디/비밀번호 찾기 링크 색상 */
+            text-decoration: none;
+        }
+
+        /* 이메일 회원가입 링크 스타일 */
+        .links a.sign-up {
+            color: #28a745; /* 이메일 회원가입 링크 색상 */
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            text-decoration: underline; /* 링크 호버 시 밑줄 표시 */
+        }
+
+        /* 다른 방법으로 로그인 */
+        .other-login-methods {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* 카카오 로그인 버튼 */
+        .kakao-login-btn img {
+            width: 50%; /* 이미지 너비 설정 */
+        }
+    </style>
+</head>
+<body>
+<div class="login-box">
+    <h3 class="text-center my-5">이메일 로그인</h3>
+
+    <form id="loginfrm" class="loginfrm">
+        <div class="col-12 col-mb-6">
+            <!-- 아이디 입력칸 -->
+            <form class="loginfrm">
+                <div class="mb-5 row">
+                    <label for="userid" class="col-sm-4 col-form-label text-end">아이디</label>
+                    <div class="col-sm-7">
+                        <input type="text" placeholder="아이디(이메일)" name="userid" id="userid" minlength="6" maxlength="18" required class="form-control">
+                    </div>
+                </div>
+                <!-- 비밀번호 입력 -->
+                <div class="mb-5 row">
+                    <label for="passwd" class="col-sm-4 col-form-label text-end">비밀번호</label>
+                    <div class="col-sm-7">
+                        <input type="password" placeholder="비밀번호 입력" name="passwd" id="passwd" minlength="6" maxlength="18" required class="form-control">
+                    </div>
+                </div>
+                <!-- 로그인 버튼 -->
+                <div class="mb-3 ">
+                    <button type="submit" id="joinbtn" class="btn btn-success">로그인</button>
+                </div>
+
+
+                <!-- 아이디/비밀번호 찾기 및 이메일로 회원가입 -->
+                <div class="links">
+                    <a href="/user/finds" class="find-id-pw">아이디/비밀번호 찾기</a>
+                    <a href="/user/form" class="sign-up">이메일로 회원가입</a>
+                </div>
+            </form>
+
+            <div class="other-login-methods mb-3">
+                <hr>
+                <div>다른 방법으로 로그인</div>
+            </div>
+
+            <!-- 카카오 로그인 버튼 -->
+            <div class="mb-3 kakao-login-btn">
+                <a href="javascript:kakaoLogin();">
+                    <img src="/static/img/kakao_login_medium_narrow.png" alt="카카오로 로그인">
+                </a>
+            </div>
+        </div>
+
+</div>
+
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script>
+    // Initialize Kakao SDK with the JavaScript key
+    window.Kakao.init("42ca1670b87e77f5665027dd0c1c21a8");
+
+    function kakaoLogin() {
+        // 카카오 로그아웃 (로그인 상태 초기화)
+        if (window.Kakao.Auth.getAccessToken()) {
+            window.Kakao.Auth.logout(function() {
+                console.log("로그아웃 성공, 새로운 로그인 시작");
+                redirectToLoginPage(); // 로그아웃 후 로그인 페이지로 리디렉션
+            });
+        } else {
+            redirectToLoginPage(); // 이미 로그아웃 상태이면 바로 로그인 페이지로 리디렉션
+        }
+    }
+
+    function redirectToLoginPage() {
+        // 로그인 페이지로 강제 리디렉션
+        window.location.href = "https://accounts.kakao.com/login/?continue=https://kauth.kakao.com/oauth/authorize?proxy=easyXDM_Kakao_ziu2ddhe888_provider&ka=sdk%2F1.43.5%20os%2Fjavascript%20sdk_type%2Fjavascript%20lang%2Fko-KR%20device%2FWin32%20origin%2Fhttp%253A%252F%252F127.0.0.1%253A8000&scope=profile_nickname%2Cprofile_image&origin=http%3A%2F%2F127.0.0.1%3A8000&response_type=code&redirect_uri=kakaojs&state=ih4m15jhid6v9d4uro1fm&through_account=true&client_id=42ca1670b87e77f5665027dd0c1c21a8&talk_login=hidden#login";
+    }
+
+    function startKakaoLogin() {
+        window.Kakao.Auth.login({
+            scope: 'profile_nickname,profile_image', // 권한 설정
+            success: function (authObj) {
+                console.log("로그인 성공: ", authObj); // 인증 객체 출력
+
+                window.Kakao.API.request({
+                    url: '/v2/user/me', // 사용자 정보 요청 API
+                    success: function(res) {
+                        const kakao_account = res.kakao_account;
+                        console.log("사용자 정보: ", kakao_account); // 사용자 정보 출력
+
+                        // 로그인 성공 후, 원하는 동작을 추가할 수 있습니다.
+                    },
+                    fail: function(error) {
+                        console.error("사용자 정보 요청 실패: ", error); // 오류 발생 시 출력
+                    }
+                });
+            },
+            fail: function (err) {
+                console.error("로그인 실패: ", err); // 로그인 실패 시 에러 출력
+                alert('로그인에 실패했습니다. 다시 시도해주세요.');
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        let loginfrm = document.getElementById('loginfrm');
+
+        loginfrm.addEventListener('submit', (e) => {
+            e.preventDefault(); // 버튼의 submit 기능 중지
+
+            const formData = new FormData(loginfrm);
+            let jsondata = {};
+            formData.forEach((val, key) => {
+                jsondata[key] = val;
+            });
+            console.log(jsondata);
+
+            fetch('/user/login', {
+                method:'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsondata),
+                redirect: 'follow'
+            }).then((res) => {
+                if (res.redirected) location.href = res.url;
+            });
+        });
+    });
+
+
+
+</script>
+</body>
+</html>

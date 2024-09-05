@@ -6,24 +6,43 @@ document.querySelectorAll('.list-group-item').forEach(item => {
     });
 });
 
-// header switch버튼
 $(document).ready(function() {
-    // 현재 페이지 경로에 따라 활성화 상태 설정
-    let currentPath = window.location.pathname;
+    let sliding = $('.sliding');
+    let clubBtn = $('#clubBtn');
+    let rentalBtn = $('#rentalBtn');
 
-    if (currentPath.includes('/club')) {
-        $('#clubBtn').addClass('active');
-    } else if (currentPath.includes('/rental')) {
-        $('#rentalBtn').addClass('active');
+    function updateButtonWidth() {
+        return clubBtn.outerWidth(); // 항상 최신의 버튼 너비를 계산
     }
 
-    $('#clubBtn').click(function() {
-        $(this).addClass('active');
-        $('#rentalBtn').removeClass('active');
+    function setActiveButton() {
+        let currentPath = window.location.pathname;
+        let buttonWidth = updateButtonWidth();
+
+        if (currentPath === '/club' || currentPath === '/club/') {
+            sliding.css('left', '0');
+            clubBtn.addClass('active');
+            rentalBtn.removeClass('active');
+        } else if (currentPath === '/rental' || currentPath === '/rental/') {
+            sliding.css('left', `${buttonWidth}px`);
+            rentalBtn.addClass('active');
+            clubBtn.removeClass('active');
+        }
+    }
+
+    setActiveButton();
+
+    clubBtn.click(function() {
+        let buttonWidth = updateButtonWidth();
+        sliding.animate({left: '0'}, 300);
+        clubBtn.addClass('active');
+        rentalBtn.removeClass('active');
     });
 
-    $('#rentalBtn').click(function() {
-        $(this).addClass('active');
-        $('#clubBtn').removeClass('active');
+    rentalBtn.click(function() {
+        let buttonWidth = updateButtonWidth();
+        sliding.animate({left: `${buttonWidth}px`}, 300);
+        rentalBtn.addClass('active');
+        clubBtn.removeClass('active');
     });
 });
