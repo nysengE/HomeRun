@@ -34,7 +34,7 @@
             {% if rental_list %}
                 {% for rental in rental_list %}
                     <tr>
-                        <td><a href="#" class="text-decoration-none">{{ rental.title }}</a></td>
+                        <td><a href="/rental/details/{{ rental.spaceno }}" class="text-decoration-none">{{ rental.title }}</a></td>
                         <td>{{ rental.name }}</td>
                         <td>{{ rental.regisdate.strftime('%Y-%m-%d') }}</td>
                         <td>

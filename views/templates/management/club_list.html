@@ -34,7 +34,7 @@
             {% if post_list %}
                 {% for post in post_list %}
                     <tr>
-                        <td><a href="#" class="text-decoration-none">{{ post.title }}</a></td>
+                        <td><a href="/club/view/{{ post.clubno }}" class="text-decoration-none">{{ post.title }}</a></td>
                         <td>{{ post.name }}</td>
                         <td>{{ post.registdate.strftime('%Y-%m-%d') }}</td>
                         <td>

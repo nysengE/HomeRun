@@ -30,7 +30,7 @@
             {% if user_list %}
                 {% for users, usermanage in user_list %}
                     <tr>
-                        <td><a href="#" class="text-decoration-none">{{ users.userid }}</a></td>
+                        <td><a href="/mypage/userinfo/" class="text-decoration-none">{{ users.userid }}</a></td>
                         <td>{{ users.suspension.strftime('%Y-%m-%d') if users.suspension else 'N/A' }}</td>
                         <td>
                             <!-- status가 있을 경우 활동 정지 해제 버튼 표시 -->
