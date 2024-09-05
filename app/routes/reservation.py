@@ -59,17 +59,6 @@ async def confirm_reservation(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 # @reservation_router.post('/{spaceno}/confirm', response_class=HTMLResponse)
 # async def confirm_reservation(
 #         req: Request,

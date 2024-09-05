@@ -1,9 +1,5 @@
-import os
 from contextlib import asynccontextmanager
-from typing import List
-from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI, HTTPException, Depends, Query, Form, UploadFile, File
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 
 from starlette.requests import Request
@@ -12,7 +8,6 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 from app.dbfactory import db_startup, db_shutdown, get_db
-from app.model.rental import Rental
 from app.routes.club import club_router
 from app.routes.management import management_router
 from app.routes.mypage import mypage_router
@@ -21,7 +16,6 @@ from app.routes.payment import payment_router
 from app.routes.rental import rental_router
 from app.routes.reservation import reservation_router
 from app.routes.user import user_router
-from app.service.rental import RentalService, process_upload
 from app.utils import format_time
 
 
@@ -35,8 +29,7 @@ async def lifespan(app: FastAPI):
 # FastAPI 앱 인스턴스 생성 시 lifespan 함수 전달
 app = FastAPI(lifespan=lifespan)
 
-SECRET_KEY = "20240822110005"
-app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+app.add_middleware(SessionMiddleware, secret_key="20240822110005")
 
 
 templates = Jinja2Templates(directory='views/templates')
