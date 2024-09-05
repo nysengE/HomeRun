@@ -82,6 +82,10 @@
                         <div class="inline-container text-center mt-5">
                             <div class="card-title text-center"><h3>{{ club.title }}<span class="badge text-bg-secondary"></span></h3></div>
                         </div>
+                        <div class="inline-container text-center">
+                            <div class="card-text float-start"><h4><span class="badge text-bg-secondary bg-primary">조회수: {{ club.views }}</span></h4></div>
+                            <div class="card-text float-end"><h4><span class="badge text-bg-secondary bg-dark">{{ club.registdate.strftime('%Y-%m-%d') }}</span></h4></div>
+                        </div>
                     </div>
                 </div>
             </div>

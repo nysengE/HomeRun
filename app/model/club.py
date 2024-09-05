@@ -62,4 +62,4 @@ class Reply(Base):
     userid: Mapped[str] = mapped_column(String(255),ForeignKey('users.userid'), index=True)
     clubno: Mapped[int] = mapped_column(Integer, ForeignKey('club.clubno'))
     rpno: Mapped[int] = mapped_column(Integer, ForeignKey('reply.rno'))
-    club = relationship('Club', back_populates='replys')
+    clubs = relationship('Club', back_populates='replys')
