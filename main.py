@@ -69,7 +69,7 @@ app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 templates = Jinja2Templates(directory='views/templates')
 app.mount('/static', StaticFiles(directory='views/static'), name='static')
 # Static files 설정
-app.mount("/cdn/img", StaticFiles(directory="C:/java/nginx-1.26.2/html/homerun/img"), name="cdn")
+app.mount("/cdn/img", StaticFiles(directory="/usr/share/nginx/html/cdn/img/"), name="cdn")
 
 
 app.include_router(club_router, prefix='/club')
