@@ -1,143 +1,130 @@
 {% extends 'include/base.html' %}
 
 {% block title %}
-{{ rent.title }}
+    {{ rent.title }}
 {% endblock %}
 
 {% block style %}
-<link rel="stylesheet" href="/static/css/rental/details.css">
+    <link rel="stylesheet" href="/static/css/rental/details.css">
 {% endblock %}
 
 {% block main %}
-<main>
-    <div class="container-fluid mt-4"> <!-- container-fluid로 변경하여 더 많은 너비 사용 -->
-        <div class="row">
+    <main>
+        <div class="container mt-4">
             <!-- 이미지 갤러리 -->
-            <div class="col-md-8">
-                <div id="carouselExampleControls" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        {% for image in rent.attachs %}
-                        <div class="carousel-item {% if loop.first %}active{% endif %}">
-                            <img src="/cdn/img/{{ image.fname }}" class="d-block w-100 rounded" alt="{{ rent.title }} 이미지">
+            <div class="row">
+                <div class="col-md-8">
+                    <div id="carouselExampleControls" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for image in rent.attachs %}
+                                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                    <img src="/cdn/img/{{ image.fname }}" class="d-block w-100 rounded" alt="{{ rent.title }} 이미지">
+                                </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">이전</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">다음</span>
+                        </button>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">이전</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">다음</span>
-                    </button>
                 </div>
-            </div>
 
-            <!-- 장소 정보 및 가격 -->
-            <div class="col-md-4">
-                <div class="which">
-                    <h3>{{ rent.title }}</h3>
-                    <!-- 새로운 컨테이너 추가 -->
-                    <div class="marker-address">
-                        <img src="/static/img/marker.png" alt="marker" class="marker">
+                <!-- 장소 정보 및 가격 -->
+                <div class="col-md-4">
+                    <div class="which">
+                        <h3>{{ rent.title }}</h3>
                         <p>{{ rent.address }}</p>
                     </div>
+                    <div class="price">
+                        <h4 id="formatted-price">{{ rent.price }}원~</h4>
+                        <h4>패키지 [2시간]({{ rent.people }}명)</h4>
+                        <p>종목: {{ rent.sports.name }}</p>
+                        <p>가능 날짜: {{ rent.availdate }} 이후</p>
+                        <p>가능 시간: <span id="formatted-time"></span> 등</p>
+                    </div>
+                    <a href="/reservation/{{ rent.spaceno }}" class="btn btn-primary">예약하기</a>
                 </div>
-                <div class="price">
-                    <h4 id="formatted-price">{{ rent.price }}원~</h4>
-                    <h4>패키지 [2시간]({{ rent.people }}명)</h4>
-                    <p>종목: {{ rent.sports.name }}</p>
-                    <p>가능 날짜: {{ rent.availdate }} 이후</p>
-                    <p>가능 시간: <span id="formatted-time"></span> 등</p>
-                </div>
-                <a href="/reservation/{{ rent.spaceno }}" class="btn btn-primary">예약하기</a>
             </div>
+
+            <!-- 장소 소개 / 지도 섹션 -->
+            <section class="mt-4 section-spacing">
+                <h2>장소 소개</h2>
+                <p>{{ rent.contents }}</p>
+            </section>
+
+            <section class="mt-4">
+                <h3>지도</h3>
+                <div id="map" class="map-container shadow-sm rounded"></div>
+            </section>
+
         </div>
-        <!-- 장소 소개 / 지도 섹션 -->
-        <section class="mt-4 section-spacing">
-            <h2>장소 소개</h2>
-            <div class="content-container">
-                <pre>{{ rent.contents }}</pre>
-            </div>
-        </section>
-
-
-        <section class="mt-4">
-            <h3>지도</h3>
-            <div id="map" class="map-container shadow-sm rounded"></div>
-        </section>
-
-
-
-
-
-    </div>
-
-
-
-</main>
+    </main>
 {% endblock %}
 
 {% block script %}
-<!-- 최신 jQuery 및 Bootstrap으로 업데이트 -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- 카카오맵 API -->
-<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=fc8381a8e078184c69d4c4085d49468f&libraries=services"></script>
+    <!-- 최신 jQuery 및 Bootstrap으로 업데이트 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 카카오맵 API -->
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=fc8381a8e078184c69d4c4085d49468f&libraries=services"></script>
 
-<script type="text/javascript">
-    var latitude = {{ rent.latitude | tojson }};
-    var longitude = {{ rent.longitude | tojson }};
+    <script type="text/javascript">
+        var latitude = {{ rent.latitude | tojson }};
+        var longitude = {{ rent.longitude | tojson }};
 
-    function initializeMap(lat, lng) {
-        var mapContainer = document.getElementById('map'),
-            mapOption = {
-                center: new kakao.maps.LatLng(lat, lng),
-                level: 3
-            };
+        function initializeMap(lat, lng) {
+            var mapContainer = document.getElementById('map'),
+                mapOption = {
+                    center: new kakao.maps.LatLng(lat, lng),
+                    level: 3
+                };
 
-        var map = new kakao.maps.Map(mapContainer, mapOption);
+            var map = new kakao.maps.Map(mapContainer, mapOption);
 
-        if (!isNaN(lat) && !isNaN(lng)) {
-            var coords = new kakao.maps.LatLng(lat, lng);
-            var marker = new kakao.maps.Marker({
-                map: map,
-                position: coords
-            });
-            map.setCenter(coords);
-        } else {
-            console.error('위도와 경도 값을 가져오지 못했습니다.');
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeMap(latitude, longitude);
-    });
-
-    function formatPrice(price) {
-        return new Intl.NumberFormat().format(price) + '원~';
-    }
-
-    function formatTime(originalTime) {
-        const [hours, minutes] = originalTime.split(':').map(Number);
-        let period = "오전";
-        let formattedHours = hours;
-
-        if (hours >= 12) {
-            period = "오후";
-            if (hours > 12) formattedHours = hours - 12;
+            if (!isNaN(lat) && !isNaN(lng)) {
+                var coords = new kakao.maps.LatLng(lat, lng);
+                var marker = new kakao.maps.Marker({
+                    map: map,
+                    position: coords
+                });
+                map.setCenter(coords);
+            } else {
+                console.error('위도와 경도 값을 가져오지 못했습니다.');
+            }
         }
 
-        return `${period} ${String(formattedHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-    }
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap(latitude, longitude);
+        });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const priceElement = document.getElementById('formatted-price');
-        const price = parseInt(priceElement.textContent.replace('원~', '').replace(',', ''));
-        priceElement.textContent = formatPrice(price);
+        function formatPrice(price) {
+            return new Intl.NumberFormat().format(price) + '원~';
+        }
 
-        const originalTime = "{{ rent.availtime }}";
-        document.getElementById('formatted-time').textContent = formatTime(originalTime);
-    });
-</script>
+        function formatTime(originalTime) {
+            const [hours, minutes] = originalTime.split(':').map(Number);
+            let period = "오전";
+            let formattedHours = hours;
+
+            if (hours >= 12) {
+                period = "오후";
+                if (hours > 12) formattedHours = hours - 12;
+            }
+
+            return `${period} ${String(formattedHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const priceElement = document.getElementById('formatted-price');
+            const price = parseInt(priceElement.textContent.replace('원~', '').replace(',', ''));
+            priceElement.textContent = formatPrice(price);
+
+            const originalTime = "{{ rent.availtime }}";
+            document.getElementById('formatted-time').textContent = formatTime(originalTime);
+        });
+    </script>
 {% endblock %}
