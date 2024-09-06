@@ -8,7 +8,7 @@ from typing import List
 from app.model.notification import Notification, NotiAttach
 from app.schema.notification import NewNotification
 
-UPLOAD_PATH = 'C:/Java/nginx-1.26.2/html/prj/img/ntf/'  # 파일 업로드 경로 설정
+UPLOAD_PATH = '/usr/share/nginx/html/cdn/img/'  # 파일 업로드 경로 설정
 
 # 공지사항 데이터 생성 함수
 def get_notification_data(req: Request, title: str = Form(...), contents: str = Form(...)):
