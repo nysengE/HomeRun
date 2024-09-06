@@ -223,7 +223,7 @@ async def deletefile(request: Request, db: Session = Depends(get_db)):
         else:
             return JSONResponse(content={'success': False, 'message': '파일이 존재하지 않습니다.'}, status_code=404)
 
-        # os.remove(os.path.join('homerun/img', os.path.basename(path)))
+        # os.remove(os.path.join('cdn/img', os.path.basename(path)))
         #
         # return JSONResponse(content={'success': True})
     except Exception as ex:
