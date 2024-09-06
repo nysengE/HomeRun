@@ -47,7 +47,16 @@ async def delete_old_private_posts_task():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await db_startup()  # 서버 시작 시 실행될 코드
+
+    # 스케줄러 작업 추가: 매일 자정에 함수 실행
+    scheduler.add_job(release_suspension_task, 'cron', hour=0, minute=0)  # 매일 자정 00:00에 실행
+    scheduler.add_job(delete_old_private_posts_task, 'cron', hour=0, minute=0)  # 매일 자정 00:00에 실행
+    scheduler.start()
+
     yield
+
+    # 앱 종료 시 스케줄러 종료
+    scheduler.shutdown()
     await db_shutdown()  # 서버 종료 시 실행될 코드
 
 # FastAPI 앱 인스턴스 생성 시 lifespan 함수 전달
