@@ -49,9 +49,9 @@ body {
     justify-content: center;
     flex-wrap: wrap;
     padding: 20px;
-    background-color: #faf8f5;
+    background-color: #ffffff;
     width: 100%; /* 너비를 100%로 설정 */
-    max-width: 1200px; /* 최대 너비 설정 */
+    max-width: 1600px; /* 최대 너비 설정 */
     margin: 0 auto; /* 가운데 정렬 */
 }
 
@@ -62,7 +62,7 @@ body {
     border-radius: 8px;
     text-align: center;
     width: 100%; /* 너비를 100%로 설정하여 부모 요소를 꽉 채우도록 함 */
-    max-width: 300px; /* 각 아이템의 최대 너비 설정 */
+    max-width: 400px; /* 각 아이템의 최대 너비 설정 */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
 }
@@ -111,4 +111,21 @@ body {
 
 .slide.active {
     left: 0;
+}
+
+/* 아이템 제목 스타일 */
+.item p {
+    margin: 10px 0 0;
+    font-weight: bold;
+    font-size: 22px; /* 제목을 조금 더 크게 설정 */
+    font-family: 'Montserrat', sans-serif;
+    color: #383636;
+}
+
+/* 시군구 이름 스타일 */
+.item .grey-text {
+    font-size: 18px; /* 시군구 이름을 조금 더 작게 설정 */
+    color: #9b9b9b; /* 더 연한 회색으로 설정 */
+    font-weight: normal; /* 글씨체 굵기를 더 얇게 설정 */
+    opacity: 0.9; /* 텍스트의 투명도를 추가하여 연한 효과 */
 }
