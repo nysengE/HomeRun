@@ -73,14 +73,14 @@
                     <div class="comment-container d-flex justify-content-between align-items-center">
                         <div class="comment-content d-flex flex-grow-1 gap-3 py-3">
                             <h5 class="w-20 px-2">{{ re[0].userid }}</h5>
-                            <p class="45 px-2">{{ re[0].reply }}</p>
+                            <p class="45 px-2" style="width: 200px;">{{ re[0].reply }}</p>
                         </div>
                         <div class="d-flex justify-content-end w-15"><p class="px-2">{{ re[0].regdate.strftime('%Y-%m-%d') }}</p></div>
                     <!-- 대댓글 Modal 트리거 버튼 -->
                         {% if re[0].rno == re[0].rpno %}
-                        <button type="button" id="rreplyadd" class="btn btn-danger mx-3 w-20" data-bs-toggle="modal" data-bs-target="#replyModal" onclick="addrreply('{{ re[0].rno }}')">
-                            추가
-                        </button>
+                            {% if 'logined_uid' in request.session %}
+                            <button type="button" id="rreplyadd" class="btn btn-danger mx-3 w-20" data-bs-toggle="modal" data-bs-target="#replyModal" onclick="addrreply('{{ re[0].rno }}')">추가</button>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
@@ -88,25 +88,27 @@
         </div>
 
         <!-- 댓글등록창 -->
-        <div class="form-container my-4">
-            <form name="replyfrm" id="replyfrm">
-                <div class="row mb-3 align-items-center">
-                    <div class="col-md-3">
-                        <label for="userid" class="form-label">작성자</label>
-                        <input type="text" class="form-control" id="userid" name="userid" value="{{ request.session.logined_uid }}" style="border:none" readonly>
+        {% if 'logined_uid' in request.session %}
+            <div class="form-container my-4">
+                <form name="replyfrm" id="replyfrm">
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-md-3">
+                            <label for="userid" class="form-label">작성자</label>
+                            <input type="text" class="form-control" id="userid" name="userid" value="{{ request.session.logined_uid }}" style="border:none" readonly>
+                        </div>
+                        <div class="col-md-7">
+                            <label for="reply" class="form-label">댓글 내용</label>
+                            <textarea class="form-control" id="reply" name="reply" rows="1" required></textarea>
+                        </div>
+                        <div class="col-md-2 text-start">
+                            <!-- hidden -->
+                            <input type="hidden" name="clubno" id="hiddenclubno" value="{{ clubno }}">
+                            <button type="submit" class="btn btn-primary mt-4 replybtn">등록</button>
+                        </div>
                     </div>
-                    <div class="col-md-7">
-                        <label for="reply" class="form-label">댓글 내용</label>
-                        <textarea class="form-control" id="reply" name="reply" rows="1" required></textarea>
-                    </div>
-                    <div class="col-md-2 text-start">
-                        <!-- hidden -->
-                        <input type="hidden" name="clubno" id="hiddenclubno" value="{{ clubno }}">
-                        <button type="submit" class="btn btn-primary mt-4 replybtn">등록</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        {% endif %}
 
         <!-- 대댓글 모달창 -->
         <!-- 모달 구조 -->
