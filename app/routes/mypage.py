@@ -213,7 +213,7 @@ async def deletefile(request: Request, db: Session = Depends(get_db)):
 
         filename = Path(path).name
 
-        filepath = Path('C:/Java/nginx-1.26.2/html/homerun/img')/filename
+        filepath = Path('/usr/share/nginx/html/cdn/img/')/filename
 
         print('filepath: ',filepath)
 
