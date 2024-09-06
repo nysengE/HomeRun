@@ -34,7 +34,7 @@ class Rental(Base):
     longitude: Mapped[float] = mapped_column(Float)  # 경도
     sportsno: Mapped[int] = mapped_column(INTEGER, ForeignKey('sports.sportsno'))
     sigunguno: Mapped[int] = mapped_column(INTEGER, ForeignKey('regions.sigunguno'))
-    userid: Mapped[int] = mapped_column(INTEGER, ForeignKey('users.userid'))
+    userid: Mapped[int] = mapped_column(String(100), ForeignKey('users.userid'))
     attachs = relationship('RentalAttach', back_populates='rentals')  # 하나의 gallery는 하나 이상의 attach 존재 (1:n)
     sports = relationship("Sports", back_populates="rentals")
     payments = relationship('Payment', back_populates='rentals')  # Reservation과의 관계 설정
