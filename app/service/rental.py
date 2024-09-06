@@ -9,7 +9,7 @@ from sqlalchemy.orm import joinedload, Session
 from app.model.rental import Rental, RentalAttach
 from app.schema.rental import NewRental
 
-UPLOAD_PATH = 'C:/java/nginx-1.26.2/html/homerun/img/'
+UPLOAD_PATH = '/usr/share/nginx/html/cdn/img//'
 
 def get_rental_data(title: str = Form(...), contents: str = Form(...),
                     people: int = Form(...), price: int = Form(...),

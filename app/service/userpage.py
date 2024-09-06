@@ -12,7 +12,7 @@ from app.model.sports import Sports
 from app.model.users import Users
 from app.schema.userpage import ModifyClub, ModifyUser
 
-UPLOAD_PATH = 'C:/Java/nginx-1.26.2/html/homerun/img'
+UPLOAD_PATH = '/usr/share/nginx/html/cdn/img/'
 
 async def get_club_data(title: str = Form(...),
                         contents: str = Form(...),
