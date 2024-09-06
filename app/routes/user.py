@@ -99,6 +99,13 @@ async def check_userid(req: Request, db: Session = Depends(get_db)):
 async def login(req: Request):
     return templates.TemplateResponse('/user/login.html', {'request': req})
 
+
+# 로그인 페이지
+@user_router.get('/mainlogin', response_class=HTMLResponse)
+async def login(req: Request):
+    return templates.TemplateResponse('/user/mainlogin.html', {'request': req})
+
+
 # 로그인 처리
 @user_router.post('/login', response_class=HTMLResponse)
 async def loginok(req: Request, db: Session = Depends(get_db)):
