@@ -1,11 +1,11 @@
 /* 메인 컨텐츠 컨테이너 스타일 */
-main .container {
+main .container-fluid {
     margin-top: 40px; /* 컨테이너 상단 여백 증가 */
     padding: 20px; /* 컨테이너 내부 패딩 추가 */
     background-color: #ffffff; /* 배경색을 흰색으로 설정 */
     border-radius: 16px; /* 둥근 모서리 적용 */
     width: 100%; /* 전체 너비 사용 */
-    max-width: 1200px; /* sportnav의 최대 너비와 동일하게 설정 */
+    max-width: 1600px; /* sportnav의 최대 너비와 동일하게 설정 */
     margin: 0 auto; /* 가운데 정렬 */
     /*box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); !* 부드러운 그림자 효과 추가 *!*/
 }
@@ -21,10 +21,38 @@ main .container {
     margin: 0 auto; /* 가운데 정렬 */
 }
 
+
+.content-container {
+    /*max-height: 400px; !* 원하는 높이 설정 *!*/
+    padding: 1rem; /* 충분한 여백 추가 */
+    background-color: #ffffff; /* 배경색 설정 */
+    border-radius: 8px; /* 둥근 모서리 */
+    white-space: pre-wrap; /* 줄바꿈과 띄어쓰기를 그대로 표시 */
+    word-wrap: break-word; /* 긴 단어를 줄바꿈 */
+    font-size: 1.4rem; /* 글씨 크기 조정 (원하는 크기로 변경 가능) */
+    line-height: 1.8; /* 줄 간격 조정 */
+}
+
+.marker-address {
+    display: flex; /* 가로 정렬을 위해 flexbox 사용 */
+    align-items: center; /* 마커와 주소를 세로 가운데 정렬 */
+}
+
+.marker {
+    width: 15px; /* 마커의 너비를 더 작게 설정 */
+    height: 20px; /* 마커의 높이를 더 작게 설정 */
+    margin-right: 8px; /* 마커와 텍스트 사이에 간격 추가 */
+}
+
+.marker-address p {
+    margin: 0; /* 기본 마진 제거 */
+}
+
+
 /* 지도 컨테이너 스타일 */
 .map-container {
     width: 100%;
-    max-width: 1200px; /* sportnav의 최대 너비와 동일하게 설정 */
+    max-width: 1400px; /* sportnav의 최대 너비와 동일하게 설정 */
     height: 350px; /* 지도 높이 설정 */
     border-radius: 12px; /* 지도에 둥근 모서리 적용 */
     overflow: hidden; /* 지도 내용이 넘치지 않도록 설정 */

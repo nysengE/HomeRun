@@ -26,11 +26,12 @@
                 <input type="date" id="date" placeholder="날짜">
                 <!-- 인원 범위 스크롤바 -->
                 <label for="peopleRange">인원:</label>
-                <input type="range" id="peopleRange" name="peopleRange" min="1" max="100" step="1" value="1" oninput="this.nextElementSibling.value = this.value">
-                <output>1</output>
+                <input type="range" id="peopleRange" name="peopleRange" min="0" max="50" step="1" value="1" oninput="this.nextElementSibling.value = this.value">
+                <output>0</output>
+                <input type="text" id="peopleSearch" placeholder="검색" style="width: 120px; margin-left: 15px;">
             </div>
-            {% if userid %}
-            <!-- 글쓰기 버튼: 로그인된 사용자인 경우에만 표시 -->
+            {% if userid == 'aaa123' %}
+            <!-- 글쓰기 버튼: userid가 'aaa123'인 경우에만 표시 -->
             <div class="write-button">
                 <a href="/rental/add" class="btn btn-primary">글쓰기</a>
             </div>
@@ -48,6 +49,7 @@
                             {% endfor %}
                         </div>
                         <p>{{ rent.title }}</p>
+                        <p class="grey-text" >{{ rent.regions.name }} / 패키지2시간</p> <!-- 시군구 이름과 패키지 추가 -->
                     </a>
                 </div>
             {% endfor %}
